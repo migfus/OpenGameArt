@@ -1,31 +1,17 @@
 {
-  "_ArtCategorySection.vue_vue_type_script_setup_true_lang-BGydtEgh.js": {
-    "file": "assets/ArtCategorySection.vue_vue_type_script_setup_true_lang-BGydtEgh.js",
+  "_ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js": {
+    "file": "assets/ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js",
     "name": "ArtCategorySection.vue_vue_type_script_setup_true_lang",
     "imports": [
       "resources/js/app.ts"
-    ]
-  },
-  "_BasicCard-UsJNvaMM.css": {
-    "file": "assets/BasicCard-UsJNvaMM.css",
-    "src": "_BasicCard-UsJNvaMM.css"
-  },
-  "_BasicCard-ZmiAZ20f.js": {
-    "file": "assets/BasicCard-ZmiAZ20f.js",
-    "name": "BasicCard",
-    "imports": [
-      "resources/js/app.ts"
-    ],
-    "css": [
-      "assets/BasicCard-UsJNvaMM.css"
     ]
   },
   "_CarouselCard-Dtdw2zcG.css": {
     "file": "assets/CarouselCard-Dtdw2zcG.css",
     "src": "_CarouselCard-Dtdw2zcG.css"
   },
-  "_CarouselCard.vue_vue_type_script_setup_true_lang-BibV8nn8.js": {
-    "file": "assets/CarouselCard.vue_vue_type_script_setup_true_lang-BibV8nn8.js",
+  "_CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js": {
+    "file": "assets/CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js",
     "name": "CarouselCard.vue_vue_type_script_setup_true_lang",
     "imports": [
       "resources/js/app.ts"
@@ -39,7 +25,7 @@
     "src": "public/images/building.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-hI2NCOzA.css",
+    "file": "assets/app-BpEd81Wq.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -48,7 +34,7 @@
     ]
   },
   "resources/js/app.ts": {
-    "file": "assets/app-CvpbwkqW.js",
+    "file": "assets/app-DujUDdWz.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -64,49 +50,53 @@
     ]
   },
   "resources/js/pages/auth/login/(Index).vue": {
-    "file": "assets/(Index)-CdAj-PJS.js",
+    "file": "assets/(Index)-CRgMX-8k.js",
     "name": "(Index)",
     "src": "resources/js/pages/auth/login/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_BasicCard-ZmiAZ20f.js",
       "resources/js/app.ts"
+    ],
+    "css": [
+      "assets/(Index)-UioXqyG8.css"
     ]
   },
   "resources/js/pages/pages/explore/(Index).vue": {
-    "file": "assets/(Index)-CEEfV1CN.js",
+    "file": "assets/(Index)-C6fnx47-.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/explore/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-BGydtEgh.js",
+      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js",
       "resources/js/app.ts"
     ]
   },
   "resources/js/pages/pages/faqs/(Index).vue": {
-    "file": "assets/(Index)-lxf7I7Ea.js",
+    "file": "assets/(Index)-B1TtdQz0.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/faqs/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_CarouselCard.vue_vue_type_script_setup_true_lang-BibV8nn8.js",
-      "resources/js/app.ts",
-      "_BasicCard-ZmiAZ20f.js"
+      "_CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js",
+      "resources/js/app.ts"
+    ],
+    "css": [
+      "assets/(Index)-UsJNvaMM.css"
     ]
   },
   "resources/js/pages/pages/home/(Index).vue": {
-    "file": "assets/(Index)-SvGzTh0j.js",
+    "file": "assets/(Index)-BFw4UAda.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/home/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_CarouselCard.vue_vue_type_script_setup_true_lang-BibV8nn8.js",
-      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-BGydtEgh.js",
+      "_CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js",
+      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js",
       "resources/js/app.ts"
     ]
   },
   "resources/js/pages/pages/not-found/(Index).vue": {
-    "file": "assets/(Index)-D_OaR_KB.js",
+    "file": "assets/(Index)-DaLBH4dI.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/not-found/(Index).vue",
     "isDynamicEntry": true,
