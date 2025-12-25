@@ -9,14 +9,8 @@ return new class extends Migration {
         Schema::create('arts', function (Blueprint $table) {
             $table->string('id')->primary();
 
-            $table->string('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
-
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('art_category_id')->constrained('art_categories')->cascadeOnUpdate()->cascadeOnDelete();
-
 
             $table->string('title');
             $table->longText('content')->nullable();

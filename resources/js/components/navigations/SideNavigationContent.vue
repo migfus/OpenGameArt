@@ -9,9 +9,9 @@
         ]"
     >
         <DataTransition class="flex flex-col gap-2">
-            <RouterLink v-for="item in following" to="/">
-                <img :src="item.image_url" class="size-10 rounded-xl hover:ring-2 ring-brand-950 transition-all" />
-            </RouterLink>
+            <!-- <RouterLink v-for="item in $authStore.friends" to="/">
+                <img :src="item.image_url" class="size-10 rounded-full hover:ring-2 ring-brand-950 transition-all" />
+            </RouterLink> -->
             <RouterLink
                 to="/"
                 :class="['bg-brand-950 flex justify-center items-center rounded-xl border border-brand-900 size-10 hover:bg-dark-001 transition-all']"
@@ -20,12 +20,22 @@
             </RouterLink>
         </DataTransition>
 
-        <RouterLink
-            to="/"
-            class="bg-brand-950/75 flex justify-center items-center rounded-xl border border-brand-900 backdrop-blur-lg size-10 fixed bottom-2 hover:bg-dark-001 transition-all"
-        >
-            <Icon icon="memory:apps" class="size-6 text-brand-200" />
-        </RouterLink>
+        <BasicTransition>
+            <RouterLink
+                v-if="$authStore.token"
+                to="/"
+                class="bg-brand-950/75 flex justify-center items-center rounded-xl border border-brand-900 backdrop-blur-lg size-10 fixed bottom-2 hover:bg-dark-001 transition-all"
+            >
+                <Icon icon="memory:apps" class="size-6 text-brand-200" />
+            </RouterLink>
+            <RouterLink
+                v-else
+                :to="{ name: 'login' }"
+                class="bg-brand-950/75 flex justify-center items-center rounded-xl border border-brand-900 backdrop-blur-lg size-10 fixed bottom-2 hover:bg-dark-001 transition-all"
+            >
+                <Icon icon="memory:login" class="size-6 text-brand-200" />
+            </RouterLink>
+        </BasicTransition>
     </div>
 
     <div
@@ -157,16 +167,19 @@
             </div>
         </div>
 
-        <RouterLink
-            to="/"
-            :class="[
-                on_mobile ? 'w-60' : 'w-56',
-                'bg-brand-950/75 flex justify-between px-4 items-center rounded-xl border border-brand-900 backdrop-blur-lg h-10 fixed bottom-2 text-brand-200 ml-2 hover:bg-dark-001'
-            ]"
-        >
-            <p>Settings</p>
-            <Icon icon="memory:dot-hexagon" class="size-6 text-brand-200" />
-        </RouterLink>
+        <BasicTransition>
+            <RouterLink
+                v-if="$authStore.token"
+                :to="{ name: 'account-settings' }"
+                :class="[
+                    on_mobile ? 'w-60' : 'w-56',
+                    'bg-brand-950/75 flex justify-between px-4 items-center rounded-xl border border-brand-900 backdrop-blur-lg h-10 fixed bottom-2 text-brand-200 ml-2 hover:bg-dark-001'
+                ]"
+            >
+                <p>Account Settings</p>
+                <Icon icon="memory:dot-hexagon" class="size-6 text-brand-200" />
+            </RouterLink>
+        </BasicTransition>
     </div>
 </template>
 
@@ -174,10 +187,13 @@
 import { Icon } from '@iconify/vue'
 import DataTransition from '../transitions/DataTransition.vue'
 import OtherLinksLoader from './OtherLinksLoader.vue'
+import BasicTransition from '../transitions/BasicTransition.vue'
 
 import { useRoute } from 'vue-router'
 import { useNavigationStore } from '@/stores/navigationStore'
 import { clearDelays, messengerStyleTime, timeAgo } from '@/utils/utils'
+import { computed } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const $navigationStore = useNavigationStore()
 
@@ -187,6 +203,7 @@ defineProps<{
 
 const $route = useRoute()
 const $emit = defineEmits(['close_sidebar'])
+const $authStore = useAuthStore()
 
 const following = [
     {
@@ -206,6 +223,14 @@ const following = [
             'https://images.unsplash.com/photo-1761839258830-81f87b1c6d62?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw4fHx8ZW58MHx8fHx8'
     }
 ]
+
+const following_filtered = computed(() => {
+    if ($authStore.token) {
+        return following
+    } else {
+        return []
+    }
+})
 
 const navigations = [
     {

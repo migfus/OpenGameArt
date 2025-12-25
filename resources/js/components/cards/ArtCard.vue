@@ -52,7 +52,7 @@
                     <DataTransition v-if="is_playing" class="flex gap-2 items-center cursor-pointer">
                         <Icon
                             icon="memory:rotate-counterclockwise"
-                            class="size-12 bg-brand-900/80 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2"
+                            class="size-12 bg-brand-900/90 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2"
                             @click.stop="stopAudio()"
                             @mousedown.stop
                             :style="{ animationDelay: `${100}ms`, transitionDelay: `${100}ms` }"
@@ -62,7 +62,7 @@
 
                         <Icon
                             icon="memory:pause"
-                            class="size-18 bg-brand-900/80 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2"
+                            class="size-18 bg-brand-900/90 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2"
                             @click.stop="pauseAudio()"
                             @mousedown.stop
                         />
@@ -76,7 +76,7 @@
                         >
                             <Icon
                                 icon="memory:arrow-right-box"
-                                class="size-12 bg-brand-900/80 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2"
+                                class="size-12 bg-brand-900/90 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2"
                                 @click.stop="forwardTime()"
                                 @mousedown.stop
                             />
@@ -86,7 +86,7 @@
                     <Icon
                         v-else
                         icon="memory:play"
-                        class="size-18 bg-brand-900/80 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2 cursor-pointer"
+                        class="size-18 bg-brand-900/90 backdrop-blur-sm rounded-full hover:scale-110 transition-all p-2 cursor-pointer"
                         @click.stop="playAudio(art.art_previews[0].url)"
                         @mousedown.stop
                     />
@@ -98,7 +98,7 @@
 
                 <a
                     v-if="art.user"
-                    :href="`https://opengameart.org/users/${art.user.id}`"
+                    :href="`https://opengameart.org/users/${art.user.url_username}`"
                     class="p-2 flex gap-1 bg-linear-to-t from-dark-001 to-transparent rounded-b-xl justify-between h-12 items-end"
                 >
                     <div class="flex gap-2 truncate">
@@ -158,7 +158,7 @@
             </div>
 
             <!-- No Comments avail -->
-            <div v-else class="flex justify-between items-center gap-2 text-light-001/75">
+            <div v-else class="flex justify-between items-center gap-2 text-light-001/25">
                 <div class="flex gap-1 items-center text-sm truncate">
                     <p class="truncate">No comments.</p>
                 </div>
@@ -186,11 +186,11 @@
             <div>
                 <!-- LIST -->
                 <BasicTransition>
-                    <div v-if="is_playing && art.art_previews.length > 0" class="flex justify-center">
+                    <div v-if="is_playing && art.art_previews.length > 1" class="flex justify-center">
                         <div
                             :class="[
                                 show_player && is_playing ? 'translate-y-0 ' : 'translate-y-16 md:translate-y-0',
-                                'fixed bg-brand-950/75 backdrop-blur-sm w-full py-6 px-3 z-10 flex flex-col gap-2 transition-all md:rounded-2xl md:w-xl bottom-51 md:bottom-35'
+                                'fixed bg-brand-950/90 backdrop-blur-sm w-full py-6 px-3 z-10 flex flex-col gap-2 transition-all md:rounded-2xl md:w-xl bottom-51 md:bottom-35'
                             ]"
                         >
                             <div class="text-light-001 max-h-33 overflow-y-scroll gap-1 flex flex-col">
@@ -229,7 +229,7 @@
                         <div
                             :class="[
                                 show_player && is_playing ? 'translate-y-0 ' : 'translate-y-16 md:translate-y-0',
-                                'fixed bg-brand-950/75 backdrop-blur-sm w-full h-50 md:h-34 bottom-0 z-10 flex flex-col gap-2 transition-all md:rounded-t-2xl md:w-xl'
+                                'fixed bg-brand-950/90 backdrop-blur-sm w-full h-50 md:h-34 bottom-0 z-10 flex flex-col gap-2 transition-all md:rounded-t-2xl md:w-xl'
                             ]"
                         >
                             <div class="flex justify-between py-2 text-brand-300 px-4 items-center gap-2">
@@ -307,7 +307,7 @@
                                     </div>
                                 </div>
 
-                                <div v-else class="flex justify-between items-center gap-2 text-light-001/75">No Comments</div>
+                                <div v-else class="flex justify-between items-center gap-2 text-light-001/25">No Comments</div>
                             </div>
 
                             <div class="space-y-2 px-4">

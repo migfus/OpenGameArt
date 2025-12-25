@@ -6,8 +6,6 @@ use App\Models\Collection;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Symfony\Component\DomCrawler\Crawler;
 
 class CollectionController extends Controller {
     public function store(Request $req) {
@@ -15,13 +13,12 @@ class CollectionController extends Controller {
             'id' => ['required']
         ]);
 
-        $crawler = $this->authenticate("https://opengameart.org/content/{$req->id}");
+        $crawler = $this->authenticate("https://opengameart.org/content/{$req->id}", $req->bearerToken());
 
         $raw_date = $crawler->filterXPath("//div[@class='field-item even']")->eq(2)->text();
         $created_at = Carbon::createFromFormat('l, F j, Y - H:i', $raw_date)->format('Y-m-d H:i:s');
 
-        $user_id = $crawler->filterXPath("//a[@class='username']")->attr('href');
-        $user_id = preg_replace('#^/users/#', '', $user_id);
+        $url_username = str_replace('/users/', '',  $crawler->filterXPath("//a[@class='username']")->attr('href'));
 
         $title = $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text();
         $content = $crawler->filterXPath("//div[@property='content:encoded']")->html();
@@ -29,7 +26,9 @@ class CollectionController extends Controller {
         $recent_collection = [];
 
         // Check if user exists, if not create
-        if (User::where('id', $user_id)->exists()) {
+        if (User::where('url_username', $url_username)->exists()) {
+            $user_id = User::where('url_username', $url_username)->first()->id;
+
             $recent_collection = Collection::create([
                 'id' => $req->id,
                 'title' => $title,
@@ -38,16 +37,8 @@ class CollectionController extends Controller {
                 'created_at' => $created_at
             ]);
         } else {
-            $crawler = $this->authenticate("https://opengameart.org/users/$user_id");
 
-            $username = $crawler->filter('.username')->text();
-            $image_url = $crawler->filterXPath("//img[@typeof='foaf:Image']")->attr('src');
-
-            User::create([
-                'id' => $user_id,
-                'username' => $username,
-                'image_url' => $image_url
-            ]);
+            $user_id = $this->extractUser($url_username, $req->bearerToken());
 
             $recent_collection = Collection::create([
                 'id' => $req->id,

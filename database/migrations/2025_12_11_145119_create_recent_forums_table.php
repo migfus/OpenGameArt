@@ -9,7 +9,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('recent_forums', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->string('user_id')->nullable(); // null for 1st time fetch of data
+            $table->unsignedBigInteger('user_id')->nullable(); // null for 1st time fetch of data
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')

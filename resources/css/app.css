@@ -125,3 +125,19 @@
 .scroll-fade.at-top.at-bottom::after {
     opacity: 0;
 }
+
+.retro-spinner {
+    border-radius: 0; /* sharp edges */
+    image-rendering: pixelated;
+
+    animation: spin-steps 1s steps(4) infinite;
+}
+
+@keyframes spin-steps {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -25,15 +25,16 @@ class RecentForumController extends Controller {
 
         $created_at = Carbon::createFromFormat('l, F j, Y - H:i', $raw_date)->format('Y-m-d H:i:s');
 
-        $user_id = $crawler->filterXPath("//a[@class='username']")->attr('href');
-        $user_id = preg_replace('#^/users/#', '', $user_id);
+        $url_username = str_replace('/users/', '', $crawler->filterXPath("//a[@class='username']")->attr('href'));
 
         $title = $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text();
 
         $recent_forum = [];
 
         // Check if user exists, if not create
-        if (User::where('id', $user_id)->exists()) {
+        if (User::where('url_username', $url_username)->exists()) {
+            $user_id = User::where('url_username', $url_username)->first()->id;
+
             $recent_forum = RecentForum::create([
                 'id' => $req->id,
                 'title' => $title,
@@ -43,17 +44,7 @@ class RecentForumController extends Controller {
             ]);
         } else {
             // Scrape for user based on recent_collection
-            $body = Http::timeout(10)->get("https://opengameart.org/users/$user_id")->body();
-            $crawler = new Crawler($body);
-
-            $username = $crawler->filter('.username')->text();
-            $image_url = $crawler->filterXPath("//img[@typeof='foaf:Image']")->attr('src');
-
-            User::create([
-                'id' => $user_id,
-                'username' => $username,
-                'image_url' => $image_url
-            ]);
+            $user_id = $this->extractUser($req->username, $req->bearerToken());
 
             $recent_forum = RecentForum::create([
                 'id' => $req->id,

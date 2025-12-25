@@ -19,8 +19,8 @@ Route::group(['prefix' => '', 'as' => 'pages.'], function () {
     Route::resource('/collection', CollectionController::class)->only(['store']);
     Route::resource('/affiliate', AffiliateController::class)->only(['store']);
 
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout.submit');
     Route::get('/art-previews', [AuthController::class, 'artPreviews'])->name('art_previews');
+    Route::get('/friends', [AuthController::class, 'getFriends'])->name('friends');
 });

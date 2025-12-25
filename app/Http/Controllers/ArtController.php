@@ -25,13 +25,13 @@ class ArtController extends Controller {
 
         // dd();
 
-        $crawler = $this->authenticate("https://opengameart.org/content/{$req->id}");
+        $crawler = $this->authenticate("https://opengameart.org/content/{$req->id}", $req->bearerToken());
 
         $art_category_name = $crawler->filterXPath("//a[@property='rdfs:label skos:prefLabel']")->text();
 
         $art = [
             'created_at' => Carbon::createFromFormat('l, F j, Y - H:i', $crawler->filterXPath("(//div[@class='field-item even'])[3]")->text())->format('Y-m-d H:i:s'),
-            'user_id' => preg_replace('#^/users/#', '', $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->attr('href')),
+            'url_username' => preg_replace('#^/users/#', '', $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->attr('href')),
             'title' => $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text(),
             'content' => $crawler->filterXPath("//div[@class='group-right right-column']/div[2]")->html(),
             'files' => $this->getDownloadCounts($crawler),
@@ -70,15 +70,17 @@ class ArtController extends Controller {
         $recent_collection = [];
 
         // Check if user exists, if not create
-        if (User::where('id', $art['user_id'])->exists()) {
-            $recent_collection = $this->saveToDatabase($req->id, $art, $tags_id, $crawler);
-        } else {
-            $this->getUser($art['user_id']);
+        if (User::where('url_username', $art['url_username'])->exists()) {
+            $user_id = (int) User::where('url_username', $art['url_username'])->first()->id;
 
-            $recent_collection = $this->saveToDatabase($req->id, $art, $tags_id, $crawler);
+            $recent_collection = $this->saveToDatabase($req->id, $art, $tags_id, $user_id, $req->bearerToken(), $crawler);
+        } else {
+            $user_id = (int) $this->extractUser($art['url_username'], $req);
+
+            $recent_collection = $this->saveToDatabase($req->id, $art, $tags_id, $user_id,  $req->bearerToken(), $crawler);
         }
 
-        return response()->json($recent_collection->load(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user']));
+        return response()->json($recent_collection->load(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user', 'tags']));
     }
 
     private function processTags($crawler) {
@@ -122,23 +124,24 @@ class ArtController extends Controller {
         });
     }
 
-    private function getLatestOnlyComment(Crawler $crawler, string $art_id) {
+    private function getLatestOnlyComment(Crawler $crawler, string $art_id, string | null $token) {
         $comments = $crawler->filter('#comments .comment')->each(function (Crawler $node) {
             return [
                 'content' => $node->filter('.group-right .field .field-items')->html(),
-                'user_id' => str_replace('/users/', '', $node->filter('.group-left span a')->attr('href')),
+                'url_username' => str_replace('/users/', '', $node->filter('.group-left span a')->attr('href')),
                 'created_at' => Carbon::createFromFormat('m/d/Y - H:i', $node->filter('.group-left .field-name-post-date .field-items .field-item')->text())->format('Y-m-d H:i:s'),
             ];
         });
 
         foreach ($comments as $item) {
-            if (!User::where('id', $item['user_id'])->exists()) {
-                $this->getUser($item['user_id']);
+            if (!User::where('url_username', $item['url_username'])->exists()) {
+                $this->extractUser($item['url_username'], $token);
             }
+
             ArtComment::create([
                 'content' => $item['content'],
                 'art_id' => $art_id,
-                'user_id' => $item['user_id'],
+                'user_id' => User::where('url_username', $item['url_username'])->first()->id,
                 'created_at' => $item['created_at']
             ]);
         }
@@ -163,7 +166,7 @@ class ArtController extends Controller {
 
 
 
-    private function saveToDatabase($id, $art, $tags_id, Crawler  $crawler) {
+    private function saveToDatabase($id, $art, $tags_id, int $user_id, string | null $token, Crawler  $crawler) {
         $art_category = ArtCategory::firstOrCreate([
             'name' => $art['art_category_name']
         ]);
@@ -172,7 +175,7 @@ class ArtController extends Controller {
             'id' => $id,
             'title' => $art['title'],
             'content' => $art['content'],
-            'user_id' => $art['user_id'],
+            'user_id' => $user_id,
             'art_category_id' => $art_category->id,
             'favorites_count' => $art['favorites_count'],
             'created_at' => $art['created_at'],
@@ -180,7 +183,7 @@ class ArtController extends Controller {
 
         $art_db->tags()->sync($tags_id);
 
-        $this->getLatestOnlyComment($crawler, $art_db->id);
+        $this->getLatestOnlyComment($crawler, $art_db->id, $token);
 
 
         foreach ($art['files'] as $file) {
@@ -190,21 +193,5 @@ class ArtController extends Controller {
         $this->saveArtPreviews($id, $art['preview_files_content']);
 
         return $art_db;
-    }
-
-    private function getUser(string $user_id): string {
-        // Scrape for user based on recent_collection
-        $crawler = $this->authenticate("https://opengameart.org/users/" . $user_id);
-
-        $username = $crawler->filter('.username')->text();
-        $image_url = $crawler->filterXPath("//img[@typeof='foaf:Image']")->attr('src');
-
-        $user = User::createOrFirst([
-            'id' => $user_id,
-            'username' => $username,
-            'image_url' => $image_url
-        ]);
-
-        return $user->id;
     }
 }

@@ -6,7 +6,7 @@
             :href="disabled ? '#' : href"
             target="_blank"
             :type
-            :disabled="loading || disabled || forceLoading"
+            :disabled="loading || disabled"
             :class="[
                 buttonColor,
                 textAlignment,
@@ -16,10 +16,9 @@
             @click="clicked = true"
         >
             <Icon
-                v-if="(loading && !noLoading) || forceLoading"
-                icon="material-symbols:cached-rounded"
-                :class="[$props.size == 'sm' && 'h-[15px] w-[15px] mt-[1px]', '-ml-1 mr-2 h-5 w-5 animate-spin', iconColor]"
-                aria-hidden="true"
+                v-if="loading"
+                icon="memory:border-bottom"
+                :class="[color == 'transparent' ? 'size-5' : iconOnly ? 'size-4' : 'size-4', 'retro-spinner', iconColor]"
             />
             <Icon :icon v-else-if="icon" :class="[$props.size == 'sm' && 'h-[15px] w-[15px] mt-[1px]', '-ml-1 mr-2 h-5 w-5', iconColor]" aria-hidden="true" />
             <slot></slot>
@@ -28,7 +27,7 @@
         <RouterLink
             v-else-if="href"
             :to="disabled ? '#' : href"
-            :aria-disabled="loading || disabled || forceLoading"
+            :aria-disabled="loading || disabled"
             :class="[
                 buttonColor,
                 textAlignment,
@@ -38,10 +37,9 @@
             @click="clicked = true"
         >
             <Icon
-                v-if="(loading && !noLoading) || forceLoading"
-                icon="material-symbols:cached-rounded"
-                :class="[$props.size == 'sm' && 'h-[15px] w-[15px] mt-[1px]', '-ml-1 mr-2 h-5 w-5 animate-spin', iconColor]"
-                aria-hidden="true"
+                v-if="loading"
+                icon="memory:border-bottom"
+                :class="[color == 'transparent' ? 'size-5' : iconOnly ? 'size-4' : 'size-4', 'retro-spinner', iconColor]"
             />
             <Icon :icon v-else-if="icon" :class="[$props.size == 'sm' && 'h-[15px] w-[15px] mt-[1px]', '-ml-1 mr-2 h-5 w-5', iconColor]" aria-hidden="true" />
             <slot></slot>
@@ -51,7 +49,7 @@
         <button
             v-else
             :type
-            :disabled="loading || disabled || forceLoading"
+            :disabled="loading || disabled"
             :class="[
                 buttonColor,
                 textAlignment,
@@ -62,9 +60,9 @@
             @click="clicked = true"
         >
             <Icon
-                v-if="(loading && !noLoading) || forceLoading"
-                icon="material-symbols:cached-rounded"
-                :class="[color == 'transparent' ? 'size-5' : iconOnly ? 'size-4' : 'size-4', 'animate-spin', iconColor]"
+                v-if="loading"
+                icon="memory:border-bottom"
+                :class="[color == 'transparent' ? 'size-5' : iconOnly ? 'size-4' : 'size-4', 'retro-spinner', iconColor]"
             />
             <Icon v-else-if="icon" :icon :class="[color == 'transparent' ? 'size-5' : iconOnly ? 'size-4' : 'size-4', iconColor]" />
             <slot v-if="!iconOnly"></slot>
@@ -86,12 +84,10 @@ const $props = defineProps<{
     size?: 'sm' | 'md' | 'transparent'
     href?: string
     external_link?: boolean
-    noLoading?: boolean
     disabled?: boolean
-    forceLoading?: boolean
+    loading?: boolean
     iconOnly?: boolean
 }>()
-const loading = ref(false)
 const clicked = ref(false)
 
 const buttonColor = computed(() => {

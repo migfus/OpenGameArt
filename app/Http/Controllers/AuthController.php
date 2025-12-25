@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\{
     ArtPreview,
     ArtPreviewCategory,
+    User,
     UserSession
 };
 use GuzzleHttp\Client;
@@ -32,11 +33,12 @@ class AuthController extends Controller {
         $response = $client->get('https://opengameart.org');
         $crawler = new Crawler($response->getBody());
 
+
         $html = $client->post('https://opengameart.org/node', [
             'form_params' => [
                 'destination' => 'node',
-                'name' => $req->string("username"),
-                'pass' => $req->string('password'),
+                'name' => $req->username,
+                'pass' => $req->password,
                 'form_id' =>  $crawler->filter('input[name="form_id"]')->attr('value'),
                 'openid_return_to' => 'https://opengameart.org/openid/authenticate?destination=node',
                 'form_build_id' => $crawler->filter('input[type="hidden"][name="form_build_id"]')->attr('value')
@@ -44,17 +46,15 @@ class AuthController extends Controller {
         ])->getBody();
 
         $crawler = new Crawler($html);
-        return $crawler->html();
-
-        // ✅
         $user_session = [];
 
-        dd($cookieJar->toArray());
+        $url_username = str_replace('/users/', '', $crawler->filter('.active a')->attr('href'));
+
+        $user_id =  $this->extractUser($url_username, '');
 
         foreach ($cookieJar->toArray() as $cookie) {
-
-            dd('existed');
             $user_session = UserSession::create([
+                'user_id' => $user_id,
                 'name'     => $cookie['Name'],
                 'value'    => $cookie['Value'],
                 'domain'   => $cookie['Domain'],
@@ -65,25 +65,37 @@ class AuthController extends Controller {
             ]);
         }
 
-        dd($user_session);
-
         $data['token'] = $user_session->id;
 
-        return response()->json([
-            'token' => $user_session->id
-        ]);
+        $crawler = $this->authenticate('https://opengameart.org/', $data['token']);
 
+        try {
+            $user_id = str_replace('/users/', '', $crawler->filter("#block-oga-hello div a")->attr('href'));
+        } catch (\InvalidArgumentException $err) {
+            return response()->json(false);
+        }
 
-        // Scrape user id
+        $response = $client->get('https://opengameart.org/users/' . $user_id);
+        $crawler = new Crawler($response->getBody());
 
-        $crawler = $this->authenticate('https://opengameart.org/');
-
-        $user_id = $crawler->filterXPath("//div[@id='block-oga-hello']/div[1]")->html();
-
-        dd($user_id);
-
+        $data['auth'] = [
+            'id' => $user_id,
+            'username' => $crawler->filter('.username')->text(),
+            'image_url' => $crawler->filterXPath("//img[@typeof='foaf:Image']")->attr('src'),
+        ];
 
         return response()->json($data);
+    }
+
+    public function logout(Request $req) {
+        $req->validate([
+            'token' => ['required']
+        ]);
+
+        $user_session =  UserSession::where('id', $req->token)->delete();
+
+        // return true;
+        return response()->json(true);
     }
 
     public function artPreviews() {
@@ -91,5 +103,24 @@ class AuthController extends Controller {
         $art_previews = ArtPreview::where('art_preview_category_id', $art_preview_category_id)->inRandomOrder()->limit(100)->get();
 
         return response()->json($art_previews);
+    }
+
+    public function getFriends(Request $req) {
+        $user_session = UserSession::where('id', $req->bearerToken())->with('user')->first();
+
+        // return response()->json();
+
+        $crawler = $this->authenticate('https://opengameart.org/user/' . $user_session->user->id . '/friends', $req->bearerToken());
+
+        dd(
+            $crawler->filter(".view-friends .view-content .item-list ul li")->each(function (Crawler $node) {
+                return [
+                    'username' => $node->filter('.views-field-name .field-content a')->text(),
+                    'url_username' => str_replace('/users/', '', $node->filter('.views-field-name .field-content a')->attr('href')),
+
+                ];
+            })
+        );
+        // $url_username = User::find($user_id)->url_username;
     }
 }

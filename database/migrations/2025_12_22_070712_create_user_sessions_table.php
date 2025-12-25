@@ -18,12 +18,9 @@ s<?php
                 $table->string('secure');
                 $table->string('http_only');
                 $table->string('expires');
-                $table->string('user_id');
 
-                $table->foreign('user_id')
-                    ->references('id')
-                    ->on('users')
-                    ->onDelete('cascade');
+                $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+
 
                 $table->timestamps();
             });

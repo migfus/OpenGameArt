@@ -2,18 +2,14 @@
 
 namespace App\Http\Controllers\pages;
 
-use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Request;
 
-use App\Models\{Affiliate, Art, Collection, RecentForum, UserSession};
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
+use App\Models\{Affiliate, Art, Collection, RecentForum};
 
 class HomePageController extends Controller {
-    public function index() {
-        $crawler = $this->authenticate('https://opengameart.org');
-
-        // dd($crawler);
+    public function index(Request $req) {
+        $crawler = $this->authenticate('https://opengameart.org', $req->bearerToken());
 
         $recent_collections = $this->getRecentCollection($crawler);
 
@@ -139,14 +135,16 @@ class HomePageController extends Controller {
 
             $previews = [];
             $type = 'Art';
+            $preview_type = 'image';
             if ($playButtonNode->count()) {
                 $previews[] = $playButtonNode->attr('data-mp3-url');
                 $type = 'Music';
+                $preview_type = 'audio';
             } else {
                 $previews[] = $previewImgNode->attr('src');
             }
 
-            return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type);
+            return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type, $preview_type);
         });
     }
 
@@ -161,14 +159,16 @@ class HomePageController extends Controller {
 
             $previews = [];
             $type = 'Art';
+            $preview_type = 'image';
             if ($playButtonNode->count()) {
                 $previews[] = $playButtonNode->attr('data-mp3-url');
                 $type = 'Music';
+                $preview_type = 'audio';
             } else {
                 $previews[] = $previewImgNode->attr('src');
             }
 
-            return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type);
+            return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type, $preview_type);
 
             // title: string
             // link: string
@@ -193,7 +193,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getArtsFromDatabaseIfExists(string $id, string $title, $previews, string $type) {
+    private function getArtsFromDatabaseIfExists(string $id, string $title, $previews, string $type, string $preview_type) {
         $id = urldecode($id);
         // Checks if existed
         // If existed, just return the old data (complete than scraped)
@@ -206,7 +206,9 @@ class HomePageController extends Controller {
             return [
                 'id' => $id,
                 'title' => $title,
-                'user' => null,
+                'user' => [
+                    'image_url' => env('APP_URL') . '/images/icon.png'
+                ],
                 'art_category' => [
                     'name' => $type
                 ],
@@ -215,10 +217,12 @@ class HomePageController extends Controller {
                         'url' => $previews,
                         'id' => 1,
                         'art_preview_category' => [
-                            'name' => 'image'
+                            'name' => $preview_type,
                         ],
                     ]
                 ],
+                'art_comments' => [],
+                'files' => [],
 
             ];
         }

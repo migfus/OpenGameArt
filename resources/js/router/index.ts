@@ -34,8 +34,29 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: () => import('@/pages/auth/login/(Index).vue')
+        component: () => import('@/pages/auth/login/(Index).vue'),
+        meta: {
+            guest: true
+        }
     },
+
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: () => import('@/pages/auth/login/(Index).vue'),
+        meta: {
+            auth: true
+        }
+    },
+    {
+        path: '/account-settings',
+        name: 'account-settings',
+        component: () => import('@/pages/auth/login/(Index).vue'),
+        meta: {
+            auth: true
+        }
+    },
+
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
@@ -43,7 +64,22 @@ const routes = [
     }
 ]
 
-export default createRouter({
+const router = createRouter({
     history: createWebHistory(),
     routes
 })
+
+router.beforeEach((to) => {
+    const token = localStorage.getItem('token')
+
+    // Prevent logged-in users from accessing guest routes
+    if (to.meta.guest && token) {
+        return { name: 'home' } // redirect to an existing route
+    }
+
+    if (to.meta.auth && !token) {
+        return { name: 'home' } // redirect to an existing route
+    }
+})
+
+export default router

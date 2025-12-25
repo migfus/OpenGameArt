@@ -1,5 +1,6 @@
 export interface User {
-    id: string
+    id: number
+    url_username: string
     username: string
     image_url: string
     created_at: string
@@ -56,6 +57,7 @@ export interface Art {
     art_category: ArtCategory // database & temporary [Art, Music]
     files: File[]
     art_comments: ArtComment[]
+    tags: Tag[]
 }
 
 export interface Collection {
@@ -99,7 +101,9 @@ export interface ArtComment {
     art: Art
 }
 
-export interface Auth {
-    id: string
+export interface Auth extends User {}
+
+export interface Tag {
+    id: number
     name: string
 }

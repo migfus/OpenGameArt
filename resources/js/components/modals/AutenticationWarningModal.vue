@@ -34,7 +34,7 @@
                                 <div class="mt-3 text-center sm:mt-5">
                                     <DialogTitle as="h3" class="text-base font-semibold leading-6 text-brand-200"> Warning </DialogTitle>
                                     <div class="mt-2">
-                                        <p class="text-md text-gray-300">There may be a risk by login your account in "not official opengameart.org"</p>
+                                        <p class="text-md text-gray-300">This is not the official OpenGameArt.org, there maybe a risk by loging in.</p>
                                     </div>
                                 </div>
                             </div>

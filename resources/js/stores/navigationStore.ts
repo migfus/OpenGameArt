@@ -103,7 +103,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     }
 
     function checkWeeklyArts() {
-        const weekly_arts_needs_an_update = weekly_arts.value.filter((item: Art) => item.user == undefined)
+        const weekly_arts_needs_an_update = weekly_arts.value.filter((item: Art) => item.tags == undefined)
 
         // Checks if there's a null users, skip if none
         if (weekly_arts_needs_an_update.length > 0) {
@@ -150,7 +150,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
     function checkNewArts() {
         // Checks if there's a null image_url, skip if none
-        const new_arts_that_needs_update = new_arts.value.filter((item: Art) => item.user == undefined)
+        const new_arts_that_needs_update = new_arts.value.filter((item: Art) => item.tags == undefined)
 
         if (new_arts_that_needs_update.length > 0) {
             console.log('new arts needs an update', new_arts_that_needs_update)

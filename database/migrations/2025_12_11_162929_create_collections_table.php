@@ -9,11 +9,8 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('collections', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->string('user_id')->nullable();
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+
 
             $table->string('title');
 
