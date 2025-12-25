@@ -1,6 +1,6 @@
 {
-  "_ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js": {
-    "file": "assets/ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js",
+  "_ArtCategorySection.vue_vue_type_script_setup_true_lang-C-sdl7z0.js": {
+    "file": "assets/ArtCategorySection.vue_vue_type_script_setup_true_lang-C-sdl7z0.js",
     "name": "ArtCategorySection.vue_vue_type_script_setup_true_lang",
     "imports": [
       "resources/js/app.ts"
@@ -10,8 +10,8 @@
     "file": "assets/CarouselCard-Dtdw2zcG.css",
     "src": "_CarouselCard-Dtdw2zcG.css"
   },
-  "_CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js": {
-    "file": "assets/CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js",
+  "_CarouselCard.vue_vue_type_script_setup_true_lang-Dn7Siosz.js": {
+    "file": "assets/CarouselCard.vue_vue_type_script_setup_true_lang-Dn7Siosz.js",
     "name": "CarouselCard.vue_vue_type_script_setup_true_lang",
     "imports": [
       "resources/js/app.ts"
@@ -25,7 +25,7 @@
     "src": "public/images/building.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BpEd81Wq.css",
+    "file": "assets/app-C3O6fQu9.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -34,7 +34,7 @@
     ]
   },
   "resources/js/app.ts": {
-    "file": "assets/app-DujUDdWz.js",
+    "file": "assets/app-BDTsXtsx.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -46,11 +46,13 @@
       "resources/js/pages/pages/faqs/(Index).vue",
       "resources/js/pages/pages/home/(Index).vue",
       "resources/js/pages/auth/login/(Index).vue",
+      "resources/js/pages/auth/login/(Index).vue",
+      "resources/js/pages/auth/login/(Index).vue",
       "resources/js/pages/pages/not-found/(Index).vue"
     ]
   },
   "resources/js/pages/auth/login/(Index).vue": {
-    "file": "assets/(Index)-CRgMX-8k.js",
+    "file": "assets/(Index)-C6a__jO9.js",
     "name": "(Index)",
     "src": "resources/js/pages/auth/login/(Index).vue",
     "isDynamicEntry": true,
@@ -58,26 +60,26 @@
       "resources/js/app.ts"
     ],
     "css": [
-      "assets/(Index)-UioXqyG8.css"
+      "assets/(Index)-Cm-ijQFW.css"
     ]
   },
   "resources/js/pages/pages/explore/(Index).vue": {
-    "file": "assets/(Index)-C6fnx47-.js",
+    "file": "assets/(Index)-DD_MzusF.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/explore/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js",
+      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-C-sdl7z0.js",
       "resources/js/app.ts"
     ]
   },
   "resources/js/pages/pages/faqs/(Index).vue": {
-    "file": "assets/(Index)-B1TtdQz0.js",
+    "file": "assets/(Index)-C1tBgUk4.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/faqs/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js",
+      "_CarouselCard.vue_vue_type_script_setup_true_lang-Dn7Siosz.js",
       "resources/js/app.ts"
     ],
     "css": [
@@ -85,18 +87,18 @@
     ]
   },
   "resources/js/pages/pages/home/(Index).vue": {
-    "file": "assets/(Index)-BFw4UAda.js",
+    "file": "assets/(Index)-f0iLbXwc.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/home/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_CarouselCard.vue_vue_type_script_setup_true_lang-BQfeNbee.js",
-      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-19WGHclP.js",
+      "_CarouselCard.vue_vue_type_script_setup_true_lang-Dn7Siosz.js",
+      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-C-sdl7z0.js",
       "resources/js/app.ts"
     ]
   },
   "resources/js/pages/pages/not-found/(Index).vue": {
-    "file": "assets/(Index)-DaLBH4dI.js",
+    "file": "assets/(Index)-rFUSNmjj.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/not-found/(Index).vue",
     "isDynamicEntry": true,
