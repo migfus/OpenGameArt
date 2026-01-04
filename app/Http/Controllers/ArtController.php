@@ -29,9 +29,22 @@ class ArtController extends Controller {
 
         $art_category_name = $crawler->filterXPath("//a[@property='rdfs:label skos:prefLabel']")->text();
 
+        $url_username = '';
+
+        // Check if user exists, if not create
+        if ($crawler->filter('div#block-system-main>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div>strong>a')->count() > 0) {
+            $url_username = preg_replace(
+                '#^/users/#',
+                '',
+                $crawler->filter('div#block-system-main>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div>strong>a')->attr('href')
+            );
+        } else {
+            $url_username = preg_replace('#^/users/#', '', $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->attr('href'));
+        }
+
         $art = [
             'created_at' => Carbon::createFromFormat('l, F j, Y - H:i', $crawler->filterXPath("(//div[@class='field-item even'])[3]")->text())->format('Y-m-d H:i:s'),
-            'url_username' => preg_replace('#^/users/#', '', $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->attr('href')),
+            'url_username' => $url_username,
             'title' => $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text(),
             'content' => $crawler->filterXPath("//div[@class='group-right right-column']/div[2]")->html(),
             'files' => $this->getDownloadCounts($crawler),
@@ -69,7 +82,7 @@ class ArtController extends Controller {
 
         $recent_collection = [];
 
-        // Check if user exists, if not create
+
         if (User::where('url_username', $art['url_username'])->exists()) {
             $user_id = (int) User::where('url_username', $art['url_username'])->first()->id;
 

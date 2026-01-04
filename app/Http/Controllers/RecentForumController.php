@@ -44,7 +44,7 @@ class RecentForumController extends Controller {
             ]);
         } else {
             // Scrape for user based on recent_collection
-            $user_id = $this->extractUser($req->username, $req->bearerToken());
+            $user_id = $this->extractUser($url_username, $req->bearerToken());
 
             $recent_forum = RecentForum::create([
                 'id' => $req->id,
