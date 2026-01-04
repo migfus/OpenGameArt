@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Collection;
-use App\Models\User;
+use App\Models\{Collection, User};
+
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, Request};
 
 class CollectionController extends Controller {
-    public function store(Request $req) {
+    public function store(Request $req): JsonResponse {
         $req->validate([
             'id' => ['required']
         ]);

@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\{
     ArtPreview,
     ArtPreviewCategory,
-    User,
     UserSession
 };
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, Request};
 use Symfony\Component\DomCrawler\Crawler;
 
 class AuthController extends Controller {
-    public function login(Request $req) {
+    public function login(Request $req): JsonResponse {
         $req->validate([
             'username' => ['required'],
             'password' => ['required']
@@ -87,7 +87,7 @@ class AuthController extends Controller {
         return response()->json($data);
     }
 
-    public function logout(Request $req) {
+    public function logout(Request $req): JsonResponse {
         $req->validate([
             'token' => ['required']
         ]);
@@ -98,7 +98,7 @@ class AuthController extends Controller {
         return response()->json(true);
     }
 
-    public function artPreviews() {
+    public function artPreviews(): JsonResponse {
         $art_preview_category_id = ArtPreviewCategory::where('name', 'image')->first()->id;
         $art_previews = ArtPreview::where('art_preview_category_id', $art_preview_category_id)->inRandomOrder()->limit(100)->get();
 

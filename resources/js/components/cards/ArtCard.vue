@@ -336,13 +336,13 @@
 </template>
 
 <script setup lang="ts">
-import { Art } from '@/globalInterfaces'
 import { Icon } from '@iconify/vue'
-
-import { clearDelays } from '@/utils/utils'
-import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import BasicTransition from '../transitions/BasicTransition.vue'
 import DataTransition from '../transitions/DataTransition.vue'
+
+import { Art } from '@/globalInterfaces'
+import { clearDelays } from '@/utils/utils'
+import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
 const { art, idx } = defineProps<{
     art: Art

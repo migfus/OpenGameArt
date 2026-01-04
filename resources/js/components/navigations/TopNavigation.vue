@@ -51,10 +51,10 @@ import { Icon } from '@iconify/vue'
 import AppInput from '../form/AppInput.vue'
 import AppButton from '../form/AppButton.vue'
 import ProfileDropdown from '@/components/navigations/ProfileDropdown.vue'
+import BasicTransition from '../transitions/BasicTransition.vue'
 
 import { ref } from 'vue'
 import { useNavigationStore } from '@/stores/navigationStore'
-import BasicTransition from '../transitions/BasicTransition.vue'
 import { useAuthStore } from '@/stores/authStore'
 
 const $top_navigation_hidden = defineModel<boolean>('top_navigation_hidden', { required: true })

@@ -107,7 +107,5 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
-
 const top_hidden_model = defineModel<boolean>()
 </script>

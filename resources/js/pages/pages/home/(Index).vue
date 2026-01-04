@@ -23,9 +23,9 @@
 import NotifyBanner from '@/components/header/NotifyBanner.vue'
 import CarouselCard from './CarouselCard.vue'
 import PostCategorySection from './PostCategorySection.vue'
+import ArtCategorySection from './ArtCategorySection.vue'
 
 import { useNavigationStore } from '@/stores/navigationStore'
-import ArtCategorySection from './ArtCategorySection.vue'
 
 const $navigationStore = useNavigationStore()
 </script>

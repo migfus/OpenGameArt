@@ -8,7 +8,6 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('art_previews', function (Blueprint $table) {
             $table->id();
-
             $table->string('art_id');
             $table->foreign('art_id')
                 ->references('id')

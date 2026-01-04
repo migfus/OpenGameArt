@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RecentForum extends Model {
     protected $primaryKey = 'id';
@@ -11,7 +12,7 @@ class RecentForum extends Model {
 
     protected $fillable  = ['id', 'user_id',  'title', 'created_at', 'content'];
 
-    public function user() {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
 }

@@ -77,8 +77,9 @@ import AppButton from '@/components/form/AppButton.vue'
 import CollapseSection from '@/components/content/CollapseSection.vue'
 import BasicCard from '@/components/cards/BasicCard.vue'
 import AppInput from '@/components/form/AppInput.vue'
-import { computed, reactive } from 'vue'
 import DataTransition from '@/components/transitions/DataTransition.vue'
+
+import { computed, reactive } from 'vue'
 
 const query = reactive({
     search: ''

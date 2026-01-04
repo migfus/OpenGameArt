@@ -25,10 +25,10 @@
 <script setup lang="ts">
 import AppButton from '@/components/form/AppButton.vue'
 import image from '/public/images/building.png'
+import DataTransition from '@/components/transitions/DataTransition.vue'
 
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import DataTransition from '@/components/transitions/DataTransition.vue'
 import { animation_delay, clearDelays } from '@/utils/utils'
 
 const $route = useRoute()

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Affiliate;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
 class AffiliateController extends Controller {
 
-    public function store(Request $req) {
+    public function store(Request $req): array {
         // STUB Vulnerability? 🤣
         // STUB accepts any id (url), what could go wrong?
         $req->validate([
@@ -33,9 +34,10 @@ class AffiliateController extends Controller {
 
             return $affiliate->toArray();
         }
+        return [];
     }
 
-    private function searchAllIcons($crawler) {
+    private function searchAllIcons($crawler): string | null {
         $selectors = [
             'link[rel="icon"]',
             'link[rel="shortcut icon"]',

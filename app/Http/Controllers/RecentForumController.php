@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RecentForum;
-use App\Models\User;
+use App\Models\{RecentForum, User};
+
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
 class RecentForumController extends Controller {
-    public function store(Request $req) {
+    public function store(Request $req): JsonResponse {
         $req->validate([
             'id' => ['required']
         ]);

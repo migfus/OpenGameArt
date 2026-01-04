@@ -23,16 +23,4 @@ import { ref } from 'vue'
 
 const top_navigation_hidden = ref(false)
 const show_side_navigation = ref(false)
-
-// onMounted(() => {
-//     setInterval(() => {
-//         notify({
-//             group: 'success',
-//             title: 'Log-in',
-//             content: 'Welcome back!'
-//         })
-//     }, 1000)
-// })
 </script>
-
-<style scoped></style>

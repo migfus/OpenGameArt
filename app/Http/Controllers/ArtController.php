@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\{Art, ArtCategory, ArtPreview, ArtPreviewCategory, Tag, User, ArtComment, Collection};
 
-use App\Models\{Art, ArtCategory, ArtPreview, ArtPreviewCategory, Tag, User, ArtComment};
 use Carbon\Carbon;
-
 use Exception;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\{JsonResponse, Request};
 use Symfony\Component\DomCrawler\Crawler;
 
 class ArtController extends Controller {
 
-    public function store(Request $req) {
+    public function store(Request $req): JsonResponse {
         $req->validate([
             'id' => ['required']
         ]);
@@ -96,7 +94,7 @@ class ArtController extends Controller {
         return response()->json($recent_collection->load(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user', 'tags']));
     }
 
-    private function processTags($crawler) {
+    private function processTags($crawler): void {
         $tags = $crawler->filter('.field-name-field-art-tags .field-items .field-item a')
             ->each(function (Crawler $node) {
                 return [
@@ -115,7 +113,7 @@ class ArtController extends Controller {
         }
     }
 
-    private function saveArtPreviews(string $art_id, array $previews) {
+    private function saveArtPreviews(string $art_id, array $previews): void {
         foreach ($previews as $item) {
             ArtPreview::createOrFirst([
                 'art_id' => $art_id,
@@ -125,7 +123,7 @@ class ArtController extends Controller {
         }
     }
 
-    private function getDownloadCounts($crawler) {
+    private function getDownloadCounts($crawler): array {
         return $crawler->filter(".field-name-field-art-files .field-items .field-item")->each(function (Crawler $node) {
             // dd($node->filter('a')->text());
 
@@ -137,7 +135,7 @@ class ArtController extends Controller {
         });
     }
 
-    private function getLatestOnlyComment(Crawler $crawler, string $art_id, string | null $token) {
+    private function getLatestOnlyComment(Crawler $crawler, string $art_id, string | null $token): array {
         $comments = $crawler->filter('#comments .comment')->each(function (Crawler $node) {
             return [
                 'content' => $node->filter('.group-right .field .field-items')->html(),
@@ -159,6 +157,8 @@ class ArtController extends Controller {
             ]);
         }
 
+        return [];
+
 
 
         /* TODO
@@ -179,7 +179,7 @@ class ArtController extends Controller {
 
 
 
-    private function saveToDatabase($id, $art, $tags_id, int $user_id, string | null $token, Crawler  $crawler) {
+    private function saveToDatabase($id, $art, $tags_id, int $user_id, string | null $token, Crawler  $crawler): Collection {
         $art_category = ArtCategory::firstOrCreate([
             'name' => $art['art_category_name']
         ]);

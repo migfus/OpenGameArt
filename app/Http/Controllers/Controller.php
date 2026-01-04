@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\UserSession;
+use App\Models\{User, UserSession};
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
-use Illuminate\Http\Request;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class Controller {

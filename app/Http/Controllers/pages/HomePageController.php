@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\pages;
 
-use Symfony\Component\DomCrawler\Crawler;
-use Illuminate\Http\Request;
-
 use App\Models\{Affiliate, Art, Collection, RecentForum};
 
+use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\{JsonResponse, Request};
+
 class HomePageController extends Controller {
-    public function index(Request $req) {
+    public function index(Request $req): JsonResponse {
         $crawler = $this->authenticate('https://opengameart.org', $req->bearerToken());
 
         $recent_collections = $this->getRecentCollection($crawler);
@@ -40,7 +40,7 @@ class HomePageController extends Controller {
         // }
     }
 
-    private function getRecentCollection($crawler) {
+    private function getRecentCollection($crawler): array {
         return $crawler->filter('.view-art-collections .view-content .item-list ul li .views-field-title a')
             ->each(function (Crawler $node) {
                 $id = urldecode(preg_replace('#^/content/#', '', $node->attr('href')));
@@ -64,7 +64,7 @@ class HomePageController extends Controller {
             });
     }
 
-    private function getRecentForums($crawler) {
+    private function getRecentForums($crawler): array {
         return $crawler->filter('.view-new-forum-topics .view-content .item-list ul li')
             ->each(function (Crawler $node) {
                 $id = parse_url(urldecode(preg_replace('#^/forumtopic/#', '', $node->filter('.views-field-title a')->attr('href'))), PHP_URL_PATH);
@@ -84,7 +84,7 @@ class HomePageController extends Controller {
             });
     }
 
-    private function getAffiliates($crawler) {
+    private function getAffiliates($crawler): array {
         return $crawler->filter('.view-links .view-content .item-list ul li')
             ->each(function (Crawler $node) {
                 $aTag = $node->filter('a');
@@ -101,7 +101,7 @@ class HomePageController extends Controller {
             });
     }
 
-    private function getPosts($crawler) {
+    private function getPosts($crawler): array {
         return $crawler->filter('.view-blog .view-content .views-row')->each(function (Crawler $node) {
             $titleNode = $node->filter('.field-name-title h2 a');
             $bylineNode = $node->filter('.field-name-byline');
@@ -122,7 +122,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getWeeklyArts($crawler) {
+    private function getWeeklyArts($crawler): array {
         return $crawler->filter('#block-views-art-block-9 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
             $titleNode = $node->filter('.field-name-title a');
             $previewImgNode = $node->filter('.field-name-field-art-preview img');
@@ -148,7 +148,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getNewArts($crawler) {
+    private function getNewArts($crawler): array {
         return $crawler->filter('#block-views-art-block-6 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
             $titleNode = $node->filter('.field-name-title a');
             $previewImgNode = $node->filter('.field-name-field-art-preview img');
@@ -193,7 +193,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getArtsFromDatabaseIfExists(string $id, string $title, $previews, string $type, string $preview_type) {
+    private function getArtsFromDatabaseIfExists(string $id, string $title, $previews, string $type, string $preview_type): array {
         $id = urldecode($id);
         // Checks if existed
         // If existed, just return the old data (complete than scraped)

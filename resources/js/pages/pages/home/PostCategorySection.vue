@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import ArtCardLoader from '@/components/cards/ArtCardLoader.vue'
 import PostCard from '@/components/cards/PostCard.vue'
+
 import { Post } from '@/globalInterfaces'
 import { animation_delay, clearDelays } from '@/utils/utils'
 import { computed, reactive } from 'vue'

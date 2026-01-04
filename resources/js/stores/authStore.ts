@@ -1,4 +1,4 @@
-import { ArtPreview, Auth, User } from '@/globalInterfaces'
+import { ArtPreview, Auth } from '@/globalInterfaces'
 import api from '@/utils/axios'
 import { localStorageSerializer } from '@/utils/utils'
 import { useLocalStorage } from '@vueuse/core'

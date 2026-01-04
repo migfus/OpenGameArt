@@ -25,6 +25,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+
 import { useRoute } from 'vue-router'
 
 const $sidebar_open_model = defineModel<boolean>()

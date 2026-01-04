@@ -52,9 +52,10 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Icon } from '@iconify/vue'
+
+import { useAuthStore } from '@/stores/authStore'
 
 const $authStore = useAuthStore()
 
