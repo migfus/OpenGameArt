@@ -1,0 +1,19 @@
+meta {
+  name: Feedback Post
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://www.cmuohrm.site/api/feedback
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "from": "Leave Credid Balance Calculator",
+    "type": "Android",
+    "message": "message"
+  }
+}

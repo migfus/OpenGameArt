@@ -1,0 +1,15 @@
+meta {
+  name: Feedback Get
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://www.cmuohrm.site/api/feedback?pass=#On.#On
+  body: json
+  auth: inherit
+}
+
+params:query {
+  pass: #On.#On
+}

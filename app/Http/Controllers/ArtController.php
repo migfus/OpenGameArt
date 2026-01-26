@@ -179,7 +179,7 @@ class ArtController extends Controller {
 
 
 
-    private function saveToDatabase($id, $art, $tags_id, int $user_id, string | null $token, Crawler  $crawler): Collection {
+    private function saveToDatabase($id, $art, $tags_id, int $user_id, string | null $token, Crawler  $crawler) {
         $art_category = ArtCategory::firstOrCreate([
             'name' => $art['art_category_name']
         ]);
