@@ -6,8 +6,13 @@ use App\Models\{Affiliate, Art, Collection, RecentForum};
 
 use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Client;
+
 
 class HomePageController extends Controller {
+    protected $cache_duration = 5; // Cache duration in seconds
+
     public function index(Request $req): JsonResponse {
         $crawler = $this->authenticate('https://opengameart.org', $req->bearerToken());
 
@@ -30,7 +35,8 @@ class HomePageController extends Controller {
             'latest_banner_title' => $posts[0]['title'],
             'weekly_arts' => array_slice($weekly_arts, 0, 12),
             'new_arts' => array_slice($new_arts, 0, 12),
-            'posts' => $posts
+            'posts' => $posts,
+            'donation_monthly_value' => $this->getDonation($crawler),
         ]);
         // } catch (\Exception $e) {
         //     return response([
@@ -41,155 +47,167 @@ class HomePageController extends Controller {
     }
 
     private function getRecentCollection($crawler): array {
-        return $crawler->filter('.view-art-collections .view-content .item-list ul li .views-field-title a')
-            ->each(function (Crawler $node) {
-                $id = urldecode(preg_replace('#^/content/#', '', $node->attr('href')));
-                $title = trim($node->text());
+        return Cache::remember('get_recent_collections', $this->cache_duration, function () use ($crawler) {
+            return $crawler->filter('.view-art-collections .view-content .item-list ul li .views-field-title a')
+                ->each(function (Crawler $node) {
+                    $id = urldecode(preg_replace('#^/content/#', '', $node->attr('href')));
+                    $title = trim($node->text());
 
-                // Checks if existed
-                // If existed, just return the old data (complete than scraped)
-                if (Collection::where('id', $id)->exists()) {
-                    return Collection::where('id', $id)->with('user')->first()->toArray();
-                }
-                // If not existed then create new temporary data (needs to reupdate later)
-                else {
+                    // Checks if existed
+                    // If existed, just return the old data (complete than scraped)
+                    if (Collection::where('id', $id)->exists()) {
+                        return Collection::where('id', $id)->with('user')->first()->toArray();
+                    }
+                    // If not existed then create new temporary data (needs to reupdate later)
+                    else {
 
-                    return [
-                        'id' => $id,
-                        'title' => $title,
-                        'content' => null,
-                        'user' => null,
-                    ];
-                }
-            });
+                        return [
+                            'id' => $id,
+                            'title' => $title,
+                            'content' => null,
+                            'user' => null,
+                        ];
+                    }
+                });
+        });
     }
 
     private function getRecentForums($crawler): array {
-        return $crawler->filter('.view-new-forum-topics .view-content .item-list ul li')
-            ->each(function (Crawler $node) {
-                $id = parse_url(urldecode(preg_replace('#^/forumtopic/#', '', $node->filter('.views-field-title a')->attr('href'))), PHP_URL_PATH);
-                $title = trim($node->filter('.views-field-title a')->text());
+        return Cache::remember('get_recent_forums', $this->cache_duration, function () use ($crawler) {
+            return $crawler->filter('.view-new-forum-topics .view-content .item-list ul li')
+                ->each(function (Crawler $node) {
+                    $id = parse_url(urldecode(preg_replace('#^/forumtopic/#', '', $node->filter('.views-field-title a')->attr('href'))), PHP_URL_PATH);
+                    $title = trim($node->filter('.views-field-title a')->text());
 
-                if (RecentForum::where('id', $id)->exists()) {
-                    return RecentForum::where('id', $id)->with('user')->first()->toArray();
-                } else {
-                    return [
-                        'id' => $id,
-                        'user_id' => null,
-                        'title'     => $title,
-                        'created_at' => null,
-                        'user'  => null,
-                    ];
-                }
-            });
+                    if (RecentForum::where('id', $id)->exists()) {
+                        return RecentForum::where('id', $id)->with('user')->first()->toArray();
+                    } else {
+                        return [
+                            'id' => $id,
+                            'user_id' => null,
+                            'title'     => $title,
+                            'created_at' => null,
+                            'user'  => null,
+                        ];
+                    }
+                });
+        });
     }
 
     private function getAffiliates($crawler): array {
-        return $crawler->filter('.view-links .view-content .item-list ul li')
-            ->each(function (Crawler $node) {
-                $aTag = $node->filter('a');
+        return Cache::remember('get_affiliates', $this->cache_duration, function () use ($crawler) {
+            return $crawler->filter('.view-links .view-content .item-list ul li')
+                ->each(function (Crawler $node) {
+                    $aTag = $node->filter('a');
 
-                if (Affiliate::where('id', $aTag->attr('href'))->exists()) {
-                    return Affiliate::where('id', $aTag->attr('href'))->first()->toArray();
-                }
+                    if (Affiliate::where('id', $aTag->attr('href'))->exists()) {
+                        return Affiliate::where('id', $aTag->attr('href'))->first()->toArray();
+                    }
 
-                return [
-                    'id' => $aTag->attr('href'),
-                    'title' => trim($aTag->text()),
-                    'image_url' => null,
-                ];
-            });
+                    return [
+                        'id' => $aTag->attr('href'),
+                        'title' => trim($aTag->text()),
+                        'image_url' => null,
+                    ];
+                });
+        });
     }
 
     private function getPosts($crawler): array {
-        return $crawler->filter('.view-blog .view-content .views-row')->each(function (Crawler $node) {
-            $titleNode = $node->filter('.field-name-title h2 a');
-            $bylineNode = $node->filter('.field-name-byline');
-            $bodyNode = $node->filter('.field-name-body .field-item');
-            $commentNode = $node->filter('.field-name-comment-count-link a');
-            $authorImgNode = $node->filter('.field-name-ds-user-picture a img');
+        return Cache::remember('get_posts', $this->cache_duration, function () use ($crawler) {
+            return $crawler->filter('.view-blog .view-content .views-row')->each(function (Crawler $node) {
+                $titleNode = $node->filter('.field-name-title h2 a');
+                $bylineNode = $node->filter('.field-name-byline');
+                $bodyNode = $node->filter('.field-name-body .field-item');
+                $commentNode = $node->filter('.field-name-comment-count-link a');
+                $authorImgNode = $node->filter('.field-name-ds-user-picture a img');
 
-            return [
-                'title'        => trim($titleNode->text()),
-                'link'         => $titleNode->attr('href'),
-                'author_name'  => trim($bylineNode->filter('a')->text()),
-                'author_link'  => $bylineNode->filter('a')->attr('href'),
-                'date'         => trim(preg_replace('/By .* on /', '', $bylineNode->text())),
-                'content_html' => $bodyNode->html(),
-                'comment_link' => $commentNode->attr('href'),
-                'author_image' => $authorImgNode->attr('src'),
-            ];
+                return [
+                    'title'        => trim($titleNode->text()),
+                    'link'         => $titleNode->attr('href'),
+                    'author_name'  => trim($bylineNode->filter('a')->text()),
+                    'author_link'  => $bylineNode->filter('a')->attr('href'),
+                    'date'         => trim(preg_replace('/By .* on /', '', $bylineNode->text())),
+                    'content_html' => $bodyNode->html(),
+                    'comment_link' => $commentNode->attr('href'),
+                    'author_image' => $authorImgNode->attr('src'),
+                ];
+            });
         });
     }
 
     private function getWeeklyArts($crawler): array {
-        return $crawler->filter('#block-views-art-block-9 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
-            $titleNode = $node->filter('.field-name-title a');
-            $previewImgNode = $node->filter('.field-name-field-art-preview img');
-            $playButtonNode = $node->filter('.play-button');
+        return Cache::remember('get_weekly_arts', $this->cache_duration, function () use ($crawler) {
+            return $crawler->filter('#block-views-art-block-9 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
+                $titleNode = $node->filter('.field-name-title a');
+                $previewImgNode = $node->filter('.field-name-field-art-preview img');
+                $playButtonNode = $node->filter('.play-button');
 
-            $id = preg_replace('#^/content/#', '', $titleNode->attr('href'));
-            // $user_id = null;
-            $title = trim($titleNode->text());
-            // $preview_image = $previewImgNode->attr('src');
+                $id = preg_replace('#^/content/#', '', $titleNode->attr('href'));
+                // $user_id = null;
+                $title = trim($titleNode->text());
+                // $preview_image = $previewImgNode->attr('src');
 
-            $previews = [];
-            $type = 'Art';
-            $preview_type = 'image';
-            if ($playButtonNode->count()) {
-                $previews[] = $playButtonNode->attr('data-mp3-url');
-                $type = 'Music';
-                $preview_type = 'audio';
-            } else {
-                $previews[] = $previewImgNode->attr('src');
-            }
+                $previews = [];
+                $type = 'Art';
+                $preview_type = 'image';
+                if ($playButtonNode->count()) {
+                    $previews[] = $playButtonNode->attr('data-mp3-url');
+                    $type = 'Music';
+                    $preview_type = 'audio';
+                } else {
+                    $previews[] = $previewImgNode->attr('src');
+                }
 
-            return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type, $preview_type);
+                return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type, $preview_type);
+            });
         });
     }
 
     private function getNewArts($crawler): array {
-        return $crawler->filter('#block-views-art-block-6 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
-            $titleNode = $node->filter('.field-name-title a');
-            $previewImgNode = $node->filter('.field-name-field-art-preview img');
-            $playButtonNode = $node->filter('.play-button');
+        return Cache::remember('get_new_arts', $this->cache_duration, function () use ($crawler) {
+            return $crawler->filter('#block-views-art-block-6 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
+                $titleNode = $node->filter('.field-name-title a');
+                $previewImgNode = $node->filter('.field-name-field-art-preview img');
+                $playButtonNode = $node->filter('.play-button');
 
-            $id = preg_replace('#^/content/#', '', $titleNode->attr('href'));
-            $title = trim($titleNode->text());
+                $id = preg_replace('#^/content/#', '', $titleNode->attr('href'));
+                $title = trim($titleNode->text());
 
-            $previews = [];
-            $type = 'Art';
-            $preview_type = 'image';
-            if ($playButtonNode->count()) {
-                $previews[] = $playButtonNode->attr('data-mp3-url');
-                $type = 'Music';
-                $preview_type = 'audio';
-            } else {
-                $previews[] = $previewImgNode->attr('src');
-            }
+                $previews = [];
+                $type = 'Art';
+                $preview_type = 'image';
+                if ($playButtonNode->count()) {
+                    $previews[] = $playButtonNode->attr('data-mp3-url');
+                    $type = 'Music';
+                    $preview_type = 'audio';
+                } else {
+                    $previews[] = $previewImgNode->attr('src');
+                }
 
-            return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type, $preview_type);
+                return $this->getArtsFromDatabaseIfExists($id, $title, $previews, $type, $preview_type);
 
-            // title: string
-            // link: string
-            // preview_image: string [audio / image]
-            // audio_ogg?: string
-            // audio_mp3?: string
+                // title: string
+                // link: string
+                // preview_image: string [audio / image]
+                // audio_ogg?: string
+                // audio_mp3?: string
 
-            // $item = [
-            //     'title' => trim($titleNode->text()),
-            //     'link' => $titleNode->attr('href'),
-            //     'preview_image' => $previewImgNode->attr('src'),
-            // ];
+                // $item = [
+                //     'title' => trim($titleNode->text()),
+                //     'link' => $titleNode->attr('href'),
+                //     'preview_image' => $previewImgNode->attr('src'),
+                // ];
 
-            // if ($playButtonNode->count()) {
-            //     $item['audio_ogg'] = $playButtonNode->attr('data-ogg-url');
-            //     $item['audio_mp3'] = $playButtonNode->attr('data-mp3-url');
-            //     return $item;
-            // } else {
+                // if ($playButtonNode->count()) {
+                //     $item['audio_ogg'] = $playButtonNode->attr('data-ogg-url');
+                //     $item['audio_mp3'] = $playButtonNode->attr('data-mp3-url');
+                //     return $item;
+                // } else {
 
-            //     return $item;
-            // }
+                //     return $item;
+                // }
+            });
         });
     }
 
@@ -226,5 +244,18 @@ class HomePageController extends Controller {
 
             ];
         }
+    }
+
+    private function getDonation() {
+        return Cache::remember('donation_monthly_value', 60 * 60 * 24, function () {
+            $client = new Client();
+
+            // 1. Fetch the HTML content
+            $response = $client->request('GET', 'https://www.patreon.com/opengameart');
+            $html_content = $response->getBody()->getContents();
+
+            $crawler = new Crawler($html_content);
+            return $crawler->filter('span[data-tag="earnings-count"]')->text();
+        });
     }
 }

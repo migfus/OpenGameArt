@@ -1,5 +1,6 @@
 import { Affiliate, Art, RecentCollection, RecentForum, StoreConfig, Post } from '@/globalInterfaces'
 import api from '@/utils/axios'
+import moment from 'moment'
 import { defineStore } from 'pinia'
 import { ref, reactive } from 'vue'
 
@@ -12,6 +13,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     const weekly_arts = ref<Art[]>([])
     const new_arts = ref<Art[]>([])
     const posts = ref<Post[]>([])
+    const donation_monthly_value = ref<string>('')
 
     const config = reactive<StoreConfig>({
         loading: false
@@ -28,6 +30,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
                 weekly_arts: Art[]
                 new_arts: Art[]
                 posts: Post[]
+                donation_monthly_value: string
             }>('')
 
             recent_collections.value = data.recent_collections
@@ -37,6 +40,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
             weekly_arts.value = data.weekly_arts
             new_arts.value = data.new_arts
             posts.value = data.posts
+            donation_monthly_value.value = data.donation_monthly_value
 
             config.loading = false
 
@@ -57,7 +61,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     }
 
     function checkRecentForums() {
-        const recent_forums_needs_an_update = recent_forum.value.filter((item: RecentForum) => item.user == undefined)
+        const recent_forums_needs_an_update = recent_forum.value.filter((item: RecentForum) => checkItem(item.updated_at))
 
         // Checks if there's a null users, skip if none
         if (recent_forums_needs_an_update.length > 0) {
@@ -80,7 +84,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     }
 
     function checkRecentCollection() {
-        const recent_collections_needs_an_update = recent_collections.value.filter((item: RecentCollection) => item.user == undefined)
+        const recent_collections_needs_an_update = recent_collections.value.filter((item: RecentCollection) => checkItem(item.updated_at))
 
         // Checks if there's a null users, skip if none
         if (recent_collections_needs_an_update.length > 0) {
@@ -127,7 +131,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
     function checkAffiliates() {
         // Checks if there's a null image_url, skip if none
-        const affiliates_that_needs_updates = affiliates.value.filter((item: Affiliate) => item.created_at == undefined)
+        const affiliates_that_needs_updates = affiliates.value.filter((item: Affiliate) => checkItem(item.updated_at))
 
         if (affiliates_that_needs_updates.length > 0) {
             console.log('affiliates needs an update', affiliates_that_needs_updates)
@@ -171,6 +175,22 @@ export const useNavigationStore = defineStore('navigationStore', () => {
         }
     }
 
+    function checkItem(item_date: string) {
+        if (item_date == undefined) {
+            console.log('undefined item_date')
+            return true
+        }
+        const start = moment(item_date)
+        const end = moment()
+
+        // Math.abs handles cases regardless of which date is "newer"
+        const hourDifference = Math.abs(start.diff(end, 'hours', true))
+
+        console.log('hours diff: ', hourDifference)
+
+        return hourDifference >= 24
+    }
+
     return {
         recent_collections,
         recent_forum,
@@ -179,6 +199,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
         weekly_arts,
         new_arts,
         posts,
+        donation_monthly_value,
 
         config,
 

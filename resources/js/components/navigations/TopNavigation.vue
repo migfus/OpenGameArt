@@ -9,11 +9,11 @@
         <div class="flex gap-4 items-center overflow-y-auto">
             <RouterLink to="/" class="flex gap-4 items-center">
                 <img :src="`${app_url}/images/icon.png`" class="size-10 image-rendering-pixelated" style="image-rendering: pixelated" />
-                <p class="text-3xl anek-latin hidden md:flex">OpenGameArt</p>
+                <p class="text-3xl anek-latin hidden md:flex">OpenGameArt.org</p>
                 <p class="absolute rotate-5 bg-yellow-900/75 px-20 hidden md:flex text-yellow-50 text-lg">Not Official</p>
                 <p class="absolute rotate-15 bg-yellow-900/75 text-yellow-50 md:hidden">Not Official</p>
             </RouterLink>
-
+            <!--
             <RouterLink to="/" class="gap-4 items-center hidden md:flex">
                 <BasicTransition>
                     <p v-if="$navigationStore.config.loading" class="text-xs press-start-2p-regular flex flex-wrap w-64 text-center rotate-4 absolute">
@@ -23,7 +23,7 @@
                         {{ $navigationStore.latest_banner_title }}
                     </p>
                 </BasicTransition>
-            </RouterLink>
+            </RouterLink> -->
         </div>
 
         <!-- SECTION: RIGHT -->

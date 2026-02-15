@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>UI Test OGA </title>
+        <title>OGA (Not Official)</title>
         <link rel="icon" type="image/png" href="{{ env('VITE_APP_URL') }}/images/icon.png" />
 
         @vite(['resources/css/app.css', 'resources/js/app.ts'])

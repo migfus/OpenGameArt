@@ -1,7 +1,8 @@
 <template>
     <div class="flex flex-col gap-4 mb-8">
         <NotifyBanner />
-        <CarouselCard />
+        <!-- <CarouselCard /> -->
+        <HeroCard />
         <ArtCategorySection
             :arts="$navigationStore.weekly_arts"
             :loading="$navigationStore.config.loading"
@@ -26,6 +27,7 @@ import PostCategorySection from './PostCategorySection.vue'
 import ArtCategorySection from './ArtCategorySection.vue'
 
 import { useNavigationStore } from '@/stores/navigationStore'
+import HeroCard from './HeroCard.vue'
 
 const $navigationStore = useNavigationStore()
 </script>

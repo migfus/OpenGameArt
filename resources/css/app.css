@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Anek+Latin:wght@100..800&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap');
 
 @import 'tailwindcss';
 
@@ -59,12 +59,6 @@
 
 .anek-latin {
     font-family: 'Anek Latin', sans-serif;
-}
-
-.press-start-2p-regular {
-    font-family: 'Press Start 2P', system-ui;
-    font-weight: 400;
-    font-style: normal;
 }
 
 /* CUSTOM CSS */
@@ -140,4 +134,17 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+/* FONTS */
+.dotgothic16-regular {
+    font-family: 'DotGothic16', sans-serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.press-start-2p-regular {
+    font-family: 'Press Start 2P', system-ui;
+    font-weight: 400;
+    font-style: normal;
 }

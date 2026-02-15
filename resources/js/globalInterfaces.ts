@@ -23,12 +23,14 @@ export interface RecentCollection {
     title: string
     user?: User
     created_at: string
+    updated_at: string
 }
 
 export interface RecentForum {
     id: string
     title: string
     content?: string
+    updated_at: string
     created_at?: string
     user?: User
 }
@@ -41,6 +43,7 @@ export interface Affiliate {
     id: string // url
     title: string
     image_url?: string
+    updated_at: string
     created_at?: string
 }
 

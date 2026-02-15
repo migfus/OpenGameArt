@@ -49,63 +49,38 @@
         </div>
 
         <!-- SECTION: RIGHT -->
-        <div class="flex items-center">
+        <div v-if="config.loading" class="flex items-center">
             <a
                 href="https://www.patreon.com/opengameart"
                 target="_blank"
-                class="gap-1 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
+                class="gap-2 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
             >
-                <img
-                    src="https://plus.unsplash.com/premium_photo-1763034565065-9bd329f7e007?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8fA%3D%3D"
-                    class="size-4 rounded-full border border-light-001"
-                />
-                <p class="text-sm">@Dummy1</p>
+                <Icon icon="memory:heart" class="sizer-4" />
+                <div class="text-xs dotgothic16-regular w-16 bg-dark-002 h-4 rounded-lg animate-pulse" />
             </a>
-            <a
-                href="https://www.patreon.com/opengameart"
-                target="_blank"
-                class="gap-1 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
-            >
-                <img
-                    src="https://plus.unsplash.com/premium_photo-1763034565065-9bd329f7e007?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8fA%3D%3D"
-                    class="size-4 rounded-full border border-light-001"
-                />
-                <p class="text-sm">@DummyDemo2</p>
-            </a>
-            <a
-                href="https://www.patreon.com/opengameart"
-                target="_blank"
-                class="gap-1 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
-            >
-                <img
-                    src="https://plus.unsplash.com/premium_photo-1763034565065-9bd329f7e007?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8fA%3D%3D"
-                    class="size-4 rounded-full border border-light-001"
-                />
-                <p class="text-sm">@DummyTest3</p>
-            </a>
+        </div>
 
-            <a href="https://www.patreon.com/opengameart" target="_blank" class="flex gap-1 items-center hover:bg-brand-950 transition-all px-2 rounded">
-                <div class="flex -space-x-2">
-                    <img
-                        src="https://plus.unsplash.com/premium_photo-1763034565065-9bd329f7e007?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8fA%3D%3D"
-                        class="size-4 rounded-full border border-light-001"
-                    />
-                    <img
-                        src="https://plus.unsplash.com/premium_photo-1763034565065-9bd329f7e007?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8fA%3D%3D"
-                        class="size-4 rounded-full border border-light-001"
-                    />
-                    <img
-                        src="https://plus.unsplash.com/premium_photo-1763034565065-9bd329f7e007?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDl8dG93SlpGc2twR2d8fGVufDB8fHx8fA%3D%3D"
-                        class="size-4 rounded-full border border-light-001"
-                    />
-                </div>
-                <p class="text-sm md:hidden">Recent Donators</p>
-                <p class="text-sm hidden md:flex">more...</p>
+        <div v-else class="flex items-center">
+            <a
+                href="https://www.patreon.com/opengameart"
+                target="_blank"
+                class="gap-2 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
+            >
+                <Icon icon="memory:heart" class="sizer-4" />
+                <p class="text-xs dotgothic16-regular">{{ donation_monthly_value }}</p>
             </a>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useNavigationStore } from '@/stores/navigationStore'
+import { storeToRefs } from 'pinia'
+import { Icon } from '@iconify/vue'
+
+const $navigationStore = useNavigationStore()
+
 const top_hidden_model = defineModel<boolean>()
+
+const { donation_monthly_value, config } = storeToRefs($navigationStore)
 </script>
