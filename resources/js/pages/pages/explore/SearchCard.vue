@@ -1,7 +1,7 @@
 <template>
     <div class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
         <div class="max-w-full w-md">
-            <AppInput name="Search" v-model="query.search" :placeholder="query.selected_filter.placeholder" />
+            <AppInput name="Search" v-model="search_filters.search" :placeholder="query.selected_filter.placeholder" />
         </div>
 
         <div class="flex gap-2 flex-wrap">
@@ -50,6 +50,11 @@ import AppInput from '@/components/form/AppInput.vue'
 import AppCheckbox from '@/components/form/AppCheckbox.vue'
 
 import { reactive } from 'vue'
+import { useArtStore } from '@/stores/artStore'
+import { storeToRefs } from 'pinia'
+
+const $artStore = useArtStore()
+const { search_filters } = storeToRefs($artStore)
 
 interface SearchFilter {
     name: string

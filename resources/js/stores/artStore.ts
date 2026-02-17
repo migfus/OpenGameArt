@@ -1,4 +1,4 @@
-import { Art, StoreConfig } from '@/globalInterfaces'
+import { Art, StoreConfig, SearchFilters } from '@/globalInterfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
@@ -9,6 +9,9 @@ const ttl = 24 // 24hrs
 export const useArtStore = defineStore('ArtStore', () => {
     const arts = ref<Art[]>([])
     const weekly_arts = ref<Art[]>([])
+    const search_filters = reactive<SearchFilters>({
+        search: ''
+    })
 
     const config = reactive<StoreConfig>({
         loading: false
@@ -60,11 +63,24 @@ export const useArtStore = defineStore('ArtStore', () => {
         }
     }
 
+    async function getArts() {
+        config.loading = true
+        try {
+            const { data } = await api.get<Art[]>(`/arts`)
+            arts.value = data
+        } catch (err) {
+            console.log('erro on ArtStore/getArts()')
+        }
+        config.loading = false
+    }
+
     return {
         arts,
         weekly_arts,
         config,
+        search_filters,
 
-        checkArtsForRefresh
+        checkArtsForRefresh,
+        getArts
     }
 })

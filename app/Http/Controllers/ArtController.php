@@ -233,4 +233,18 @@ class ArtController extends Controller {
             return $this->scrapeUserAndStore($url_username, null)->id;
         }
     }
+
+
+
+    public function index(Request $req) {
+        $req->validate([
+            'search' => ['required']
+        ]);
+
+        // Scrape content search result page
+        // update database
+        // return json
+
+
+    }
 }

@@ -1,13 +1,13 @@
 {
-  "_ArtCategorySection.vue_vue_type_script_setup_true_lang-DOyBZxTf.js": {
-    "file": "assets/ArtCategorySection.vue_vue_type_script_setup_true_lang-DOyBZxTf.js",
+  "_ArtCategorySection.vue_vue_type_script_setup_true_lang-Df68v1_I.js": {
+    "file": "assets/ArtCategorySection.vue_vue_type_script_setup_true_lang-Df68v1_I.js",
     "name": "ArtCategorySection.vue_vue_type_script_setup_true_lang",
     "imports": [
       "resources/js/app.ts"
     ]
   },
-  "_NotifyBanner.vue_vue_type_script_setup_true_lang-CRmVhLp8.js": {
-    "file": "assets/NotifyBanner.vue_vue_type_script_setup_true_lang-CRmVhLp8.js",
+  "_NotifyBanner.vue_vue_type_script_setup_true_lang-CzvbeNkI.js": {
+    "file": "assets/NotifyBanner.vue_vue_type_script_setup_true_lang-CzvbeNkI.js",
     "name": "NotifyBanner.vue_vue_type_script_setup_true_lang",
     "imports": [
       "resources/js/app.ts"
@@ -18,7 +18,7 @@
     "src": "public/images/building.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-U4A6_VJ4.css",
+    "file": "assets/app-Dz-T9ADw.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -27,7 +27,7 @@
     ]
   },
   "resources/js/app.ts": {
-    "file": "assets/app-KzKIZbl4.js",
+    "file": "assets/app-BNku6XQ5.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -45,7 +45,7 @@
     ]
   },
   "resources/js/pages/auth/login/(Index).vue": {
-    "file": "assets/(Index)-DMzYlJUF.js",
+    "file": "assets/(Index)-kwFYTOSk.js",
     "name": "(Index)",
     "src": "resources/js/pages/auth/login/(Index).vue",
     "isDynamicEntry": true,
@@ -53,26 +53,26 @@
       "resources/js/app.ts"
     ],
     "css": [
-      "assets/(Index)-Cm-ijQFW.css"
+      "assets/(Index)-BuYDvCL7.css"
     ]
   },
   "resources/js/pages/pages/explore/(Index).vue": {
-    "file": "assets/(Index)-D4EwEn8v.js",
+    "file": "assets/(Index)-COxtQGq5.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/explore/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-DOyBZxTf.js",
-      "resources/js/app.ts"
+      "resources/js/app.ts",
+      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-Df68v1_I.js"
     ]
   },
   "resources/js/pages/pages/faqs/(Index).vue": {
-    "file": "assets/(Index)-C2ocqtCy.js",
+    "file": "assets/(Index)-B_74p2g7.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/faqs/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_NotifyBanner.vue_vue_type_script_setup_true_lang-CRmVhLp8.js",
+      "_NotifyBanner.vue_vue_type_script_setup_true_lang-CzvbeNkI.js",
       "resources/js/app.ts"
     ],
     "css": [
@@ -80,18 +80,18 @@
     ]
   },
   "resources/js/pages/pages/home/(Index).vue": {
-    "file": "assets/(Index)-B-5E7pc0.js",
+    "file": "assets/(Index)-De8Www3y.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/home/(Index).vue",
     "isDynamicEntry": true,
     "imports": [
-      "_NotifyBanner.vue_vue_type_script_setup_true_lang-CRmVhLp8.js",
-      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-DOyBZxTf.js",
+      "_NotifyBanner.vue_vue_type_script_setup_true_lang-CzvbeNkI.js",
+      "_ArtCategorySection.vue_vue_type_script_setup_true_lang-Df68v1_I.js",
       "resources/js/app.ts"
     ]
   },
   "resources/js/pages/pages/not-found/(Index).vue": {
-    "file": "assets/(Index)-BTCGO8me.js",
+    "file": "assets/(Index)-BpB1OWoE.js",
     "name": "(Index)",
     "src": "resources/js/pages/pages/not-found/(Index).vue",
     "isDynamicEntry": true,

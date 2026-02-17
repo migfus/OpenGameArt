@@ -101,3 +101,7 @@ export interface LaravelTimestamp {
     created_at: string
     updated_at: string
 }
+
+export interface SearchFilters {
+    search: string
+}
