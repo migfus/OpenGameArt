@@ -6,7 +6,7 @@ use App\Http\Controllers\pages\HomePageController;
 use App\Http\Controllers\{
     ArtController,
     CollectionController,
-    RecentForumController,
+    ForumController,
     AuthController,
     AffiliateController
 };
@@ -14,9 +14,9 @@ use App\Http\Controllers\{
 Route::group(['prefix' => '', 'as' => 'pages.'], function () {
     Route::resource('/', HomePageController::class)->only(['index']);
 
-    Route::resource('/art', ArtController::class)->only(['update']);
-    Route::resource('/recent-forum', RecentForumController::class)->only(['store']);
-    Route::resource('/collection', CollectionController::class)->only(['store']);
+    Route::resource('/arts', ArtController::class)->only(['update']);
+    Route::resource('/forums', ForumController::class)->only(['update']);
+    Route::resource('/collections', CollectionController::class)->only(['update']);
     Route::resource('/affiliate', AffiliateController::class)->only(['store']);
 
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');

@@ -4,7 +4,7 @@ import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 
-export const useArtStore = defineStore('Art Store', () => {
+export const useArtStore = defineStore('ArtStore', () => {
     const arts = ref<Art[]>([])
     const weekly_arts = ref<Art[]>([])
 
@@ -51,10 +51,10 @@ export const useArtStore = defineStore('Art Store', () => {
 
     async function refreshArt(id: string): Promise<Art | undefined> {
         try {
-            const { data } = await api.put<Art>(`/art/${id}`, { method: 'refresh' })
+            const { data } = await api.put<Art>(`/arts/${id}`, { method: 'refresh' })
             return data
         } catch (err) {
-            console.log('error on ArtStore/showData()')
+            console.log('error on ArtStore/refreshArt()')
         }
     }
 

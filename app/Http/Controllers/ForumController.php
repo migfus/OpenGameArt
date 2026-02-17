@@ -2,33 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Collection, User};
+use App\Models\{RecentForum, User};
 
 use Carbon\Carbon;
 use Illuminate\Http\{JsonResponse, Request};
+use Illuminate\Support\Facades\Http;
+use Symfony\Component\DomCrawler\Crawler;
 
-class CollectionController extends Controller {
+class ForumController extends Controller {
     public function update(Request $req, string $id): JsonResponse {
-        $crawler = $this->authenticate("https://opengameart.org/content/{$id}", $req->bearerToken());
+        $body = Http::timeout(10)->get("https://opengameart.org/forumtopic/{$id}")->body();
+        $crawler = new Crawler($body);
 
         $url_username = str_replace('/users/', '', $crawler->filterXPath("//a[@class='username']")->attr('href'));
-        $forum = [
+
+        $recent_forum = [
+            'content' => $crawler->filterXPath("//div[@class='group-right right-column']/div[1]/div[1]/div[1]")->html(),
             'created_at' =>
             Carbon::createFromFormat(
                 'l, F j, Y - H:i',
-                $crawler->filterXPath("//div[@class='field-item even']")->eq(2)->text()
+                $crawler->filterXPath("//div[@id='block-system-main']/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]")->text()
             )->format('Y-m-d H:i:s'),
             'title' => $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text(),
-            'content' => $crawler->filterXPath("//div[@class='group-right right-column']/div[2]")->html(),
             'user_id' => User::where('url_username', $url_username)->exists() ?
                 User::where('url_username', $url_username)->first()->id :
                 $this->scrapeUserAndStore($url_username, $req->bearerToken())->id
         ];
 
-        $recent_collection = Collection::updateOrCreate([
+        RecentForum::updateOrCreate([
             'id' => $id
-        ], $forum);
+        ], $recent_forum);
 
-        return response()->json($recent_collection->load('user'));
+        $recent_forum = RecentForum::where('id', $id)->first();
+
+        return response()->json($recent_forum->load('user'));
     }
 }

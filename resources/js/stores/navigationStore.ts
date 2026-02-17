@@ -1,18 +1,23 @@
-import { Affiliate, Art, RecentCollection, RecentForum, StoreConfig, Post } from '@/globalInterfaces'
+import { Affiliate, Art, RecentCollection, Forum, StoreConfig, Post } from '@/globalInterfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
 import { notify } from 'notiwind'
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, reactive } from 'vue'
 import { useArtStore } from './artStore'
+import { useForumStore } from './forumStore'
 
 export const useNavigationStore = defineStore('navigationStore', () => {
     const $artStore = useArtStore()
     const { arts, weekly_arts } = storeToRefs($artStore)
     const { checkArtsForRefresh } = $artStore
+
+    const $forumStore = useForumStore()
+    const { recent_forums } = storeToRefs($forumStore)
+    const { checkForumForRefresh } = $forumStore
     // STATE
     const recent_collections = ref<RecentCollection[]>([])
-    const recent_forum = ref<RecentForum[]>([])
+
     const affiliates = ref<Affiliate[]>([])
     const latest_banner_title = ref<string>('')
     const posts = ref<Post[]>([])
@@ -27,7 +32,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
             config.loading = true
             const { data } = await api.get<{
                 recent_collections: RecentCollection[]
-                recent_forum: RecentForum[]
+                recent_forum: Forum[]
                 affiliates: Affiliate[]
                 latest_banner_title: string
                 weekly_arts: Art[]
@@ -37,7 +42,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
             }>('')
 
             recent_collections.value = data.recent_collections
-            recent_forum.value = data.recent_forum
+            recent_forums.value = data.recent_forum
             affiliates.value = data.affiliates
             latest_banner_title.value = data.latest_banner_title
             weekly_arts.value = data.weekly_arts
@@ -48,38 +53,16 @@ export const useNavigationStore = defineStore('navigationStore', () => {
             config.loading = false
 
             checkRecentCollection()
-            checkRecentForums()
             checkAffiliates()
 
             checkArtsForRefresh()
+            checkForumForRefresh()
         } catch (err) {
             notify({
                 group: 'error',
                 title: 'Network Error',
                 content: 'API error'
             })
-        }
-    }
-
-    function checkRecentForums() {
-        const recent_forums_needs_an_update = recent_forum.value.filter((item: RecentForum) => checkItem(item.updated_at))
-
-        // Checks if there's a null users, skip if none
-        if (recent_forums_needs_an_update.length > 0) {
-            createNewForum(recent_forums_needs_an_update[0].id)
-        }
-    }
-
-    async function createNewForum(id: string) {
-        const { data } = await api.post(`recent-forum`, { id })
-
-        const index = recent_forum.value.findIndex((item) => item.id === data.id)
-
-        if (index !== -1) {
-            // Replace the entire item
-            recent_forum.value.splice(index, 1, data)
-
-            checkRecentForums()
         }
     }
 
@@ -140,7 +123,6 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
     return {
         recent_collections,
-        recent_forum,
         affiliates,
         latest_banner_title,
         posts,

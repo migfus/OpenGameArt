@@ -8,7 +8,7 @@ import { reactive, ref } from 'vue'
 import router from '@/router'
 import { notify } from 'notiwind'
 
-export const useAuthStore = defineStore('authStore', () => {
+export const useAuthStore = defineStore('AuthStore', () => {
     const art_previews = ref<ArtPreview[]>([])
     const auth = useLocalStorage<Auth>('auth', null, localStorageSerializer())
     const token = useLocalStorage<string>('token', '')

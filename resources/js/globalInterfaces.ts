@@ -1,9 +1,8 @@
-export interface User {
+export interface User extends LaravelTimestamp {
     id: number
     url_username: string
     username: string
     image_url: string
-    created_at: string
 }
 
 export interface Post {
@@ -18,20 +17,16 @@ export interface Post {
 }
 
 // SECTION: FROM API
-export interface RecentCollection {
+export interface RecentCollection extends LaravelTimestamp {
     id: string
     title: string
     user?: User
-    created_at: string
-    updated_at: string
 }
 
-export interface RecentForum {
+export interface Forum extends LaravelTimestamp {
     id: string
     title: string
     content?: string
-    updated_at: string
-    created_at?: string
     user?: User
 }
 
@@ -39,15 +34,13 @@ export interface StoreConfig {
     loading: boolean
 }
 
-export interface Affiliate {
+export interface Affiliate extends LaravelTimestamp {
     id: string // url
     title: string
     image_url?: string
-    updated_at: string
-    created_at?: string
 }
 
-export interface Art {
+export interface Art extends LaravelTimestamp {
     id: string
     title: string
     favorites_count: number
@@ -61,12 +54,9 @@ export interface Art {
     files: File[]
     art_comments: ArtComment[]
     tags: Tag[]
-
-    created_at: string
-    updated_at: string
 }
 
-export interface Collection {
+export interface Collection extends LaravelTimestamp {
     id: string
     title: string
     string: string
@@ -98,10 +88,9 @@ export interface File {
     download_count: number
 }
 
-export interface ArtComment {
+export interface ArtComment extends LaravelTimestamp {
     id: number
     content: string
-    created_at: string
 
     user: User
     art: Art
@@ -112,4 +101,9 @@ export interface Auth extends User {}
 export interface Tag {
     id: number
     name: string
+}
+
+export interface LaravelTimestamp {
+    created_at: string
+    updated_at: string
 }
