@@ -60,7 +60,6 @@ export const useCollectionStore = defineStore('CollectionStore', () => {
         new_collections,
         config,
 
-        refreshCollection,
         checkCollectionForRefresh
     }
 })

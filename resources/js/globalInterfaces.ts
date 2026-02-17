@@ -16,13 +16,6 @@ export interface Post {
     author_image: string
 }
 
-// SECTION: FROM API
-export interface RecentCollection extends LaravelTimestamp {
-    id: string
-    title: string
-    user?: User
-}
-
 export interface Forum extends LaravelTimestamp {
     id: string
     title: string

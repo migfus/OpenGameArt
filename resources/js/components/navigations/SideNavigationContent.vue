@@ -78,7 +78,7 @@
                     <OtherLinksLoader v-if="$navigationStore.config.loading" />
                     <DataTransition v-else>
                         <a
-                            v-for="(item, idx) in $navigationStore.recent_collections"
+                            v-for="(item, idx) in new_collections"
                             :href="`https://opengameart.org/content/${item.id}`"
                             @click="$emit('close_sidebar')"
                             class="flex items-center gap-2 font-semibold hover:bg-brand-950 px-4 py-2 rounded-xl transition-all"
@@ -193,11 +193,12 @@ import BasicTransition from '../transitions/BasicTransition.vue'
 
 import { useRoute } from 'vue-router'
 import { useNavigationStore } from '@/stores/navigationStore'
-import { clearDelays, messengerStyleTime, timeAgo } from '@/utils/utils'
+import { clearDelays, messengerStyleTime } from '@/utils/utils'
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useForumStore } from '@/stores/forumStore'
 import { storeToRefs } from 'pinia'
+import { useCollectionStore } from '@/stores/collectionStore'
 
 defineProps<{
     on_mobile?: boolean
@@ -209,6 +210,9 @@ const $authStore = useAuthStore()
 
 const $navigationStore = useNavigationStore()
 const $forumStore = useForumStore()
+
+const $collectionStore = useCollectionStore()
+const { new_collections } = storeToRefs($collectionStore)
 
 const { recent_forums } = storeToRefs($forumStore)
 

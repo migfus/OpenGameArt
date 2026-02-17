@@ -60,7 +60,6 @@ export const useForumStore = defineStore('ForumStore', () => {
         recent_forums,
         config,
 
-        refreshForum,
         checkForumForRefresh
     }
 })

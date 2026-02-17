@@ -17,7 +17,7 @@ Route::group(['prefix' => '', 'as' => 'pages.'], function () {
     Route::resource('/arts', ArtController::class)->only(['update']);
     Route::resource('/forums', ForumController::class)->only(['update']);
     Route::resource('/collections', CollectionController::class)->only(['update']);
-    Route::resource('/affiliate', AffiliateController::class)->only(['store']);
+    Route::resource('/affiliates', AffiliateController::class)->only(['update']);
 
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout.submit');

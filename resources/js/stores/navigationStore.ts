@@ -1,4 +1,4 @@
-import { Affiliate, Art, RecentCollection, Forum, StoreConfig, Post } from '@/globalInterfaces'
+import { Affiliate, Art, Forum, StoreConfig, Post, Collection } from '@/globalInterfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
 import { notify } from 'notiwind'
@@ -6,6 +6,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { ref, reactive } from 'vue'
 import { useArtStore } from './artStore'
 import { useForumStore } from './forumStore'
+import { useCollectionStore } from './collectionStore'
 
 export const useNavigationStore = defineStore('navigationStore', () => {
     const $artStore = useArtStore()
@@ -15,8 +16,10 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     const $forumStore = useForumStore()
     const { recent_forums } = storeToRefs($forumStore)
     const { checkForumForRefresh } = $forumStore
-    // STATE
-    const recent_collections = ref<RecentCollection[]>([])
+
+    const $collectionStore = useCollectionStore()
+    const { new_collections } = storeToRefs($collectionStore)
+    const { checkCollectionForRefresh } = $collectionStore
 
     const affiliates = ref<Affiliate[]>([])
     const latest_banner_title = ref<string>('')
@@ -31,7 +34,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
         try {
             config.loading = true
             const { data } = await api.get<{
-                recent_collections: RecentCollection[]
+                recent_collections: Collection[]
                 recent_forum: Forum[]
                 affiliates: Affiliate[]
                 latest_banner_title: string
@@ -41,7 +44,8 @@ export const useNavigationStore = defineStore('navigationStore', () => {
                 donation_monthly_value: string
             }>('')
 
-            recent_collections.value = data.recent_collections
+            new_collections.value = data.recent_collections
+
             recent_forums.value = data.recent_forum
             affiliates.value = data.affiliates
             latest_banner_title.value = data.latest_banner_title
@@ -52,39 +56,17 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
             config.loading = false
 
-            checkRecentCollection()
             checkAffiliates()
 
             checkArtsForRefresh()
             checkForumForRefresh()
+            checkCollectionForRefresh()
         } catch (err) {
             notify({
                 group: 'error',
                 title: 'Network Error',
                 content: 'API error'
             })
-        }
-    }
-
-    function checkRecentCollection() {
-        const recent_collections_needs_an_update = recent_collections.value.filter((item: RecentCollection) => checkItem(item.updated_at))
-
-        // Checks if there's a null users, skip if none
-        if (recent_collections_needs_an_update.length > 0) {
-            createRecentCollection(recent_collections_needs_an_update[0].id)
-        }
-    }
-
-    async function createRecentCollection(id: string) {
-        const { data } = await api.post(`/collection`, { id })
-
-        const index = recent_collections.value.findIndex((item) => item.id === data.id)
-
-        if (index !== -1) {
-            // Replace the entire item
-            recent_collections.value.splice(index, 1, data)
-
-            checkRecentCollection()
         }
     }
 
@@ -122,7 +104,6 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     }
 
     return {
-        recent_collections,
         affiliates,
         latest_banner_title,
         posts,

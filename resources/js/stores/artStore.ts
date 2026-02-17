@@ -63,7 +63,6 @@ export const useArtStore = defineStore('ArtStore', () => {
         weekly_arts,
         config,
 
-        refreshArt,
         checkArtsForRefresh
     }
 })
