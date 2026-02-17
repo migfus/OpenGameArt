@@ -20,6 +20,9 @@ export const useAuthStore = defineStore('AuthStore', () => {
         loading: false
     })
     const friends = useLocalStorage<Auth[]>('friends', [], localStorageSerializer())
+    const errors = reactive({
+        password: ''
+    })
 
     async function getArtPreviews() {
         const { data } = await api.get('/art-previews')
@@ -28,22 +31,28 @@ export const useAuthStore = defineStore('AuthStore', () => {
 
     async function login() {
         config.loading = true
-        const { data } = await api.post('/login', form)
-        if (data) {
-            auth.value = data.auth
-            token.value = data.token
 
-            router.push({ name: 'home' })
-            notify({
-                group: 'success',
-                title: 'Log-in',
-                content: 'Welcome back!'
-            })
-            getFriends()
-        } else {
-            auth.value = null
-            token.value = null
+        try {
+            const { data } = await api.post('/login', form)
+            if (data) {
+                auth.value = data.auth
+                token.value = data.token
+
+                router.push({ name: 'home' })
+                notify({
+                    group: 'success',
+                    title: auth.value.username,
+                    content: 'Welcome back!'
+                })
+                getFriends()
+            } else {
+                auth.value = null
+                token.value = null
+            }
+        } catch (err) {
+            errors.password = 'Invalid Username/Email or Password'
         }
+
         config.loading = false
     }
 
@@ -76,6 +85,7 @@ export const useAuthStore = defineStore('AuthStore', () => {
         config,
         token,
         friends,
+        errors,
 
         getArtPreviews,
         login,

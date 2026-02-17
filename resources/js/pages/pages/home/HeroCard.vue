@@ -1,7 +1,10 @@
 <template>
     <BasicTransition>
-        <div v-if="posts.length > 0" class="max-w-6xl 2xl:mx-auto p-4">
-            <div v-for="item in posts.slice(0, 1)" class="p-6 flex flex-col lg:flex-row gap-4 border border-brand-950 rounded-2xl relative overflow-hidden">
+        <div v-if="recent_posts.length > 0" class="max-w-6xl 2xl:mx-auto p-4">
+            <div
+                v-for="item in recent_posts.slice(0, 1)"
+                class="p-6 flex flex-col lg:flex-row gap-4 border border-brand-950 rounded-2xl relative overflow-hidden"
+            >
                 <div class="lg:w-94 xl:w-120 z-10 object-cover">
                     <img :src="getAnyPossibleImageFromHtml(item.content_html)[0] ?? item.author_image" class="w-full rounded-2xl" />
                 </div>
@@ -61,13 +64,15 @@
 </template>
 
 <script setup lang="ts">
-import { useNavigationStore } from '@/stores/navigationStore'
-import { storeToRefs } from 'pinia'
-import { getAnyPossibleImageFromHtml, removeImageInHTML, dateFormat } from '@/utils/utils'
 import AppButton from '@/components/form/AppButton.vue'
-import { mergeConfig } from 'axios'
 import BasicTransition from '@/components/transitions/BasicTransition.vue'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { usePostStore } from '@/stores/postStore'
+import { dateFormat, getAnyPossibleImageFromHtml, removeImageInHTML } from '@/utils/utils'
+import { storeToRefs } from 'pinia'
 
 const $navigationStore = useNavigationStore()
-const { posts, config } = storeToRefs($navigationStore)
+const { config } = storeToRefs($navigationStore)
+const $postStore = usePostStore()
+const { recent_posts } = storeToRefs($postStore)
 </script>

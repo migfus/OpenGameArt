@@ -4,6 +4,8 @@ import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 
+const ttl = 24 // 24hrs
+
 export const useCollectionStore = defineStore('CollectionStore', () => {
     const collections = ref<Collection[]>([])
     const new_collections = ref<Collection[]>([])
@@ -14,7 +16,7 @@ export const useCollectionStore = defineStore('CollectionStore', () => {
 
     async function checkCollectionForRefresh() {
         const collections_that_needs_refresh = collections.value.filter((item: Collection) =>
-            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= 24 ? true : false
+            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
         await Promise.all(
@@ -30,7 +32,7 @@ export const useCollectionStore = defineStore('CollectionStore', () => {
         )
 
         const new_collections_that_needs_refresh = new_collections.value.filter((item: Collection) =>
-            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= 24 ? true : false
+            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
         await Promise.all(

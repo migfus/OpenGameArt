@@ -4,6 +4,8 @@ import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 
+const ttl = 24 // 24hrs
+
 export const useAffiliateStore = defineStore('AffiliateStore', () => {
     const affiliates = ref<Affiliate[]>([])
 
@@ -13,7 +15,7 @@ export const useAffiliateStore = defineStore('AffiliateStore', () => {
 
     async function checkAffiliatesForRefresh() {
         const affiliates_that_needs_refresh = affiliates.value.filter((item: Affiliate) =>
-            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= 24 ? true : false
+            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
         await Promise.all(
@@ -31,7 +33,7 @@ export const useAffiliateStore = defineStore('AffiliateStore', () => {
 
     async function refreshAffiliate(id: string, title: string): Promise<Affiliate | undefined> {
         try {
-            const { data } = await api.put<Affiliate>(`/affiliates/${id}`, { method: 'refresh', title })
+            const { data } = await api.put<Affiliate>(`/affiliates/uwu`, { method: 'refresh', title, id })
             return data
         } catch (err) {
             console.log('error on ArtStore/refreshArt()')

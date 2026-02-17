@@ -1,6 +1,6 @@
 <template>
     <div class="flex w-full justify-center relative">
-        <div class="mx-auto w-full max-w-sm lg:w-120 mt-16 z-10 bg-dark-001/90 backdrop-blur-sm p-6 py-8 sm:rounded-xl mb-32">
+        <div class="mx-auto w-full max-w-sm lg:w-120 mt-16 z-10 bg-dark-001/90 backdrop-blur-sm p-6 py-8 sm:rounded-xl mb-32 border border-brand-950">
             <div class="flex flex-col gap-2 items-center">
                 <div class="rounded-lg bg-brand-950 p-4 border border-brand-900">
                     <img class="size-12 rounded-lg" src="https://oga-ui-test.migfus.site/images/icon.png" alt="OGA" />
@@ -10,11 +10,11 @@
 
             <form @submit.prevent="$authStore.login()">
                 <div class="mt-2">
-                    <AppInput name="Username/Email" v-model="form.username" />
+                    <AppInput name="Username/Email" v-model="form.username" :error="errors.password" />
                 </div>
 
                 <div class="mt-2">
-                    <AppInput name="Password" type="password" v-model="form.password" />
+                    <AppInput name="Password" type="password" v-model="form.password" :error="errors.password" />
                 </div>
 
                 <div class="flex items-center justify-start my-4">
@@ -49,7 +49,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { storeToRefs } from 'pinia'
 
 const $authStore = useAuthStore()
-const { form, config } = storeToRefs($authStore)
+const { form, config, errors } = storeToRefs($authStore)
 
 onMounted(() => {
     $authStore.getArtPreviews()

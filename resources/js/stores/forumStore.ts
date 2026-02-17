@@ -3,6 +3,9 @@ import api from '@/utils/axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
+import { t } from 'vue-router/dist/index-Cu9B0wDz.mjs'
+
+const ttl = 24 // 24hrs
 
 export const useForumStore = defineStore('ForumStore', () => {
     const forums = ref<Forum[]>([])
@@ -14,7 +17,7 @@ export const useForumStore = defineStore('ForumStore', () => {
 
     async function checkForumForRefresh() {
         const forums_that_needs_refresh = recent_forums.value.filter((item: Forum) =>
-            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= 24 ? true : false
+            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
         await Promise.all(
@@ -30,7 +33,7 @@ export const useForumStore = defineStore('ForumStore', () => {
         )
 
         const recent_forums_that_needs_refresh = recent_forums.value.filter((item: Forum) =>
-            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= 24 ? true : false
+            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
         await Promise.all(

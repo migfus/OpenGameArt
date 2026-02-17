@@ -1,6 +1,6 @@
 <template>
     <div>
-        <DataTransition class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 2xl:grid-cols-8 gap-4 relative">
+        <DataTransition class="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 2xl:grid-cols-8 gap-4 relative opacity-50 blur-lg">
             <div v-for="(offset, i) in offsets" :key="i" class="h-full overflow-hidden">
                 <div class="grid gap-4 animate-scroll" :style="{ animationDuration: durations[i] + 's' }">
                     <!-- duplicated list for seamless loop -->
@@ -16,7 +16,7 @@
             </div>
         </DataTransition>
 
-        <AutenticationWarningModal v-model="open_modal" />
+        <AutenticationWarningModal v-model="closed_modal" />
     </div>
 </template>
 
@@ -26,6 +26,7 @@ import AutenticationWarningModal from '@/components/modals/AutenticationWarningM
 
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useStorage } from '@vueuse/core'
 
 const $authStore = useAuthStore()
 
@@ -39,9 +40,9 @@ const durations = [
     randomInt(120, 200),
     randomInt(120, 200),
     randomInt(120, 200)
-] // different speeds = organic feel
-const app_url = window.location.origin
-const open_modal = ref(true)
+]
+
+const closed_modal = useStorage('removed_login_warning', false)
 
 function shuffleArray<T>(array: T[]): T[] {
     const result = [...array]

@@ -47,18 +47,15 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
-import AppInput from '../form/AppInput.vue'
-import AppButton from '../form/AppButton.vue'
 import ProfileDropdown from '@/components/navigations/ProfileDropdown.vue'
-import BasicTransition from '../transitions/BasicTransition.vue'
+import { Icon } from '@iconify/vue'
+import AppButton from '../form/AppButton.vue'
+import AppInput from '../form/AppInput.vue'
 
-import { ref } from 'vue'
-import { useNavigationStore } from '@/stores/navigationStore'
 import { useAuthStore } from '@/stores/authStore'
+import { ref } from 'vue'
 
 const $top_navigation_hidden = defineModel<boolean>('top_navigation_hidden', { required: true })
-const $navigationStore = useNavigationStore()
 const $authStore = useAuthStore()
 
 const search = ref('')

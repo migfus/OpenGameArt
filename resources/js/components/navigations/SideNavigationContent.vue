@@ -130,7 +130,7 @@
                     <OtherLinksLoader v-if="$navigationStore.config.loading" />
                     <DataTransition v-else>
                         <a
-                            v-for="(item, idx) in $navigationStore.affiliates"
+                            v-for="(item, idx) in affiliates"
                             :href="item.id"
                             @click="$emit('close_sidebar')"
                             class="flex items-center gap-2 font-semibold hover:bg-brand-950 px-4 py-2 rounded-xl transition-all justify-between cursor-pointer"
@@ -199,6 +199,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useForumStore } from '@/stores/forumStore'
 import { storeToRefs } from 'pinia'
 import { useCollectionStore } from '@/stores/collectionStore'
+import { useAffiliateStore } from '@/stores/affiliateStore'
 
 defineProps<{
     on_mobile?: boolean
@@ -213,6 +214,9 @@ const $forumStore = useForumStore()
 
 const $collectionStore = useCollectionStore()
 const { new_collections } = storeToRefs($collectionStore)
+
+const $affilateStore = useAffiliateStore()
+const { affiliates } = storeToRefs($affilateStore)
 
 const { recent_forums } = storeToRefs($forumStore)
 

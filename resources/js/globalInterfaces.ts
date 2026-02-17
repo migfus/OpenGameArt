@@ -5,7 +5,8 @@ export interface User extends LaravelTimestamp {
     image_url: string
 }
 
-export interface Post {
+export interface Post extends LaravelTimestamp {
+    id: string
     title: string
     link: string
     author_name: string

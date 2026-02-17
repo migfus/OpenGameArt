@@ -10,28 +10,30 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class AffiliateController extends Controller {
 
-    public function store(Request $req, string $id): array {
+    public function update(Request $req): array {
         // STUB Vulnerability? 🤣
         // STUB accepts any id (url), what could go wrong?
         $req->validate([
-            'title' => ['required']
+            'title' => ['required'],
+            'id' => ['required']
         ]);
 
         # Scrape for forum
-        $body = Http::timeout(10)->get($id)->body();
+        $body = Http::timeout(10)->get($req->id)->body();
         $crawler = new Crawler($body);
 
         $image_url = $this->scrapesAllPossibleIcon($crawler);
 
-        if (!Affiliate::where('id', $id)->exists()) {
-            $affiliate = Affiliate::create([
-                'id' => $id,
-                'title' => $req->title,
-                'image_url' => $image_url
-            ]);
 
-            return $affiliate->toArray();
-        }
+        $affiliate = Affiliate::updateOrCreate([
+            'id' => $req->id
+        ], [
+            'title' => $req->title,
+            'image_url' => $image_url
+        ]);
+
+        return $affiliate->toArray();
+
         return [];
     }
 

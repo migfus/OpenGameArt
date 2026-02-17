@@ -33,7 +33,6 @@ class AuthController extends Controller {
         $response = $client->get('https://opengameart.org');
         $crawler = new Crawler($response->getBody());
 
-
         $html = $client->post('https://opengameart.org/node', [
             'form_params' => [
                 'destination' => 'node',
@@ -50,7 +49,7 @@ class AuthController extends Controller {
 
         $url_username = str_replace('/users/', '', $crawler->filter('.active a')->attr('href'));
 
-        $user_id =  $this->extractUser($url_username, '');
+        $user_id =  $this->scrapeUserAndStore($url_username, '')->id;
 
         foreach ($cookieJar->toArray() as $cookie) {
             $user_session = UserSession::create([

@@ -4,6 +4,8 @@ import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 
+const ttl = 24 // 24hrs
+
 export const useArtStore = defineStore('ArtStore', () => {
     const arts = ref<Art[]>([])
     const weekly_arts = ref<Art[]>([])
@@ -14,7 +16,7 @@ export const useArtStore = defineStore('ArtStore', () => {
 
     async function checkArtsForRefresh() {
         const weekly_arts_that_needs_refresh = weekly_arts.value.filter((item: Art) =>
-            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= 24 ? true : false
+            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
         console.log('weekly_arts needs an update: ', weekly_arts_that_needs_refresh)
@@ -33,7 +35,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         )
 
         const arts_that_needs_refresh = arts.value.filter((item: Art) =>
-            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= 24 ? true : false
+            item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
         await Promise.all(

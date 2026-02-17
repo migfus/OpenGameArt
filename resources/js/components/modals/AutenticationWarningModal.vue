@@ -1,5 +1,5 @@
 <template>
-    <TransitionRoot as="template" :show="$model">
+    <TransitionRoot as="template" :show="!$model">
         <Dialog as="div" class="relative z-10">
             <TransitionChild
                 as="template"
@@ -39,8 +39,8 @@
                                 </div>
                             </div>
                             <div class="mt-5 sm:mt-6 gap-2 flex flex-col">
-                                <AppButton icon="memory:arrow-down-right" @click="$model = false" href="/">I will explore instead.</AppButton>
-                                <AppButton icon="memory:alert-circle" @click="$model = false">I know the risk, and continue.</AppButton>
+                                <AppButton icon="memory:arrow-down-right" href="/">I will explore instead.</AppButton>
+                                <AppButton icon="memory:alert-circle" @click="$model = true">I know the risk, and continue.</AppButton>
 
                                 <AppButton href="https://opengameart.org/" external_link icon="memory:arrow-right-up" color="brand">
                                     Go to Official OpenGameArt.org

@@ -39,7 +39,7 @@
                 class="gap-2 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
             >
                 <Icon icon="pixel:heart-solid" class="sizer-4" />
-                <p class="text-xs dotgothic16-regular">{{ donation_monthly_value }}</p>
+                <p class="text-xs dotgothic16-regular">{{ navigation_data.donation_monthly_value }}</p>
             </a>
         </div>
     </div>
@@ -54,5 +54,5 @@ const $navigationStore = useNavigationStore()
 
 const top_hidden_model = defineModel<boolean>()
 
-const { donation_monthly_value, config } = storeToRefs($navigationStore)
+const { navigation_data, config } = storeToRefs($navigationStore)
 </script>

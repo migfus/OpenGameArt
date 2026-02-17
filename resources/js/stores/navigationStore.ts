@@ -1,12 +1,13 @@
-import { Affiliate, Art, Forum, StoreConfig, Post, Collection } from '@/globalInterfaces'
+import { Affiliate, Art, Collection, Forum, Post, StoreConfig } from '@/globalInterfaces'
 import api from '@/utils/axios'
-import moment from 'moment'
 import { notify } from 'notiwind'
 import { defineStore, storeToRefs } from 'pinia'
-import { ref, reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { useAffiliateStore } from './affiliateStore'
 import { useArtStore } from './artStore'
-import { useForumStore } from './forumStore'
 import { useCollectionStore } from './collectionStore'
+import { useForumStore } from './forumStore'
+import { usePostStore } from './postStore'
 
 export const useNavigationStore = defineStore('navigationStore', () => {
     const $artStore = useArtStore()
@@ -21,10 +22,21 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     const { new_collections } = storeToRefs($collectionStore)
     const { checkCollectionForRefresh } = $collectionStore
 
-    const affiliates = ref<Affiliate[]>([])
-    const latest_banner_title = ref<string>('')
-    const posts = ref<Post[]>([])
-    const donation_monthly_value = ref<string>('')
+    const $affilateStore = useAffiliateStore()
+    const { affiliates } = storeToRefs($affilateStore)
+    const { checkAffiliatesForRefresh } = $affilateStore
+
+    const $postStore = usePostStore()
+    const { recent_posts } = storeToRefs($postStore)
+    const { checkPostForRefresh } = $postStore
+
+    const navigation_data = reactive<{
+        latest_banner_title: string
+        donation_monthly_value: string
+    }>({
+        latest_banner_title: '',
+        donation_monthly_value: ''
+    })
 
     const config = reactive<StoreConfig>({
         loading: false
@@ -45,22 +57,24 @@ export const useNavigationStore = defineStore('navigationStore', () => {
             }>('')
 
             new_collections.value = data.recent_collections
-
             recent_forums.value = data.recent_forum
             affiliates.value = data.affiliates
-            latest_banner_title.value = data.latest_banner_title
             weekly_arts.value = data.weekly_arts
             arts.value = data.new_arts
-            posts.value = data.posts
-            donation_monthly_value.value = data.donation_monthly_value
+            recent_posts.value = data.posts
+
+            Object.assign(navigation_data, {
+                latest_banner_title: data.latest_banner_title,
+                donation_monthly_value: data.donation_monthly_value
+            })
 
             config.loading = false
-
-            checkAffiliates()
 
             checkArtsForRefresh()
             checkForumForRefresh()
             checkCollectionForRefresh()
+            checkAffiliatesForRefresh()
+            // checkPostForRefresh() // direct from navigationStore
         } catch (err) {
             notify({
                 group: 'error',
@@ -70,44 +84,8 @@ export const useNavigationStore = defineStore('navigationStore', () => {
         }
     }
 
-    function checkAffiliates() {
-        // Checks if there's a null image_url, skip if none
-        const affiliates_that_needs_updates = affiliates.value.filter((item: Affiliate) => checkItem(item.updated_at))
-
-        if (affiliates_that_needs_updates.length > 0) {
-            updateAffiliate(affiliates_that_needs_updates[0].id, affiliates_that_needs_updates[0].title)
-        }
-    }
-
-    async function updateAffiliate(id: string, title: string) {
-        const { data } = await api.post(`/affiliate`, { id, title })
-
-        const index = affiliates.value.findIndex((item) => item.id === data.id)
-
-        if (index !== -1) {
-            // Replace the entire item
-            affiliates.value.splice(index, 1, data)
-
-            checkAffiliates()
-        }
-    }
-
-    function checkItem(item_date: string) {
-        if (item_date == undefined) {
-            return true
-        }
-
-        // Math.abs handles cases regardless of which date is "newer"
-        const hourDifference = Math.abs(moment(item_date).diff(moment(), 'hours', true))
-
-        return hourDifference >= 24
-    }
-
     return {
-        affiliates,
-        latest_banner_title,
-        posts,
-        donation_monthly_value,
+        navigation_data,
 
         config,
 
