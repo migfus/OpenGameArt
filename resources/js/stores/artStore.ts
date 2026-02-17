@@ -1,5 +1,6 @@
 import { Art, StoreConfig, SearchFilters } from '@/globalInterfaces'
 import api from '@/utils/axios'
+import axios from 'axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
@@ -7,6 +8,7 @@ import { reactive, ref } from 'vue'
 const ttl = 24 // 24hrs
 
 export const useArtStore = defineStore('ArtStore', () => {
+    const cancelSource = ref(axios.CancelToken.source())
     const arts = ref<Art[]>([])
     const weekly_arts = ref<Art[]>([])
     const search_filters = reactive<SearchFilters>({
@@ -22,41 +24,46 @@ export const useArtStore = defineStore('ArtStore', () => {
             item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
-        console.log('weekly_arts needs an update: ', weekly_arts_that_needs_refresh)
-        console.log('weekly_arts', weekly_arts.value)
-
-        await Promise.all(
-            weekly_arts_that_needs_refresh.map(async (item: Art) => {
-                const data = await refreshArt(item.id)
-                if (data) {
-                    const index = weekly_arts.value.findIndex((art: Art) => art.id === data.id)
-                    if (index !== -1) {
-                        weekly_arts.value[index] = data
-                    }
+        for (const item of weekly_arts_that_needs_refresh) {
+            const data = await refreshArt(item.id)
+            if (data) {
+                const index = weekly_arts.value.findIndex((art: Art) => art.id === data.id)
+                if (index !== -1) {
+                    weekly_arts.value[index] = data
                 }
-            })
-        )
+            }
+        }
+
+        // await Promise.all(
+        //     weekly_arts_that_needs_refresh.map(async (item: Art) => {
+        //         const data = await refreshArt(item.id)
+        //         if (data) {
+        //             const index = weekly_arts.value.findIndex((art: Art) => art.id === data.id)
+        //             if (index !== -1) {
+        //                 weekly_arts.value[index] = data
+        //             }
+        //         }
+        //     })
+        // )
 
         const arts_that_needs_refresh = arts.value.filter((item: Art) =>
             item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         )
 
-        await Promise.all(
-            arts_that_needs_refresh.map(async (item: Art) => {
-                const data = await refreshArt(item.id)
-                if (data) {
-                    const index = arts.value.findIndex((art: Art) => art.id === data.id)
-                    if (index !== -1) {
-                        arts.value[index] = data
-                    }
+        for (const item of arts_that_needs_refresh) {
+            const data = await refreshArt(item.id)
+            if (data) {
+                const index = arts.value.findIndex((art: Art) => art.id === data.id)
+                if (index !== -1) {
+                    arts.value[index] = data
                 }
-            })
-        )
+            }
+        }
     }
 
     async function refreshArt(id: string): Promise<Art | undefined> {
         try {
-            const { data } = await api.put<Art>(`/arts/${id}`, { method: 'refresh' })
+            const { data } = await api.put<Art>(`/arts/${id}`, { method: 'refresh' }, { cancelToken: cancelSource.value.token })
             return data
         } catch (err) {
             console.log('error on ArtStore/refreshArt()')
@@ -66,7 +73,7 @@ export const useArtStore = defineStore('ArtStore', () => {
     async function getArts() {
         config.loading = true
         try {
-            const { data } = await api.get<Art[]>(`/arts`)
+            const { data } = await api.get<Art[]>(`/arts?search=${search_filters.search}`)
             arts.value = data
         } catch (err) {
             console.log('erro on ArtStore/getArts()')
@@ -74,13 +81,20 @@ export const useArtStore = defineStore('ArtStore', () => {
         config.loading = false
     }
 
+    function cancelAllRequests(msg = 'Requests Cancelled') {
+        cancelSource.value.cancel(msg)
+        cancelSource.value = axios.CancelToken.source()
+    }
+
     return {
+        cancelSource,
         arts,
         weekly_arts,
         config,
         search_filters,
 
         checkArtsForRefresh,
-        getArts
+        getArts,
+        cancelAllRequests
     }
 })

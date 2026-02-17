@@ -238,8 +238,62 @@ class ArtController extends Controller {
 
     public function index(Request $req) {
         $req->validate([
-            'search' => ['required']
+            'search' => 'nullable|string|min:3'
         ]);
+
+        $url = "https://opengameart.org/art-search-advanced?keys=" . urlencode($req->search) . "&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&field_art_licenses_tid%5B%5D=2&field_art_licenses_tid%5B%5D=10310&field_art_licenses_tid%5B%5D=31772&field_art_licenses_tid%5B%5D=17981&field_art_licenses_tid%5B%5D=6&field_art_licenses_tid%5B%5D=5&field_art_licenses_tid%5B%5D=4&field_art_licenses_tid%5B%5D=17982&field_art_licenses_tid%5B%5D=3&sort_by=score&sort_order=DESC&items_per_page=24&Collection=";
+        $crawler = $this->authenticate($url, $req->bearerToken());
+
+        $arts = $crawler->filter('.view-display-id-search_art_advanced .view-content .art-previews-inline')->each(function (Crawler $node) {
+            $type = 'Art';
+            $preview_type = 'image';
+            $previews = '';
+            $id = str_replace('/content/', '', $node->filter('.view-mode-art_preview .field-name-title .field-items .field-item span a')->attr('href'));
+
+            if (Art::where('id', $id)->exists()) {
+                return Art::where('id', $id)->with(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user'])->first()->toArray();
+            }
+
+            if ($node->filter('.view-mode-art_preview .field-name-field-art-preview .field-items .field-item a img')->count() > 0) {
+                $previews = $node->filter('.view-mode-art_preview .field-name-field-art-preview .field-items .field-item a img')->attr('src');
+                $preview_type = 'image';
+                $type = 'Art';
+            } else {
+                // Extract audio image and MP3 URL
+                $audio_image = $node->filter('.audio-preview .audio-image')->attr('src');
+                $audio_mp3_url = $node->filter('.audio-preview .play-button')->attr('data-mp3-url');
+
+                $previews = $audio_mp3_url; // or use $audio_image if you need the thumbnail
+                $preview_type = 'audio';
+                $type = 'Music';
+            }
+
+            return [
+                'id' => $id,
+                'title' => $node->filter('.view-mode-art_preview .field-name-title .field-items .field-item span a')->text(),
+                'user' => [
+                    'image_url' => env('APP_URL') . '/images/icon.png'
+                ],
+                'art_category' => [
+                    'name' => $type
+                ],
+                'art_previews' => [
+                    [
+                        'url' => $previews,
+                        'id' => 1,
+                        'art_preview_category' => [
+                            'name' => $preview_type,
+                        ],
+                    ]
+                ],
+                'art_comments' => [],
+                'files' => [],
+            ];
+        });
+
+        return response()->json($arts);
+
+        // https://opengameart.org/art-search-advanced?keys=aaa&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&field_art_licenses_tid%5B%5D=2&field_art_licenses_tid%5B%5D=10310&field_art_licenses_tid%5B%5D=31772&field_art_licenses_tid%5B%5D=17981&field_art_licenses_tid%5B%5D=6&field_art_licenses_tid%5B%5D=5&field_art_licenses_tid%5B%5D=4&field_art_licenses_tid%5B%5D=17982&field_art_licenses_tid%5B%5D=3&sort_by=score&sort_order=DESC&items_per_page=48&Collection=
 
         // Scrape content search result page
         // update database

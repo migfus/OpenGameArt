@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import ArtCategorySection from '../home/ArtCategorySection.vue'
+import ArtCategorySection from './ArtCategorySection.vue'
 import SearchCard from './SearchCard.vue'
 
 import { useArtStore } from '@/stores/artStore'
@@ -15,9 +15,4 @@ import { onMounted } from 'vue'
 
 const $artStore = useArtStore()
 const { arts, config } = storeToRefs($artStore)
-const { getArts } = $artStore
-
-onMounted(() => {
-    getArts()
-})
 </script>

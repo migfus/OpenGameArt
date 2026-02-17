@@ -1,6 +1,6 @@
 <template>
     <BasicTransition>
-        <div>
+        <div class="relative">
             <label v-if="!$props.noLabel" class="block text-sm font-medium leading-6 text-brand-50">{{ $props.name }}</label>
             <input
                 v-model="$model"
@@ -17,6 +17,7 @@
                 ]"
                 autocomplete="off"
             />
+            <Icon v-if="loading" icon="memory:border-bottom" class="retro-spinner absolute top-8.5 right-3" />
             <label v-if="$props.error" for="password" class="block text-sm font-medium text-red-600">
                 {{ $props.error }}
             </label>
@@ -26,6 +27,7 @@
 
 <script setup lang="ts">
 import BasicTransition from '@/components/transitions/BasicTransition.vue'
+import { Icon } from '@iconify/vue'
 
 import { computed } from 'vue'
 
@@ -38,6 +40,7 @@ type TProps = {
     noLabel?: true | false
     injectCSS?: string
     color?: 'white'
+    loading?: boolean
 }
 
 const $props = defineProps<TProps>()

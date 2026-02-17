@@ -22,22 +22,14 @@
 
         <!-- SECTION: RIGHT -->
         <div v-if="config.loading" class="flex items-center">
-            <a
-                href="https://www.patreon.com/opengameart"
-                target="_blank"
-                class="gap-2 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
-            >
+            <a href="https://www.patreon.com/opengameart" target="_blank" class="gap-2 items-center flex hover:bg-brand-950 transition-all px-2 rounded">
                 <Icon icon="pixel:heart-solid" class="sizer-4" />
                 <div class="text-xs dotgothic16-regular w-16 bg-dark-002 h-4 rounded-lg animate-pulse" />
             </a>
         </div>
 
         <div v-else class="flex items-center">
-            <a
-                href="https://www.patreon.com/opengameart"
-                target="_blank"
-                class="gap-2 items-center hidden md:flex hover:bg-brand-950 transition-all px-2 rounded"
-            >
+            <a href="https://www.patreon.com/opengameart" target="_blank" class="gap-2 items-center flex hover:bg-brand-950 transition-all px-2 rounded">
                 <Icon icon="pixel:heart-solid" class="sizer-4" />
                 <p class="text-xs dotgothic16-regular">{{ navigation_data.donation_monthly_value }}</p>
             </a>

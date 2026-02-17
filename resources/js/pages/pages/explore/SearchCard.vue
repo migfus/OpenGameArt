@@ -1,7 +1,7 @@
 <template>
     <div class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
         <div class="max-w-full w-md">
-            <AppInput name="Search" v-model="search_filters.search" :placeholder="query.selected_filter.placeholder" />
+            <AppInput name="Search" v-model="search_filters.search" :placeholder="query.selected_filter.placeholder" :loading="config.loading" />
         </div>
 
         <div class="flex gap-2 flex-wrap">
@@ -49,12 +49,15 @@ import AppButton from '@/components/form/AppButton.vue'
 import AppInput from '@/components/form/AppInput.vue'
 import AppCheckbox from '@/components/form/AppCheckbox.vue'
 
-import { reactive } from 'vue'
+import { onMounted, reactive, watch } from 'vue'
 import { useArtStore } from '@/stores/artStore'
 import { storeToRefs } from 'pinia'
+import { useDebounceFn } from '@vueuse/core'
+import { mergeConfig } from 'axios'
 
 const $artStore = useArtStore()
-const { search_filters } = storeToRefs($artStore)
+const { search_filters, config } = storeToRefs($artStore)
+const { getArts, checkArtsForRefresh, cancelAllRequests } = $artStore
 
 interface SearchFilter {
     name: string
@@ -190,4 +193,22 @@ function changeSearchFilter(new_filter: SearchFilter) {
     query.selected_filter = new_filter
     query.search = ''
 }
+
+watch(
+    () => search_filters.value.search,
+    () => {
+        throttleSearch()
+    }
+)
+
+const throttleSearch = useDebounceFn(async () => {
+    await cancelAllRequests()
+    await getArts()
+    checkArtsForRefresh()
+}, 2000)
+
+onMounted(() => {
+    getArts()
+    checkArtsForRefresh()
+})
 </script>
