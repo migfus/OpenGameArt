@@ -103,7 +103,6 @@ const app_url = window.location.origin
 function handleScroll() {
     if (content_scroll.value) {
         const currentY = content_scroll.value.scrollTop
-        console.log('y:', currentY)
 
         // Scroll down → hide navbar
         if (currentY > lastScrollY && currentY > 50) {
@@ -123,7 +122,6 @@ onMounted(async () => {
     await nextTick()
     if (content_scroll.value) {
         content_scroll.value.addEventListener('scroll', handleScroll, { passive: true })
-        console.log('Listener attached to content_scroll')
     }
 })
 

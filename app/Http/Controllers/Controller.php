@@ -35,13 +35,11 @@ abstract class Controller {
         return $crawler;
     }
 
-    public function extractUser(string $url_username, $token): int {
-        // Scrape for user based on recent_collection
+    public function scrapeUserAndStore(string $url_username, $token): User {
         $crawler = $this->authenticate("https://opengameart.org/users/" . $url_username, $token);
 
         $username = $crawler->filter('.username')->text();
         $user_id = str_replace('/collections', '', str_replace('/user/', '', $crawler->filter('div#right>div>ul>li:nth-of-type(2)>a')->attr('href')));
-        // dd($id);
         $image_url = $crawler->filterXPath("//img[@typeof='foaf:Image']")->attr('src');
 
         $user = User::createOrFirst([
@@ -51,6 +49,6 @@ abstract class Controller {
             'image_url' => $image_url
         ]);
 
-        return (int) $user->id;
+        return $user;
     }
 }

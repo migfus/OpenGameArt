@@ -74,6 +74,8 @@ class HomePageController extends Controller {
 
     private function getRecentForums($crawler): array {
         return Cache::remember('get_recent_forums', $this->cache_duration, function () use ($crawler) {
+
+
             return $crawler->filter('.view-new-forum-topics .view-content .item-list ul li')
                 ->each(function (Crawler $node) {
                     $id = parse_url(urldecode(preg_replace('#^/forumtopic/#', '', $node->filter('.views-field-title a')->attr('href'))), PHP_URL_PATH);

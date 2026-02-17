@@ -35,25 +35,47 @@ class RecentForumController extends Controller {
         if (User::where('url_username', $url_username)->exists()) {
             $user_id = User::where('url_username', $url_username)->first()->id;
 
-            $recent_forum = RecentForum::create([
-                'id' => $req->id,
-                'title' => $title,
-                'user_id' => $user_id,
-                'content' => $content,
-                'created_at' => $created_at
-            ]);
+            if (RecentForum::where('id', $req->id)->exists()) {
+                $recent_forum = RecentForum::where('id', $req->id)->update([
+                    'title' => $title,
+                    'user_id' => $user_id,
+                    'content' => $content,
+                    // 'created_at' => $created_at
+                ]);
+                $recent_forum = RecentForum::where('id', $req->id)->first();
+            } else {
+                $recent_forum = RecentForum::create([
+                    'id' => $req->id,
+                    'title' => $title,
+                    'user_id' => $user_id,
+                    'content' => $content,
+                    'created_at' => $created_at
+                ]);
+            }
         } else {
             // Scrape for user based on recent_collection
             $user_id = $this->extractUser($url_username, $req->bearerToken());
 
-            $recent_forum = RecentForum::create([
-                'id' => $req->id,
-                'title' => $title,
-                'user_id' => $user_id,
-                'content' => $content,
-                'created_at' => $created_at
-            ]);
+            if (RecentForum::where('id', $req->id)->exists()) {
+                $recent_forum = RecentForum::where('id', $req->id)->update([
+                    'title' => $title,
+                    'user_id' => $user_id,
+                    'content' => $content,
+                    // 'created_at' => $created_at
+                ]);
+                $recent_forum = RecentForum::where('id', $req->id)->first();
+            } else {
+                $recent_forum = RecentForum::create([
+                    'id' => $req->id,
+                    'title' => $title,
+                    'user_id' => $user_id,
+                    'content' => $content,
+                    'created_at' => $created_at
+                ]);
+            }
         }
+
+        dd($recent_forum);
 
         return response()->json($recent_forum->load('user'));
     }

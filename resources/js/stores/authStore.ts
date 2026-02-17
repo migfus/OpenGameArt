@@ -67,8 +67,6 @@ export const useAuthStore = defineStore('authStore', () => {
     async function getFriends() {
         const { data } = await api.get('/friends')
         friends.value = data
-
-        alert('friends fetched')
     }
 
     return {

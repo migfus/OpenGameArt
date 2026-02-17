@@ -3,31 +3,26 @@
         <NotifyBanner />
         <!-- <CarouselCard /> -->
         <HeroCard />
-        <ArtCategorySection
-            :arts="$navigationStore.weekly_arts"
-            :loading="$navigationStore.config.loading"
-            title="Weekly Popular"
-            more="https://opengameart.org/popular"
-        />
-        <ArtCategorySection
-            :arts="$navigationStore.new_arts"
-            :loading="$navigationStore.config.loading"
-            title="New Arts"
-            more="https://opengameart.org/latest"
-        />
+        <ArtCategorySection :arts="weekly_arts" :loading="config.loading" title="Weekly Popular" more="https://opengameart.org/popular" />
+        <ArtCategorySection :arts :loading="config.loading" title="New Arts" more="https://opengameart.org/latest" />
 
-        <PostCategorySection :posts="$navigationStore.posts" :loading="$navigationStore.config.loading" />
+        <PostCategorySection :posts="posts" :loading="config.loading" />
     </div>
 </template>
 
 <script setup lang="ts">
 import NotifyBanner from '@/components/header/NotifyBanner.vue'
-import CarouselCard from './CarouselCard.vue'
-import PostCategorySection from './PostCategorySection.vue'
 import ArtCategorySection from './ArtCategorySection.vue'
+import PostCategorySection from './PostCategorySection.vue'
 
-import { useNavigationStore } from '@/stores/navigationStore'
+import { useArtStore } from '@/stores/artStore'
+import { storeToRefs } from 'pinia'
 import HeroCard from './HeroCard.vue'
+import { useNavigationStore } from '@/stores/navigationStore'
 
+const $artStore = useArtStore()
 const $navigationStore = useNavigationStore()
+
+const { arts, weekly_arts } = storeToRefs($artStore)
+const { posts, config } = storeToRefs($navigationStore)
 </script>

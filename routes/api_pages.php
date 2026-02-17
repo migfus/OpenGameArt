@@ -14,7 +14,7 @@ use App\Http\Controllers\{
 Route::group(['prefix' => '', 'as' => 'pages.'], function () {
     Route::resource('/', HomePageController::class)->only(['index']);
 
-    Route::resource('/art', ArtController::class)->only(['store']);
+    Route::resource('/art', ArtController::class)->only(['update']);
     Route::resource('/recent-forum', RecentForumController::class)->only(['store']);
     Route::resource('/collection', CollectionController::class)->only(['store']);
     Route::resource('/affiliate', AffiliateController::class)->only(['store']);

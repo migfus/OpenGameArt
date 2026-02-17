@@ -1,17 +1,20 @@
 import { Affiliate, Art, RecentCollection, RecentForum, StoreConfig, Post } from '@/globalInterfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
-import { defineStore } from 'pinia'
+import { notify } from 'notiwind'
+import { defineStore, storeToRefs } from 'pinia'
 import { ref, reactive } from 'vue'
+import { useArtStore } from './artStore'
 
 export const useNavigationStore = defineStore('navigationStore', () => {
+    const $artStore = useArtStore()
+    const { arts, weekly_arts } = storeToRefs($artStore)
+    const { checkArtsForRefresh } = $artStore
     // STATE
     const recent_collections = ref<RecentCollection[]>([])
     const recent_forum = ref<RecentForum[]>([])
     const affiliates = ref<Affiliate[]>([])
     const latest_banner_title = ref<string>('')
-    const weekly_arts = ref<Art[]>([])
-    const new_arts = ref<Art[]>([])
     const posts = ref<Post[]>([])
     const donation_monthly_value = ref<string>('')
 
@@ -38,25 +41,23 @@ export const useNavigationStore = defineStore('navigationStore', () => {
             affiliates.value = data.affiliates
             latest_banner_title.value = data.latest_banner_title
             weekly_arts.value = data.weekly_arts
-            new_arts.value = data.new_arts
+            arts.value = data.new_arts
             posts.value = data.posts
             donation_monthly_value.value = data.donation_monthly_value
 
             config.loading = false
 
-            console.log('recent_forum: ', recent_forum.value)
-
-            // Checks Recent collection if needs an update
             checkRecentCollection()
-            // Checks Recent forums if needs an update
             checkRecentForums()
-            // Checks Weekly Arts if needs an update
-            checkWeeklyArts()
-            // Checks Affiliates if needs an update
             checkAffiliates()
-            checkNewArts()
+
+            checkArtsForRefresh()
         } catch (err) {
-            alert('API Error')
+            notify({
+                group: 'error',
+                title: 'Network Error',
+                content: 'API error'
+            })
         }
     }
 
@@ -65,7 +66,6 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
         // Checks if there's a null users, skip if none
         if (recent_forums_needs_an_update.length > 0) {
-            console.log('recent_forum needs an update', recent_forums_needs_an_update)
             createNewForum(recent_forums_needs_an_update[0].id)
         }
     }
@@ -88,7 +88,6 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
         // Checks if there's a null users, skip if none
         if (recent_collections_needs_an_update.length > 0) {
-            console.log('recent_collections needs an update', recent_collections_needs_an_update)
             createRecentCollection(recent_collections_needs_an_update[0].id)
         }
     }
@@ -106,35 +105,11 @@ export const useNavigationStore = defineStore('navigationStore', () => {
         }
     }
 
-    function checkWeeklyArts() {
-        const weekly_arts_needs_an_update = weekly_arts.value.filter((item: Art) => item.tags == undefined)
-
-        // Checks if there's a null users, skip if none
-        if (weekly_arts_needs_an_update.length > 0) {
-            console.log('weekly_arts needs an update', weekly_arts_needs_an_update)
-            updateWeeklyArts(weekly_arts_needs_an_update[0].id)
-        }
-    }
-
-    async function updateWeeklyArts(id: string) {
-        const { data } = await api.post(`/art`, { id })
-
-        const index = weekly_arts.value.findIndex((item) => item.id === data.id)
-
-        if (index !== -1) {
-            // Replace the entire item
-            weekly_arts.value.splice(index, 1, data)
-
-            checkWeeklyArts()
-        }
-    }
-
     function checkAffiliates() {
         // Checks if there's a null image_url, skip if none
         const affiliates_that_needs_updates = affiliates.value.filter((item: Affiliate) => checkItem(item.updated_at))
 
         if (affiliates_that_needs_updates.length > 0) {
-            console.log('affiliates needs an update', affiliates_that_needs_updates)
             updateAffiliate(affiliates_that_needs_updates[0].id, affiliates_that_needs_updates[0].title)
         }
     }
@@ -152,41 +127,13 @@ export const useNavigationStore = defineStore('navigationStore', () => {
         }
     }
 
-    function checkNewArts() {
-        // Checks if there's a null image_url, skip if none
-        const new_arts_that_needs_update = new_arts.value.filter((item: Art) => item.tags == undefined)
-
-        if (new_arts_that_needs_update.length > 0) {
-            console.log('new arts needs an update', new_arts_that_needs_update)
-            updateNewArt(new_arts_that_needs_update[0].id)
-        }
-    }
-
-    async function updateNewArt(id: string) {
-        const { data } = await api.post(`/art`, { id })
-
-        const index = new_arts.value.findIndex((item) => item.id === data.id)
-
-        if (index !== -1) {
-            // Replace the entire item
-            new_arts.value.splice(index, 1, data)
-
-            checkNewArts()
-        }
-    }
-
     function checkItem(item_date: string) {
         if (item_date == undefined) {
-            console.log('undefined item_date')
             return true
         }
-        const start = moment(item_date)
-        const end = moment()
 
         // Math.abs handles cases regardless of which date is "newer"
-        const hourDifference = Math.abs(start.diff(end, 'hours', true))
-
-        console.log('hours diff: ', hourDifference)
+        const hourDifference = Math.abs(moment(item_date).diff(moment(), 'hours', true))
 
         return hourDifference >= 24
     }
@@ -196,8 +143,6 @@ export const useNavigationStore = defineStore('navigationStore', () => {
         recent_forum,
         affiliates,
         latest_banner_title,
-        weekly_arts,
-        new_arts,
         posts,
         donation_monthly_value,
 

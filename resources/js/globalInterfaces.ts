@@ -61,6 +61,9 @@ export interface Art {
     files: File[]
     art_comments: ArtComment[]
     tags: Tag[]
+
+    created_at: string
+    updated_at: string
 }
 
 export interface Collection {

@@ -8,7 +8,7 @@ return new class extends Migration {
 
     public function up(): void {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->id(); // user had integer id
             $table->string('url_username')->unique();
             $table->string('username')->unique();
             $table->string('image_url')->nullable();

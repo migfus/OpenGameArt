@@ -400,7 +400,7 @@ async function playAudio(preview?: string) {
 
         window.dispatchEvent(new CustomEvent('pauseAllAudio', { detail: { idx } }))
     } else {
-        alert('no audio file found')
+        console.log('playAudio() error')
     }
 }
 
