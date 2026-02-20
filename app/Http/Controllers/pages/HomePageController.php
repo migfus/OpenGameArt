@@ -8,7 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
-
+use GuzzleHttp\Cookie\CookieJar;
 
 class HomePageController extends Controller {
     protected $cache_duration = 5; // Cache duration in seconds
@@ -252,11 +252,28 @@ class HomePageController extends Controller {
         return Cache::remember('donation_monthly_value', 60 * 60 * 24, function () {
             $client = new Client();
 
-            // 1. Fetch the HTML content
-            $response = $client->request('GET', 'https://www.patreon.com/opengameart');
-            $html_content = $response->getBody()->getContents();
+            $cookieArray = [];
 
-            $crawler = new Crawler($html_content);
+            foreach ($cookies as $cookie) {
+                $cookieArray[$cookie->name] = $cookie->value;
+            }
+
+            // Init cookie for patreon
+            $cookieArray['patreon_locale_code'] = 'en-US';
+            $cookieArray['patreon_location_country_code'] = 'US';
+
+            $cookieJar = CookieJar::fromArray($cookieArray, 'opengameart.org');
+
+            $client = new Client([
+                'cookies' => $cookieJar,
+                'allow_redirects' => true,
+                'headers' => ['User-Agent' => 'Mozilla/5.0'],
+            ]);
+
+            $response = $client->get('https://www.patreon.com/opengameart');
+            $html = (string) $response->getBody();
+
+            $crawler = new Crawler($html);
             return $crawler->filter('span[data-tag="earnings-count"]')->text();
         });
     }

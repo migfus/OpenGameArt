@@ -14,32 +14,36 @@
             <!-- NOTE: for [Arts] only -->
             <a v-else :href="`https://opengameart.org/content/${art.id}`" class="bg-brand-950/50 -z-10 h-38 w-full object-cover rounded-2xl flex absolute">
                 <div v-if="art.art_previews.length > 4" class="grid grid-cols-2 gap-1 bg-dark-001 w-full">
-                    <img :src="art.art_previews[0].url" class="object-cover w-full h-18 rounded-tl-2xl" />
-                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl" />
-                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-bl-2xl" />
-                    <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl" />
+                    <img :src="art.art_previews[0].url" class="object-cover w-full h-18 rounded-tl-2xl pixelated-img" />
+                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl pixelated-img" />
+                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-bl-2xl pixelated-img" />
+                    <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl pixelated-img" />
                     <div class="absolute bottom-4 right-10 text-md text-light-002 bg-brand-950/75 size-12 rounded-full flex items-center justify-center">
                         <p>+{{ art.art_previews.length - 4 }}</p>
                     </div>
                 </div>
                 <div v-else-if="art.art_previews.length == 4" class="grid grid-cols-2 gap-1 bg-dark-001 w-full">
-                    <img :src="art.art_previews[0].url" class="object-cover w-full h-18 rounded-tl-2xl" />
-                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl" />
-                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-bl-2xl" />
-                    <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl" />
+                    <img :src="art.art_previews[0].url" class="object-cover w-full h-18 rounded-tl-2xl pixelated-img" />
+                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl pixelated-img" />
+                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-bl-2xl pixelated-img" />
+                    <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl pixelated-img" />
                 </div>
                 <div v-else-if="art.art_previews.length == 3" class="grid grid-cols-2 gap-1 bg-dark-001 h-full w-full">
-                    <img :src="art.art_previews[0].url" class="object-cover w-full h-full rounded-l-2xl row-span-2" />
-                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl" />
-                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-br-2xl" />
+                    <img :src="art.art_previews[0].url" class="object-cover w-full h-full rounded-l-2xl row-span-2 pixelated-img" />
+                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl pixelated-img" />
+                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-br-2xl pixelated-img" />
                     <!-- <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl" /> -->
                 </div>
                 <div v-else-if="art.art_previews.length == 2" class="grid grid-cols-2 gap-1 h-full">
-                    <img v-for="item in art.art_previews" :src="item.url" class="object-cover w-full h-full first:rounded-l-2xl last:rounded-r-2xl" />
+                    <img
+                        v-for="item in art.art_previews"
+                        :src="item.url"
+                        class="object-cover w-full h-full first:rounded-l-2xl last:rounded-r-2xl pixelated-img"
+                    />
                 </div>
 
                 <div v-else class="w-full h-full">
-                    <img :src="art.art_previews[0].url" class="h-full w-full object-cover rounded-2xl" />
+                    <img :src="art.art_previews[0].url" class="h-full w-full object-cover rounded-2xl pixelated-img" />
                 </div>
             </a>
 
@@ -404,6 +408,12 @@ async function playAudio(preview?: string) {
     }
 }
 
+async function urlToBlob(url: string) {
+    const res = await fetch(url)
+    const blob = await res.blob()
+    return blob
+}
+
 function onExternalPause(e: Event) {
     const detail = (e as CustomEvent)?.detail
     if (detail?.idx !== idx) {
@@ -460,3 +470,9 @@ onUnmounted(() => {
 
 onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
 </script>
+
+<style>
+.pixelated-img {
+    image-rendering: pixelated;
+}
+</style>

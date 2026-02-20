@@ -12,7 +12,7 @@ use Symfony\Component\DomCrawler\Crawler;
 class ArtController extends Controller {
 
     // NOTE: HOW IT WORKS
-    // https://oga-ui-test.migfus.site/images/how-it-works/art-controller-store.png
+    // https://oga-ui-test.migfus.site/images/how-it-works/art-controller-update.png
     public function update(Request $req, string $id): JsonResponse {
         $crawler = $this->authenticate("https://opengameart.org/content/{$id}", $req->bearerToken());
 
