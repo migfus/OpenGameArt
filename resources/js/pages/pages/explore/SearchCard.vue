@@ -5,42 +5,65 @@
             <AppButton class="absolute right-0 top-6" size="sm" icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
         </div>
 
-        <div class="flex gap-2 flex-wrap">
-            <AppButton
-                v-for="item in search_filter"
-                :icon="item.icon"
-                :color="query.selected_filter.name == item.name ? 'brand' : undefined"
-                @click="changeSearchFilter(item)"
-            >
-                {{ item.name }}
-            </AppButton>
-        </div>
-
-        <div v-if="add_filters.licenses" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
-            <AppCheckbox v-for="item in licenses" :name="item.name" v-model="item.checked" />
-        </div>
-        <div v-if="add_filters.assets_type" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
-            <AppCheckbox v-for="item in assets_types" :name="item.name" v-model="item.checked" />
-        </div>
-
-        <div class="flex gap-2 flex-wrap">
-            <AppButton :icon="add_filters.licenses ? 'memory:alpha-x' : 'memory:alpha-c'" @click="add_filters.licenses = !add_filters.licenses">
-                {{ `${add_filters.licenses ? 'All Licenses' : 'Filter Licenses'}` }}
-            </AppButton>
-            <AppButton
-                :icon="add_filters.assets_type ? 'memory:alpha-x' : 'memory:wall-front-damaged'"
-                @click="add_filters.assets_type = !add_filters.assets_type"
-            >
-                {{ `${add_filters.assets_type ? 'All Assets Types' : 'Filter Assets Type'}` }}
-            </AppButton>
-        </div>
-
         <div class="flex gap-2">
-            <AppButton icon="memory:rotate-clockwise" @click="resetQuery()">Reset</AppButton>
-            <AppButton :icon="query.sort_by.icon" @click="query.sort_by = query.sort_by.name === 'Recent' ? sort_by[1] : sort_by[0]">
-                {{ query.sort_by.name }}
+            <AppButton
+                size="sm"
+                :color="filters.advance_filters ? undefined : 'brand'"
+                @click="filters.advance_filters = false"
+                type="button"
+                icon="pixelarticons:search"
+            >
+                Simple Search
             </AppButton>
-            <AppButton icon="memory:search">Search</AppButton>
+            <AppButton
+                size="sm"
+                :color="filters.advance_filters ? 'brand' : undefined"
+                @click="filters.advance_filters = true"
+                type="button"
+                icon="pixelarticons:text-search"
+            >
+                Advance Search
+            </AppButton>
+        </div>
+
+        <div v-if="filters.advance_filters" class="flex flex-col gap-2 items-center">
+            <div class="flex gap-2 flex-wrap">
+                <AppButton
+                    v-for="item in search_filter"
+                    :icon="item.icon"
+                    :color="query.selected_filter.name == item.name ? 'brand' : undefined"
+                    @click="changeSearchFilter(item)"
+                >
+                    {{ item.name }}
+                </AppButton>
+            </div>
+
+            <div v-if="add_filters.licenses" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
+                <AppCheckbox v-for="item in licenses" :name="item.name" v-model="item.checked" />
+            </div>
+            <div v-if="add_filters.assets_type" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
+                <AppCheckbox v-for="item in assets_types" :name="item.name" v-model="item.checked" />
+            </div>
+
+            <div class="flex gap-2 flex-wrap">
+                <AppButton :icon="add_filters.licenses ? 'memory:alpha-x' : 'memory:alpha-c'" @click="add_filters.licenses = !add_filters.licenses">
+                    {{ `${add_filters.licenses ? 'All Licenses' : 'Filter Licenses'}` }}
+                </AppButton>
+                <AppButton
+                    :icon="add_filters.assets_type ? 'memory:alpha-x' : 'memory:wall-front-damaged'"
+                    @click="add_filters.assets_type = !add_filters.assets_type"
+                >
+                    {{ `${add_filters.assets_type ? 'All Assets Types' : 'Filter Assets Type'}` }}
+                </AppButton>
+            </div>
+
+            <div class="flex gap-2">
+                <AppButton icon="memory:rotate-clockwise" @click="resetQuery()">Reset</AppButton>
+                <AppButton :icon="query.sort_by.icon" @click="query.sort_by = query.sort_by.name === 'Recent' ? sort_by[1] : sort_by[0]">
+                    {{ query.sort_by.name }}
+                </AppButton>
+                <AppButton icon="memory:search">Search</AppButton>
+            </div>
         </div>
     </form>
 </template>
@@ -51,9 +74,8 @@ import AppCheckbox from '@/components/form/AppCheckbox.vue'
 import AppInput from '@/components/form/AppInput.vue'
 
 import { useArtStore } from '@/stores/artStore'
-import { useDebounceFn } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
-import { onMounted, reactive, watch } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
 const $artStore = useArtStore()
@@ -71,6 +93,10 @@ interface SortBy {
     name: string
     icon: string
 }
+
+const filters = reactive({
+    advance_filters: true
+})
 
 const licenses = [
     {

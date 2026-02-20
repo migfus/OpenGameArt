@@ -17,9 +17,12 @@ export const useArtStore = defineStore('ArtStore', () => {
     const search_filters = reactive<SearchFilters>({
         search: ''
     })
+    const total_result = ref<number>(0)
 
     const config = reactive<StoreConfig>({
-        loading: false
+        loading: false,
+        lazy_page: 1,
+        lazy_loading: false
     })
 
     async function checkExploreArtsForRefresh() {
@@ -97,12 +100,26 @@ export const useArtStore = defineStore('ArtStore', () => {
         config.loading = true
         try {
             $router.replace({ query: { search: search_filters.search } })
-            const { data } = await api.get<Art[]>(`/arts?search=${search_filters.search}`)
-            arts.value = data
+            const { data } = await api.get(`/arts?search=${search_filters.search}&page=1`)
+            arts.value = data.data
+            total_result.value = data.total_result
+            config.lazy_page = 1
         } catch (err) {
             console.log('erro on ArtStore/getArts()', err)
         }
         config.loading = false
+    }
+
+    async function lazyGetArts() {
+        config.lazy_loading = true
+        try {
+            const { data } = await api.get(`/arts?search=${search_filters.search}&page=${config.lazy_page}`)
+
+            arts.value.push(...data.data)
+        } catch (err) {
+            console.log('erro on ArtStore/lazyGetArts()', err)
+        }
+        config.lazy_loading = false
     }
 
     function cancelAllRequests(msg = 'Requests Cancelled') {
@@ -117,11 +134,13 @@ export const useArtStore = defineStore('ArtStore', () => {
         weekly_arts,
         config,
         search_filters,
+        total_result,
 
         checkWeeklyArtsForRefresh,
         checkNewArtsForRefresh,
         checkExploreArtsForRefresh,
         getArts,
-        cancelAllRequests
+        cancelAllRequests,
+        lazyGetArts
     }
 })

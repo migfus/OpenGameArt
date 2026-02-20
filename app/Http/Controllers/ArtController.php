@@ -245,13 +245,22 @@ class ArtController extends Controller {
 
     public function index(Request $req) {
         $req->validate([
-            'search' => 'nullable|string|min:3'
+            'search' => 'nullable|string|min:3',
+            'page' => 'nullable|numeric',
         ]);
 
-        $url = "https://opengameart.org/art-search-advanced?keys=" . urlencode($req->search) . "&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&field_art_licenses_tid%5B%5D=2&field_art_licenses_tid%5B%5D=10310&field_art_licenses_tid%5B%5D=31772&field_art_licenses_tid%5B%5D=17981&field_art_licenses_tid%5B%5D=6&field_art_licenses_tid%5B%5D=5&field_art_licenses_tid%5B%5D=4&field_art_licenses_tid%5B%5D=17982&field_art_licenses_tid%5B%5D=3&sort_by=score&sort_order=DESC&items_per_page=24&Collection=";
+        $url = "https://opengameart.org/art-search-advanced?keys=" . urlencode($req->search) . "&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&field_art_licenses_tid%5B%5D=2&field_art_licenses_tid%5B%5D=10310&field_art_licenses_tid%5B%5D=31772&field_art_licenses_tid%5B%5D=17981&field_art_licenses_tid%5B%5D=6&field_art_licenses_tid%5B%5D=5&field_art_licenses_tid%5B%5D=4&field_art_licenses_tid%5B%5D=17982&field_art_licenses_tid%5B%5D=3&sort_by=score&sort_order=DESC&items_per_page=24&Collection=&page=" . ($req->page ?? 1);
         $crawler = $this->authenticate($url, $req->bearerToken());
 
-        $arts = $crawler->filter('.view-display-id-search_art_advanced .view-content .art-previews-inline')->each(function (Crawler $node) {
+        $total_result = 0;
+        if ($crawler->filter('.view-display-id-search_art_advanced .view-header')->count() > 0) {
+            $total_raw = $crawler->filter('.view-display-id-search_art_advanced .view-header')->text();
+
+            $total_result = (int) explode('of ', $total_raw)[1];
+        }
+
+
+        $arts = $crawler->filter('.view-display-id-search_art_advanced .view-content .art-previews-inline')->each(function (Crawler $node) use (&$total_result) {
             $type = 'Art';
             $preview_type = 'image';
             $previews = '';
@@ -298,7 +307,7 @@ class ArtController extends Controller {
             ];
         });
 
-        return response()->json($arts);
+        return response()->json(['data' => $arts, 'total_result' => $total_result]);
 
         // https://opengameart.org/art-search-advanced?keys=aaa&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&field_art_licenses_tid%5B%5D=2&field_art_licenses_tid%5B%5D=10310&field_art_licenses_tid%5B%5D=31772&field_art_licenses_tid%5B%5D=17981&field_art_licenses_tid%5B%5D=6&field_art_licenses_tid%5B%5D=5&field_art_licenses_tid%5B%5D=4&field_art_licenses_tid%5B%5D=17982&field_art_licenses_tid%5B%5D=3&sort_by=score&sort_order=DESC&items_per_page=48&Collection=
 

@@ -38,7 +38,9 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     })
 
     const config = reactive<StoreConfig>({
-        loading: false
+        loading: false,
+        lazy_loading: false,
+        lazy_lock: false
     })
 
     async function getData() {

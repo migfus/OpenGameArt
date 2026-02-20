@@ -1,5 +1,5 @@
 <template>
-    <div :class="['flex flex-col gap-2 cursor-pointer group relative']">
+    <div :class="['flex flex-col gap-8 cursor-pointer group relative']">
         <div :class="['w-full h-38 relative bg-cover rounded-2xl border-2 border-brand-950 flex flex-col justify-end z-10 bg-dark-001 cursor-default']">
             <!-- SECTION: MUSIC / SOUND VISUAL PREVIEW -->
             <div v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'" class="absolute h-full w-full">
@@ -220,7 +220,7 @@
                         <div
                             :class="[
                                 show_player && is_playing ? 'translate-y-0 ' : 'translate-y-16 md:translate-y-0',
-                                'fixed bg-brand-950/90 backdrop-blur-sm w-full py-6 px-3 z-10 flex flex-col gap-2 transition-all md:rounded-2xl md:w-lg bottom-51 md:bottom-25'
+                                'fixed bg-brand-950/90 backdrop-blur-sm w-full py-6 px-3 z-10 flex flex-col gap-2 transition-all md:rounded-2xl md:w-lg bottom-45 md:bottom-25'
                             ]"
                         >
                             <div class="text-light-001 max-h-33 overflow-y-scroll gap-1 flex flex-col scrollbar-hide">

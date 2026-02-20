@@ -26,6 +26,8 @@ export interface Forum extends LaravelTimestamp {
 
 export interface StoreConfig {
     loading: boolean
+    lazy_page: number
+    lazy_loading: boolean
 }
 
 export interface Affiliate extends LaravelTimestamp {
