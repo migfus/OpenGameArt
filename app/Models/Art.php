@@ -23,6 +23,7 @@ class Art extends Model {
         'content',
         'art_category_id',
         'favorites_count',
+        'updated_at'
     ];
 
     public function user(): BelongsTo {

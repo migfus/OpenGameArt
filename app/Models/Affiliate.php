@@ -9,5 +9,5 @@ class Affiliate extends Model {
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable  = ['id', 'title', 'image_url'];
+    protected $fillable  = ['id', 'title', 'image_url', 'created_at', 'updated_at'];
 }

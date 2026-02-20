@@ -53,11 +53,10 @@ import { onMounted, reactive, watch } from 'vue'
 import { useArtStore } from '@/stores/artStore'
 import { storeToRefs } from 'pinia'
 import { useDebounceFn } from '@vueuse/core'
-import { mergeConfig } from 'axios'
 
 const $artStore = useArtStore()
 const { search_filters, config } = storeToRefs($artStore)
-const { getArts, checkArtsForRefresh, cancelAllRequests } = $artStore
+const { getArts, checkExploreArtsForRefresh, cancelAllRequests } = $artStore
 
 interface SearchFilter {
     name: string
@@ -204,11 +203,11 @@ watch(
 const throttleSearch = useDebounceFn(async () => {
     await cancelAllRequests()
     await getArts()
-    checkArtsForRefresh()
+    checkExploreArtsForRefresh()
 }, 2000)
 
 onMounted(() => {
     getArts()
-    checkArtsForRefresh()
+    checkExploreArtsForRefresh()
 })
 </script>

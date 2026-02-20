@@ -46,6 +46,7 @@ class ArtController extends Controller {
             'art_category_id' => $art['art_category']->id, // change art_category
             'favorites_count' => $art['favorites_count'],
             'created_at' => $art['created_at'],
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
         $art_db->tags()->sync($tag_ids);
 

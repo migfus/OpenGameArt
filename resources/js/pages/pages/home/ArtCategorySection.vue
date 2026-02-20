@@ -36,8 +36,6 @@ import { animation_delay, clearDelays } from '@/utils/utils'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed, reactive, ref } from 'vue'
 
-const allAudio = ref([])
-
 const { arts } = defineProps<{
     title: string
     arts: Art[]

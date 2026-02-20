@@ -1,49 +1,65 @@
 <template>
     <div :class="['flex flex-col gap-2 cursor-pointer group relative']">
         <div :class="['w-full h-38 relative bg-cover rounded-2xl border-2 border-brand-950 flex flex-col justify-end z-10 bg-dark-001 cursor-default']">
-            <!-- NOTE: Adds dark overlay for [Music / Sound Effect] to priorities the look of arts than audio previews  -->
-            <div v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'" class="bg-brand-950/50 absolute -z-10 h-full w-full" />
-
-            <!-- PREVIEWS -->
-            <!-- NOTE: for [Music, Sound Effects] only -->
-            <img
-                v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'"
-                :src="previewMusicSoundEffectImage"
-                class="bg-brand-950/50 absolute -z-10 h-full w-full object-cover rounded-2xl"
-            />
-            <!-- NOTE: for [Arts] only -->
-            <a v-else :href="`https://opengameart.org/content/${art.id}`" class="bg-brand-950/50 -z-10 h-38 w-full object-cover rounded-2xl flex absolute">
-                <div v-if="art.art_previews.length > 4" class="grid grid-cols-2 gap-1 bg-dark-001 w-full">
-                    <img :src="art.art_previews[0].url" class="object-cover w-full h-18 rounded-tl-2xl pixelated-img" />
-                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl pixelated-img" />
-                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-bl-2xl pixelated-img" />
-                    <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl pixelated-img" />
-                    <div class="absolute bottom-4 right-10 text-md text-light-002 bg-brand-950/75 size-12 rounded-full flex items-center justify-center">
-                        <p>+{{ art.art_previews.length - 4 }}</p>
-                    </div>
-                </div>
-                <div v-else-if="art.art_previews.length == 4" class="grid grid-cols-2 gap-1 bg-dark-001 w-full">
-                    <img :src="art.art_previews[0].url" class="object-cover w-full h-18 rounded-tl-2xl pixelated-img" />
-                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl pixelated-img" />
-                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-bl-2xl pixelated-img" />
-                    <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl pixelated-img" />
-                </div>
-                <div v-else-if="art.art_previews.length == 3" class="grid grid-cols-2 gap-1 bg-dark-001 h-full w-full">
-                    <img :src="art.art_previews[0].url" class="object-cover w-full h-full rounded-l-2xl row-span-2 pixelated-img" />
-                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl pixelated-img" />
-                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-br-2xl pixelated-img" />
-                    <!-- <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl" /> -->
-                </div>
-                <div v-else-if="art.art_previews.length == 2" class="grid grid-cols-2 gap-1 h-full">
+            <div v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'" class="bg-brand-950/50 absolute -z-10 h-full w-full"></div>
+            <a
+                v-else-if="art.art_previews.length > 0"
+                :href="`https://opengameart.org/content/${art.id}`"
+                class="bg-brand-950/50 h-38 w-full object-cover rounded-2xl flex absolute"
+            >
+                <div class="absolute">
                     <img
-                        v-for="item in art.art_previews"
-                        :src="item.url"
-                        class="object-cover w-full h-full first:rounded-l-2xl last:rounded-r-2xl pixelated-img"
+                        v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'"
+                        :src="previewMusicSoundEffectImage"
+                        class="bg-brand-950/50 absolute -z-10 h-full w-full object-cover rounded-2xl"
                     />
                 </div>
+                <div v-if="art.art_previews.length > 4" class="grid grid-cols-2 gap-1 w-full">
+                    <div class="rounded-tl-2xl overflow-hidden">
+                        <img :src="art.art_previews[0].url" class="object-cover w-full h-full pixelated-img" />
+                    </div>
+                    <div class="rounded-tr-2xl overflow-hidden">
+                        <img :src="art.art_previews[1].url" class="object-cover w-full h-full pixelated-img" />
+                    </div>
+                    <div class="rounded-bl-2xl overflow-hidden">
+                        <img :src="art.art_previews[2].url" class="object-cover w-full h-full rounded-bl-2xl pixelated-img" />
+                    </div>
+                    <div class="rounded-br-2xl overflow-hidden relative">
+                        <img :src="art.art_previews[3].url" class="object-cover w-full h-full rounded-br-2xl pixelated-img" />
 
-                <div v-else class="w-full h-full">
-                    <img :src="art.art_previews[0].url" class="h-full w-full object-cover rounded-2xl pixelated-img" />
+                        <div
+                            class="absolute top-0 w-full h-full text-md text-light-002 bg-brand-950/75 size-12 rounded-br-2xl flex items-center justify-center"
+                        >
+                            <p>+{{ art.art_previews.length - 4 }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="art.art_previews.length == 4" class="grid grid-cols-2 gap-1 w-full">
+                    <img :src="art.art_previews[0].url" class="object-cover w-full h-18 rounded-tl-2xl pixelated-img" />
+                    <img :src="art.art_previews[1].url" class="object-cover w-full h-18 rounded-tr-2xl pixelated-img" />
+                    <img :src="art.art_previews[2].url" class="object-cover w-full h-18 rounded-bl-2xl pixelated-img" />
+                    <img :src="art.art_previews[3].url" class="object-cover w-full h-18 rounded-br-2xl pixelated-img" />
+                </div>
+                <div v-else-if="art.art_previews.length == 3" class="grid grid-cols-2 gap-1 h-full w-full">
+                    <div class="rounded-l-2xl overflow-hidden row-span-2">
+                        <img :src="art.art_previews[0].url" class="row-span-2 pixelated-img w-full h-full object-cover" />
+                    </div>
+                    <div class="rounded-tr-2xl overflow-hidden">
+                        <img :src="art.art_previews[1].url" class="object-cover w-full h-full pixelated-img" />
+                    </div>
+
+                    <div class="rounded-br-2xl overflow-hidden">
+                        <img :src="art.art_previews[2].url" class="object-cover w-full h-full pixelated-img" />
+                    </div>
+                </div>
+                <div v-else-if="art.art_previews.length == 2" class="grid grid-cols-2 gap-1 h-full w-full">
+                    <div v-for="item in art.art_previews" class="first:rounded-l-2xl last:rounded-r-2xl overflow-hidden">
+                        <img :src="item.url" class="w-full h-full object-cover pixelated-img" />
+                    </div>
+                </div>
+
+                <div v-else class="w-full h-full overflow-hidden rounded-2xl">
+                    <img :src="art.art_previews[0].url" class="h-full w-full object-cover pixelated-img" />
                 </div>
             </a>
 

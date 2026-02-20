@@ -18,15 +18,17 @@ class ForumController extends Controller {
 
         $recent_forum = [
             'content' => $crawler->filterXPath("//div[@class='group-right right-column']/div[1]/div[1]/div[1]")->html(),
+
+            'title' => $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text(),
+            'user_id' => User::where('url_username', $url_username)->exists() ?
+                User::where('url_username', $url_username)->first()->id :
+                $this->scrapeUserAndStore($url_username, $req->bearerToken())->id,
             'created_at' =>
             Carbon::createFromFormat(
                 'l, F j, Y - H:i',
                 $crawler->filterXPath("//div[@id='block-system-main']/div[1]/div[1]/div[2]/div[2]/div[1]/div[1]")->text()
             )->format('Y-m-d H:i:s'),
-            'title' => $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text(),
-            'user_id' => User::where('url_username', $url_username)->exists() ?
-                User::where('url_username', $url_username)->first()->id :
-                $this->scrapeUserAndStore($url_username, $req->bearerToken())->id
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ];
 
         RecentForum::updateOrCreate([

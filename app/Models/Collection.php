@@ -10,7 +10,7 @@ class Collection extends Model {
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable  = ['id', 'user_id',  'title', 'created_at'];
+    protected $fillable  = ['id', 'user_id',  'title', 'created_at', 'updated_at'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);

@@ -10,7 +10,7 @@ class RecentForum extends Model {
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable  = ['id', 'user_id',  'title', 'created_at', 'content'];
+    protected $fillable  = ['id', 'user_id',  'title', 'created_at', 'content', 'updated_at'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);

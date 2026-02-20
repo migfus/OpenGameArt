@@ -11,8 +11,8 @@ import { usePostStore } from './postStore'
 
 export const useNavigationStore = defineStore('navigationStore', () => {
     const $artStore = useArtStore()
-    const { arts, weekly_arts } = storeToRefs($artStore)
-    const { checkArtsForRefresh } = $artStore
+    const { new_arts, weekly_arts } = storeToRefs($artStore)
+    const { checkWeeklyArtsForRefresh, checkNewArtsForRefresh } = $artStore
 
     const $forumStore = useForumStore()
     const { recent_forums } = storeToRefs($forumStore)
@@ -28,7 +28,6 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
     const $postStore = usePostStore()
     const { recent_posts } = storeToRefs($postStore)
-    const { checkPostForRefresh } = $postStore
 
     const navigation_data = reactive<{
         latest_banner_title: string
@@ -60,7 +59,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
             recent_forums.value = data.recent_forum
             affiliates.value = data.affiliates
             weekly_arts.value = data.weekly_arts
-            arts.value = data.new_arts
+            new_arts.value = data.new_arts
             recent_posts.value = data.posts
 
             Object.assign(navigation_data, {
@@ -70,7 +69,9 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
             config.loading = false
 
-            checkArtsForRefresh()
+            // checkNewArtsForRefresh()
+            checkWeeklyArtsForRefresh()
+
             checkForumForRefresh()
             checkCollectionForRefresh()
             checkAffiliatesForRefresh()
