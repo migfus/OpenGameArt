@@ -249,7 +249,7 @@ class HomePageController extends Controller {
     }
 
     private function getDonation() {
-        return Cache::remember('donation_monthly_value', 60 * 60 * 24, function () {
+        return Cache::remember('donation_monthly_value', 0, function () {
             $client = new Client();
 
             $cookieArray = [];
