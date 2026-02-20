@@ -96,8 +96,8 @@ export const useArtStore = defineStore('ArtStore', () => {
     async function getArts() {
         config.loading = true
         try {
-            const { data } = await api.get<Art[]>(`/arts?search=${search_filters.search}`)
             $router.replace({ query: { search: search_filters.search } })
+            const { data } = await api.get<Art[]>(`/arts?search=${search_filters.search}`)
             arts.value = data
         } catch (err) {
             console.log('erro on ArtStore/getArts()', err)

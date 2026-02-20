@@ -35,7 +35,7 @@ class ArtController extends Controller {
         $art['comments_count'] = $this->scrapeTotalComments($crawler);
 
         // SECTION: AUTHOR (OUTSIDE FROM ART URL)
-        $art['author_id'] = $this->getAuthor($crawler);
+        $art['author_id'] = $this->getAuthor($crawler, $req->bearerToken());
 
         $art_db = Art::updateOrCreate([
             'id' => $id
@@ -56,6 +56,7 @@ class ArtController extends Controller {
 
         // SECTION: LATEST COMMENT
         $this->removeLatestComment($id);
+        // dd($req->bearerToken());
         $this->scrapeLatestCommentAndStore($crawler, $id, $req->bearerToken());
 
         // SECTION: FILES
@@ -110,22 +111,23 @@ class ArtController extends Controller {
     private function removeLatestComment(string $art_id): void {
         ArtComment::where('art_id', $art_id)->latest()->limit(1)->delete();
     }
-    private function scrapeLatestCommentAndStore(Crawler $crawler, string $art_id, string $token): void {
+    private function scrapeLatestCommentAndStore(Crawler $crawler, string $art_id, string $token = ''): void {
         $comments = $crawler->filter('#comments .comment')->each(function (Crawler $node) {
             return [
                 'content' => $node->filter('.group-right .field .field-items')->html(),
                 'url_username' => str_replace('/users/', '', $node->filter('.group-left span a')->attr('href')),
+                'username' => $node->filter('.group-left span a')->text(),
                 'created_at' => Carbon::createFromFormat('m/d/Y - H:i', $node->filter('.group-left .field-name-post-date .field-items .field-item')->text())->format('Y-m-d H:i:s'),
             ];
         });
 
 
-        if (count($comments) != 0) {
+        if ($comments) {
             $item = $comments[0];
 
             $user_id = null;
             if (!User::where('url_username', $item['url_username'])->exists()) {
-                $user_id = $this->scrapeUserAndStore($item['url_username'], $token)->id;
+                $user_id = $this->scrapeUserAndStore($item['url_username'], $item['username'], $token)->id;
             } else {
                 $user_id = User::where('url_username', $item['url_username'])->first()->id;
             }
@@ -214,8 +216,9 @@ class ArtController extends Controller {
     }
 
     // SECTION: ART'S AUTHOR
-    private function getAuthor(Crawler $crawler): int {
+    private function getAuthor(Crawler $crawler, string $token): int {
         $url_username = '';
+        $username = '';
         // NOTE: If author
         if ($crawler->filter('div#block-system-main>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div>strong>a')->count() > 0) {
             $url_username = preg_replace(
@@ -223,15 +226,18 @@ class ArtController extends Controller {
                 '',
                 $crawler->filter('div#block-system-main>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div>strong>a')->attr('href')
             );
+            $username = $crawler->filter('div#block-system-main>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div>strong>a')->text();
             // NOTE: if not author (art created by collection owner)
         } else {
             $url_username = preg_replace('#^/users/#', '', $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->attr('href'));
+            $username = $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->text();
         }
+
 
         if (User::where('url_username', $url_username)->exists()) {
             return User::where('url_username', $url_username)->first()->id;
         } else {
-            return $this->scrapeUserAndStore($url_username, null)->id;
+            return $this->scrapeUserAndStore($url_username, $username, $token)->id;
         }
     }
 

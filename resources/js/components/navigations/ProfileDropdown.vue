@@ -8,7 +8,7 @@
                         class="size-8 rounded-full ring-2 ring-brand-900 transition-all hover:ring-4 cursor-pointer"
                         :alt="$authStore.auth.username"
                     />
-                    <Icon icon="memory:chevron-down" class="size-4 absolute bottom-0 right-0 bg-dark-001 rounded" />
+                    <Icon icon="pixelarticons:chevron-down" class="size-4 absolute bottom-0 right-0 bg-dark-001 rounded" />
                 </div>
             </MenuButton>
         </div>
@@ -40,7 +40,7 @@
                                 ]"
                             >
                                 <Icon v-if="$authStore.config.loading" icon="memory:border-bottom" class="size-4 retro-spinner" />
-                                <Icon v-else icon="memory:logout" class="size-4" />
+                                <Icon v-else icon="pixelarticons:logout" class="size-4" />
                                 <p>Sign out</p>
                             </button>
                         </MenuItem>
@@ -63,7 +63,7 @@ const account_profile_menus = [
     {
         href: { name: 'dashboard' },
         name: 'Dashboard',
-        icon: 'memory:apps-box'
+        icon: 'pixelarticons:grid'
     },
     {
         href: { name: 'account-settings' },

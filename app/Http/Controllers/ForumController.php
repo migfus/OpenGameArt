@@ -15,6 +15,7 @@ class ForumController extends Controller {
         $crawler = new Crawler($body);
 
         $url_username = str_replace('/users/', '', $crawler->filterXPath("//a[@class='username']")->attr('href'));
+        $username = $crawler->filterXPath("//a[@class='username']")->text();
 
         $recent_forum = [
             'content' => $crawler->filterXPath("//div[@class='group-right right-column']/div[1]/div[1]/div[1]")->html(),
@@ -22,7 +23,7 @@ class ForumController extends Controller {
             'title' => $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text(),
             'user_id' => User::where('url_username', $url_username)->exists() ?
                 User::where('url_username', $url_username)->first()->id :
-                $this->scrapeUserAndStore($url_username, $req->bearerToken())->id,
+                $this->scrapeUserAndStore($url_username, $username, $req->bearerToken())->id,
             'created_at' =>
             Carbon::createFromFormat(
                 'l, F j, Y - H:i',

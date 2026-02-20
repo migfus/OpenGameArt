@@ -69,7 +69,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
 
             config.loading = false
 
-            // checkNewArtsForRefresh()
+            checkNewArtsForRefresh()
             checkWeeklyArtsForRefresh()
 
             checkForumForRefresh()

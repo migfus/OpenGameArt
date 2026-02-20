@@ -252,13 +252,6 @@ class HomePageController extends Controller {
         return Cache::remember('donation_monthly_value', 60 * 60 * 24, function () {
             $client = new Client();
 
-            $cookieArray = [];
-
-            foreach ($cookies as $cookie) {
-                $cookieArray[$cookie->name] = $cookie->value;
-            }
-
-            // Init cookie for patreon
             $cookieArray['patreon_locale_code'] = 'en-US';
             $cookieArray['patreon_location_country_code'] = 'US';
 

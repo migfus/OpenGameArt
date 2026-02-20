@@ -30,7 +30,8 @@ class AffiliateController extends Controller {
         ], [
             'title' => $req->title,
             'image_url' => $image_url,
-            'update_at' => now()->format('Y-m-d H:i:s')
+            'created_at' => now()->format('Y-m-d H:i:s'),
+            'updated_at' => now()->format('Y-m-d H:i:s')
         ]);
 
         return $affiliate->toArray();

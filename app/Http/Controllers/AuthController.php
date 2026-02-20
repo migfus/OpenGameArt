@@ -48,8 +48,9 @@ class AuthController extends Controller {
         $user_session = [];
 
         $url_username = str_replace('/users/', '', $crawler->filter('.active a')->attr('href'));
+        $username = $crawler->filter('.active a')->text();
 
-        $user_id =  $this->scrapeUserAndStore($url_username, '')->id;
+        $user_id =  $this->scrapeUserAndStore($url_username, $username, '')->id;
 
         foreach ($cookieJar->toArray() as $cookie) {
             $user_session = UserSession::create([

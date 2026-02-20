@@ -34,8 +34,8 @@
             <AppButton size="sm" icon="memory:plus" icon_only class="inline lg:hidden" />
             <AppButton size="sm" icon="memory:plus" class="lg:flex hidden">Submit Art</AppButton>
 
-            <Icon icon="line-md:volume-high" class="size-6 text-brand-200 transition-all rounded hover:bg-dark-001 cursor-pointer" />
-            <Icon icon="line-md:bell-loop" class="size-6 text-brand-200 transition-all rounded hover:bg-dark-001 cursor-pointer" />
+            <Icon icon="pixelarticons:volume-2" class="size-6 text-brand-200 transition-all rounded hover:bg-dark-001 cursor-pointer" />
+            <Icon icon="pixelarticons:notification" class="size-6 text-brand-200 transition-all rounded hover:bg-dark-001 cursor-pointer" />
 
             <ProfileDropdown v-if="$authStore.auth" />
 

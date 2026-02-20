@@ -35,20 +35,25 @@ abstract class Controller {
         return $crawler;
     }
 
-    public function scrapeUserAndStore(string $url_username, $token): User {
-        $crawler = $this->authenticate("https://opengameart.org/users/" . $url_username, $token);
+    public function scrapeUserAndStore(string $url_username, string $username, string $token): User {
+        try {
+            $crawler = $this->authenticate("https://opengameart.org/users/" . $url_username, $token);
 
-        $username = $crawler->filter('.username')->text();
-        $user_id = str_replace('/collections', '', str_replace('/user/', '', $crawler->filter('div#right>div>ul>li:nth-of-type(2)>a')->attr('href')));
-        $image_url = $crawler->filterXPath("//img[@typeof='foaf:Image']")->attr('src');
+            $user_id = str_replace('/collections', '', str_replace('/user/', '', $crawler->filter('div#right>div>ul>li:nth-of-type(2)>a')->attr('href')));
+            $image_url = $crawler->filterXPath("//img[@typeof='foaf:Image']")->attr('src');
 
-        $user = User::createOrFirst([
-            'id' => $user_id,
-            'url_username' => $url_username,
-            'username' => $username,
-            'image_url' => $image_url
-        ]);
+            return User::firstOrCreate(['id' => $user_id], [
+                'url_username' => $url_username,
+                'username' => $username,
+                'image_url' => $image_url
+            ]);
+        } catch (\Exception $e) {
 
-        return $user;
+            return User::firstOrCreate(['id' => rand(100000, 999999)], [
+                'url_username' => $url_username,
+                'username' => $username,
+                'image_url' => ''
+            ]);
+        }
     }
 }

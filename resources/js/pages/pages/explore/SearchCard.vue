@@ -1,7 +1,8 @@
 <template>
-    <div class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
-        <div class="max-w-full w-md">
-            <AppInput name="Search" v-model="search_filters.search" :placeholder="query.selected_filter.placeholder" :loading="config.loading" />
+    <form @submit.prevent="search()" class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
+        <div class="max-w-full w-md relative">
+            <AppInput name="Search" v-model="search_filters.search" :placeholder="query.selected_filter.placeholder" />
+            <AppButton class="absolute right-0 top-6" size="sm" icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
         </div>
 
         <div class="flex gap-2 flex-wrap">
@@ -41,22 +42,24 @@
             </AppButton>
             <AppButton icon="memory:search">Search</AppButton>
         </div>
-    </div>
+    </form>
 </template>
 
 <script setup lang="ts">
 import AppButton from '@/components/form/AppButton.vue'
-import AppInput from '@/components/form/AppInput.vue'
 import AppCheckbox from '@/components/form/AppCheckbox.vue'
+import AppInput from '@/components/form/AppInput.vue'
 
-import { onMounted, reactive, watch } from 'vue'
 import { useArtStore } from '@/stores/artStore'
-import { storeToRefs } from 'pinia'
 import { useDebounceFn } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
+import { onMounted, reactive, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 const $artStore = useArtStore()
 const { search_filters, config } = storeToRefs($artStore)
 const { getArts, checkExploreArtsForRefresh, cancelAllRequests } = $artStore
+const $route = useRoute()
 
 interface SearchFilter {
     name: string
@@ -193,21 +196,14 @@ function changeSearchFilter(new_filter: SearchFilter) {
     query.search = ''
 }
 
-watch(
-    () => search_filters.value.search,
-    () => {
-        throttleSearch()
-    }
-)
-
-const throttleSearch = useDebounceFn(async () => {
-    await cancelAllRequests()
+async function search() {
+    cancelAllRequests()
     await getArts()
     checkExploreArtsForRefresh()
-}, 2000)
+}
 
 onMounted(() => {
-    getArts()
-    checkExploreArtsForRefresh()
+    search_filters.value.search = $route.query.search as string
+    search()
 })
 </script>

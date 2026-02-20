@@ -1,17 +1,22 @@
 <template>
     <div :class="['flex flex-col gap-2 cursor-pointer group relative']">
         <div :class="['w-full h-38 relative bg-cover rounded-2xl border-2 border-brand-950 flex flex-col justify-end z-10 bg-dark-001 cursor-default']">
-            <div v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'" class="bg-brand-950/50 absolute -z-10 h-full w-full"></div>
+            <!-- SECTION: MUSIC / SOUND VISUAL PREVIEW -->
+            <div v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'" class="absolute h-full w-full">
+                <img :src="art.user?.image_url" class="w-full h-full object-cove rounded-2xl" />
+            </div>
+
+            <!-- SECTION: ARTS CONTENT -->
             <a
                 v-else-if="art.art_previews.length > 0"
                 :href="`https://opengameart.org/content/${art.id}`"
                 class="bg-brand-950/50 h-38 w-full object-cover rounded-2xl flex absolute"
             >
-                <div class="absolute">
+                <div class="absolute bottom-0">
                     <img
                         v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'"
                         :src="previewMusicSoundEffectImage"
-                        class="bg-brand-950/50 absolute -z-10 h-full w-full object-cover rounded-2xl"
+                        class="absolute h-full w-full object-cover rounded-2xl z-10"
                     />
                 </div>
                 <div v-if="art.art_previews.length > 4" class="grid grid-cols-2 gap-1 w-full">
@@ -63,11 +68,16 @@
                 </div>
             </a>
 
+            <!-- SECTION: OVERLAY -->
             <div class="flex flex-col h-full justify-between">
                 <div class="p-2 flex gap-1 justify-end relative">
-                    <p v-if="art.art_category" class="bg-brand-950 px-2 rounded-xl text-sm">{{ art.art_category.name }}</p>
+                    <p v-if="art.art_category" class="bg-brand-950/70 px-2 rounded-xl text-xs font-semibold py-1 backdrop-blur-lg">
+                        {{ art.art_category.name }}
+                    </p>
                     <p v-else class="bg-brand-950 px-2 rounded-xl text-sm h-4 w-8"></p>
                 </div>
+
+                <!-- SECTION: MUSIC / SFX -->
                 <div v-if="art.art_category?.name == 'Music' || art.art_category?.name == 'Sound Effect'" class="flex justify-center">
                     <DataTransition v-if="is_playing" class="flex gap-2 items-center cursor-pointer">
                         <Icon
@@ -119,7 +129,7 @@
                 <a
                     v-if="art.user"
                     :href="`https://opengameart.org/users/${art.user.url_username}`"
-                    class="p-2 flex gap-1 bg-linear-to-t from-dark-001 to-transparent rounded-b-xl justify-between h-12 items-end"
+                    class="p-2 flex gap-1 bg-linear-to-t from-dark-001 to-transparent rounded-b-xl justify-between h-12 items-end z-10 hover:from-dark-002 transition-all"
                 >
                     <div class="flex gap-2 truncate">
                         <img :src="art.user.image_url" class="size-5 rounded-full border border-brand-950" />
@@ -210,10 +220,10 @@
                         <div
                             :class="[
                                 show_player && is_playing ? 'translate-y-0 ' : 'translate-y-16 md:translate-y-0',
-                                'fixed bg-brand-950/90 backdrop-blur-sm w-full py-6 px-3 z-10 flex flex-col gap-2 transition-all md:rounded-2xl md:w-xl bottom-51 md:bottom-35'
+                                'fixed bg-brand-950/90 backdrop-blur-sm w-full py-6 px-3 z-10 flex flex-col gap-2 transition-all md:rounded-2xl md:w-lg bottom-51 md:bottom-25'
                             ]"
                         >
-                            <div class="text-light-001 max-h-33 overflow-y-scroll gap-1 flex flex-col">
+                            <div class="text-light-001 max-h-33 overflow-y-scroll gap-1 flex flex-col scrollbar-hide">
                                 <div
                                     v-for="item in art.art_previews.filter((item) => item.art_preview_category.name == 'audio')"
                                     @click.stop="playAudio(item.url)"
@@ -249,7 +259,7 @@
                         <div
                             :class="[
                                 show_player && is_playing ? 'translate-y-0 ' : 'translate-y-16 md:translate-y-0',
-                                'fixed bg-brand-950/90 backdrop-blur-sm w-full h-50 md:h-34 bottom-0 z-10 flex flex-col gap-2 transition-all md:rounded-t-2xl md:w-xl'
+                                'fixed bg-brand-950/90 backdrop-blur-sm w-full h-44 md:h-24 bottom-0 z-10 flex flex-col gap-2 transition-all md:rounded-t-2xl md:w-lg'
                             ]"
                         >
                             <div class="flex justify-between py-2 text-brand-300 px-4 items-center gap-2">
@@ -312,22 +322,6 @@
                                         <Icon icon="memory:arrow-down-bold" class="size-4" />
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="text-brand-100 px-4">
-                                <div v-if="art.art_comments.length > 0" class="flex justify-between items-center gap-2 text-light-001/75">
-                                    <div class="flex gap-2 items-center text-sm truncate">
-                                        <img :src="art.art_comments[art.art_comments.length - 1].user.image_url" class="rounded-full size-4" />
-                                        <div class="line-clamp-1" v-html="art.art_comments[art.art_comments.length - 1].content" />
-                                    </div>
-
-                                    <div class="flex gap-1 items-center text-sm ml-2">
-                                        <p>{{ art.art_comments.length }}</p>
-                                        <Icon icon="memory:comment-text" class="size-4" />
-                                    </div>
-                                </div>
-
-                                <div v-else class="flex justify-between items-center gap-2 text-light-001/25">No Comments</div>
                             </div>
 
                             <div class="space-y-2 px-4">
