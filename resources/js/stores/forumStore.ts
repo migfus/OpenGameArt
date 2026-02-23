@@ -3,7 +3,6 @@ import api from '@/utils/axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
-import { t } from 'vue-router/dist/index-Cu9B0wDz.mjs'
 
 const ttl = 24 // 24hrs
 
@@ -12,7 +11,9 @@ export const useForumStore = defineStore('ForumStore', () => {
     const recent_forums = ref<Forum[]>([])
 
     const config = reactive<StoreConfig>({
-        loading: false
+        loading: false,
+        lazy_loading: false,
+        lazy_page: 1
     })
 
     async function checkForumForRefresh() {

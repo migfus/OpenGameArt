@@ -148,3 +148,11 @@
     font-weight: 400;
     font-style: normal;
 }
+
+/* SECTION: ADDITIONAL CLASSES */
+.truncate-start {
+    direction: rtl;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

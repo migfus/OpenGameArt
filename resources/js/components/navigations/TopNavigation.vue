@@ -1,7 +1,7 @@
 <template>
     <div
         :class="[
-            'bg-brand-950 px-6 py-2 font-semibold flex justify-between gap-2 text-brand-200 h-18 border-b border-brand-900 overflow-hidden transition-all duration-500'
+            'bg-brand-950 px-6 py-2 font-semibold flex justify-between gap-2 text-brand-200 h-18 border-b border-brand-900 overflow-visible transition-all duration-500'
         ]"
         :style="{ height: `${$top_navigation_hidden ? '0px' : '70px'}` }"
     >
@@ -13,23 +13,11 @@
                 <p class="absolute rotate-5 bg-yellow-900/75 px-20 hidden md:flex text-yellow-50 text-lg">Not Official</p>
                 <p class="absolute rotate-15 bg-yellow-900/75 text-yellow-50 md:hidden">Not Official</p>
             </RouterLink>
-            <!--
-            <RouterLink to="/" class="gap-4 items-center hidden md:flex">
-                <BasicTransition>
-                    <p v-if="$navigationStore.config.loading" class="text-xs press-start-2p-regular flex flex-wrap w-64 text-center rotate-4 absolute">
-                        Somethin' cookin'...
-                    </p>
-                    <p v-else class="text-xs press-start-2p-regular flex flex-wrap w-64 text-center rotate-4 absolute line-clamp-2">
-                        {{ $navigationStore.latest_banner_title }}
-                    </p>
-                </BasicTransition>
-            </RouterLink> -->
         </div>
 
         <!-- SECTION: RIGHT -->
         <div class="flex gap-4 items-center">
-            <Icon icon="memory:search" class="size-6 text-brand-200 inline lg:hidden" />
-            <AppInput name="Search" v-model="search" noLabel placeholder="Search" class="hidden lg:flex" />
+            <SearchDropdown />
 
             <AppButton size="sm" icon="memory:plus" icon_only class="inline lg:hidden" />
             <AppButton size="sm" icon="memory:plus" class="lg:flex hidden">Submit Art</AppButton>
@@ -50,14 +38,12 @@
 import ProfileDropdown from '@/components/navigations/ProfileDropdown.vue'
 import { Icon } from '@iconify/vue'
 import AppButton from '../form/AppButton.vue'
-import AppInput from '../form/AppInput.vue'
+import SearchDropdown from './SearchDropdown.vue'
 
 import { useAuthStore } from '@/stores/authStore'
-import { ref } from 'vue'
 
 const $top_navigation_hidden = defineModel<boolean>('top_navigation_hidden', { required: true })
 const $authStore = useAuthStore()
 
-const search = ref('')
 const app_url = window.location.origin
 </script>

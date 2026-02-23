@@ -1,9 +1,9 @@
 <template>
-    <div :class="['flex flex-col gap-8 cursor-pointer group relative']">
+    <div :class="['flex flex-col gap-1 cursor-pointer group relative']">
         <div :class="['w-full h-38 relative bg-cover rounded-2xl border-2 border-brand-950 flex flex-col justify-end z-10 bg-dark-001 cursor-default']">
             <!-- SECTION: MUSIC / SOUND VISUAL PREVIEW -->
             <div v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'" class="absolute h-full w-full">
-                <img :src="art.user?.image_url" class="w-full h-full object-cove rounded-2xl" />
+                <img :src="art.user?.image_url" class="w-full h-full object-cover rounded-2xl pixelated-img" />
             </div>
 
             <!-- SECTION: ARTS CONTENT -->
@@ -156,6 +156,7 @@
                 </div>
             </div>
         </div>
+
         <a :href="`https://opengameart.org/content/${art.id}`" class="flex flex-col z-10 justify-between">
             <div class="flex flex-col gap-1 grow h-24">
                 <!-- TITLE -->

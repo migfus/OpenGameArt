@@ -2,28 +2,34 @@
     <form @submit.prevent="search()" class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
         <div class="max-w-full w-md relative">
             <AppInput name="Search" v-model="search_filters.search" :placeholder="query.selected_filter.placeholder" />
-            <AppButton class="absolute right-0 top-6" size="sm" icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
         </div>
 
-        <div class="flex gap-2">
-            <AppButton
-                size="sm"
-                :color="filters.advance_filters ? undefined : 'brand'"
-                @click="filters.advance_filters = false"
-                type="button"
-                icon="pixelarticons:search"
-            >
-                Simple Search
-            </AppButton>
-            <AppButton
-                size="sm"
-                :color="filters.advance_filters ? 'brand' : undefined"
-                @click="filters.advance_filters = true"
-                type="button"
-                icon="pixelarticons:text-search"
-            >
-                Advance Search
-            </AppButton>
+        <div class="flex gap-2 justify-between max-w-full w-md items-start">
+            <div class="flex gap-2">
+                <AppButton
+                    size="sm"
+                    :color="filters.advance_filters ? undefined : 'brand'"
+                    @click="filters.advance_filters = false"
+                    type="button"
+                    icon="pixelarticons:search"
+                >
+                    Simple
+                </AppButton>
+                <AppButton
+                    size="sm"
+                    :color="filters.advance_filters ? 'brand' : undefined"
+                    @click="filters.advance_filters = true"
+                    type="button"
+                    icon="pixelarticons:text-search"
+                >
+                    Advance
+                </AppButton>
+            </div>
+
+            <div class="flex gap-2">
+                <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
+                <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Reset</AppButton>
+            </div>
         </div>
 
         <div v-if="filters.advance_filters" class="flex flex-col gap-2 items-center">
@@ -95,7 +101,7 @@ interface SortBy {
 }
 
 const filters = reactive({
-    advance_filters: true
+    advance_filters: false
 })
 
 const licenses = [

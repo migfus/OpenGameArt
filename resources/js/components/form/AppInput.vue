@@ -16,6 +16,8 @@
                     'w-full rounded-3xl border border-brand-900 placeholder-brand-900 focus:border-brand-500 focus:outline-none focus:ring-brand-500 h-8 py-4 px-3 text-brand-200 font-semibold'
                 ]"
                 autocomplete="off"
+                @focus="$emit('focus', true)"
+                @blur="$emit('focus', false)"
             />
             <Icon v-if="loading" icon="memory:border-bottom" class="retro-spinner absolute top-8.5 right-3" />
             <label v-if="$props.error" for="password" class="block text-sm font-medium text-red-600">
@@ -45,6 +47,7 @@ type TProps = {
 
 const $props = defineProps<TProps>()
 const $model = defineModel()
+const $emit = defineEmits(['focus'])
 
 const inputSize = computed(() => {
     switch ($props.size) {

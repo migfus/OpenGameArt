@@ -111,7 +111,7 @@ class ArtController extends Controller {
     private function removeLatestComment(string $art_id): void {
         ArtComment::where('art_id', $art_id)->latest()->limit(1)->delete();
     }
-    private function scrapeLatestCommentAndStore(Crawler $crawler, string $art_id, string $token = ''): void {
+    private function scrapeLatestCommentAndStore(Crawler $crawler, string $art_id, string | null $token): void {
         $comments = $crawler->filter('#comments .comment')->each(function (Crawler $node) {
             return [
                 'content' => $node->filter('.group-right .field .field-items')->html(),
@@ -216,7 +216,7 @@ class ArtController extends Controller {
     }
 
     // SECTION: ART'S AUTHOR
-    private function getAuthor(Crawler $crawler, string $token): int {
+    private function getAuthor(Crawler $crawler, string | null $token): int {
         $url_username = '';
         $username = '';
         // NOTE: If author

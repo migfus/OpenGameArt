@@ -100,7 +100,8 @@ export const useArtStore = defineStore('ArtStore', () => {
         config.loading = true
         try {
             $router.replace({ query: { search: search_filters.search } })
-            const { data } = await api.get(`/arts?search=${search_filters.search}&page=1`)
+            const { data } = await api.get(`/arts?search=${search_filters.search ?? ''}&page=1`)
+            arts.value = []
             arts.value = data.data
             total_result.value = data.total_result
             config.lazy_page = 1
@@ -113,7 +114,7 @@ export const useArtStore = defineStore('ArtStore', () => {
     async function lazyGetArts() {
         config.lazy_loading = true
         try {
-            const { data } = await api.get(`/arts?search=${search_filters.search}&page=${config.lazy_page}`)
+            const { data } = await api.get(`/arts?search=${search_filters.search ?? ''}&page=${config.lazy_page}`)
 
             arts.value.push(...data.data)
         } catch (err) {

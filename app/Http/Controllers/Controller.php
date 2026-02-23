@@ -35,7 +35,7 @@ abstract class Controller {
         return $crawler;
     }
 
-    public function scrapeUserAndStore(string $url_username, string $username, string $token): User {
+    public function scrapeUserAndStore(string $url_username, string $username, string | null $token): User {
         try {
             $crawler = $this->authenticate("https://opengameart.org/users/" . $url_username, $token);
 
