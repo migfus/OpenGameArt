@@ -84,3 +84,24 @@ export function localStorageSerializer() {
         }
     }
 }
+
+export function formatNumber(num: number, decimals = 2): string {
+    if (num === null || num === undefined) return ''
+
+    const abs = Math.abs(num)
+
+    const units = [
+        { value: 1e12, symbol: 'T' },
+        { value: 1e9, symbol: 'B' },
+        { value: 1e6, symbol: 'M' },
+        { value: 1e3, symbol: 'k' }
+    ]
+
+    for (const unit of units) {
+        if (abs >= unit.value) {
+            return (num / unit.value).toFixed(decimals).replace(/\.0+$|(\.\d*[1-9])0+$/, '$1') + unit.symbol
+        }
+    }
+
+    return num.toString()
+}

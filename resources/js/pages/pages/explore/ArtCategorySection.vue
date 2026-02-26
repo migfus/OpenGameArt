@@ -3,7 +3,7 @@
         <div class="flex justify-between gap-2">
             <p v-if="total_result">{{ total_result > 0 ? `${total_result} Total Results` : `${total_result} Total Result` }}</p>
             <a
-                :href="`https://opengameart.org/art-search-advanced?keys=${search_filters.search}&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&sort_by=score&sort_order=DESC&items_per_page=24&Collection=`"
+                :href="`https://opengameart.org/art-search-advanced?keys=${search_query.search}&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&sort_by=score&sort_order=DESC&items_per_page=24&Collection=`"
                 >Go to OpenGameArt.org</a
             >
         </div>
@@ -48,7 +48,7 @@ import { animation_delay, clearDelays } from '@/utils/utils'
 import { storeToRefs } from 'pinia'
 
 const $artStore = useArtStore()
-const { total_result, search_filters, config, arts } = storeToRefs($artStore)
+const { total_result, search_query, config, arts } = storeToRefs($artStore)
 const { lazyGetArts } = $artStore
 
 import { onBeforeUnmount, onMounted } from 'vue'

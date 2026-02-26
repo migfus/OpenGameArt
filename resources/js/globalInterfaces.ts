@@ -107,3 +107,9 @@ export interface LaravelTimestamp {
 export interface SearchFilters {
     search: string
 }
+
+export interface ArtType {
+    id: number
+    name: string
+    icon: string
+}

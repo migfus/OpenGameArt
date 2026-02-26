@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder {
         $this->call([
             ArtPreviewCategorySeeder::class,
             UserSeeder::class,
+            ArtTypeSeeder::class,
         ]);
     }
 }

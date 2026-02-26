@@ -1,92 +1,110 @@
 <template>
-    <form @submit.prevent="search()" class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
-        <div class="max-w-full w-md relative">
-            <AppInput name="Search" v-model="search_filters.search" :placeholder="query.selected_filter.placeholder" />
+    <div>
+        <form @submit.prevent="search()" class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
+            <div class="max-w-full w-md relative">
+                <AppInput name="Search" v-model="search_query.search" :placeholder="query.selected_filter.placeholder" />
+            </div>
+
+            <div class="flex gap-2 justify-between max-w-full w-md items-start">
+                <div class="flex gap-2">
+                    <AppButton
+                        size="sm"
+                        :color="filters.advance_filters ? undefined : 'brand'"
+                        @click="filters.advance_filters = false"
+                        type="button"
+                        icon="pixelarticons:search"
+                    >
+                        Simple
+                    </AppButton>
+                    <AppButton
+                        size="sm"
+                        :color="filters.advance_filters ? 'brand' : undefined"
+                        @click="filters.advance_filters = true"
+                        type="button"
+                        icon="pixelarticons:text-search"
+                    >
+                        Advance
+                    </AppButton>
+                </div>
+
+                <div class="flex gap-2">
+                    <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
+                    <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Reset</AppButton>
+                </div>
+            </div>
+
+            <div v-if="filters.advance_filters" class="flex flex-col gap-2 items-center">
+                <div class="flex gap-2 flex-wrap">
+                    <AppButton
+                        v-for="item in search_filter"
+                        :icon="item.icon"
+                        :color="query.selected_filter.name == item.name ? 'brand' : undefined"
+                        @click="changeSearchFilter(item)"
+                    >
+                        {{ item.name }}
+                    </AppButton>
+                </div>
+
+                <div v-if="add_filters.licenses" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
+                    <AppCheckbox v-for="item in licenses" :name="item.name" v-model="item.checked" />
+                </div>
+                <!-- <div v-if="add_filters.assets_type" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
+                    <AppCheckbox v-for="item in assets_types" :name="item.name" v-model="item.checked" />
+                </div> -->
+
+                <div class="flex gap-2 flex-wrap">
+                    <AppButton :icon="add_filters.licenses ? 'memory:alpha-x' : 'memory:alpha-c'" @click="add_filters.licenses = !add_filters.licenses">
+                        {{ `${add_filters.licenses ? 'All Licenses' : 'Filter Licenses'}` }}
+                    </AppButton>
+                    <AppButton
+                        :icon="add_filters.assets_type ? 'memory:alpha-x' : 'memory:wall-front-damaged'"
+                        @click="add_filters.assets_type = !add_filters.assets_type"
+                    >
+                        {{ `${add_filters.assets_type ? 'All Assets Types' : 'Filter Assets Type'}` }}
+                    </AppButton>
+                </div>
+
+                <div class="flex gap-2">
+                    <AppButton icon="memory:rotate-clockwise" @click="resetQuery()">Reset</AppButton>
+                    <AppButton :icon="query.sort_by.icon" @click="query.sort_by = query.sort_by.name === 'Recent' ? sort_by[1] : sort_by[0]">
+                        {{ query.sort_by.name }}
+                    </AppButton>
+                    <AppButton icon="memory:search">Search</AppButton>
+                </div>
+            </div>
+        </form>
+
+        <div class="flex gap-2 px-6 flex-wrap">
+            <div
+                v-for="item in art_types"
+                @click="search_query.selected_art_type = item"
+                :class="[
+                    search_query.selected_art_type.name === item.name ? 'border-brand-800 bg-brand-950' : 'bg-dark-002 border-brand-950 hover:bg-brand-950',
+                    'px-3 py-1 rounded-3xl text-sm transition-all cursor-pointer border flex gap-2 items-center '
+                ]"
+            >
+                <Icon :icon="item.icon" class="size-4" />
+                {{ item.name }}
+            </div>
         </div>
-
-        <div class="flex gap-2 justify-between max-w-full w-md items-start">
-            <div class="flex gap-2">
-                <AppButton
-                    size="sm"
-                    :color="filters.advance_filters ? undefined : 'brand'"
-                    @click="filters.advance_filters = false"
-                    type="button"
-                    icon="pixelarticons:search"
-                >
-                    Simple
-                </AppButton>
-                <AppButton
-                    size="sm"
-                    :color="filters.advance_filters ? 'brand' : undefined"
-                    @click="filters.advance_filters = true"
-                    type="button"
-                    icon="pixelarticons:text-search"
-                >
-                    Advance
-                </AppButton>
-            </div>
-
-            <div class="flex gap-2">
-                <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
-                <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Reset</AppButton>
-            </div>
-        </div>
-
-        <div v-if="filters.advance_filters" class="flex flex-col gap-2 items-center">
-            <div class="flex gap-2 flex-wrap">
-                <AppButton
-                    v-for="item in search_filter"
-                    :icon="item.icon"
-                    :color="query.selected_filter.name == item.name ? 'brand' : undefined"
-                    @click="changeSearchFilter(item)"
-                >
-                    {{ item.name }}
-                </AppButton>
-            </div>
-
-            <div v-if="add_filters.licenses" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
-                <AppCheckbox v-for="item in licenses" :name="item.name" v-model="item.checked" />
-            </div>
-            <div v-if="add_filters.assets_type" class="flex gap-4 flex-wrap bg-dark-001 p-2 px-4 rounded-xl">
-                <AppCheckbox v-for="item in assets_types" :name="item.name" v-model="item.checked" />
-            </div>
-
-            <div class="flex gap-2 flex-wrap">
-                <AppButton :icon="add_filters.licenses ? 'memory:alpha-x' : 'memory:alpha-c'" @click="add_filters.licenses = !add_filters.licenses">
-                    {{ `${add_filters.licenses ? 'All Licenses' : 'Filter Licenses'}` }}
-                </AppButton>
-                <AppButton
-                    :icon="add_filters.assets_type ? 'memory:alpha-x' : 'memory:wall-front-damaged'"
-                    @click="add_filters.assets_type = !add_filters.assets_type"
-                >
-                    {{ `${add_filters.assets_type ? 'All Assets Types' : 'Filter Assets Type'}` }}
-                </AppButton>
-            </div>
-
-            <div class="flex gap-2">
-                <AppButton icon="memory:rotate-clockwise" @click="resetQuery()">Reset</AppButton>
-                <AppButton :icon="query.sort_by.icon" @click="query.sort_by = query.sort_by.name === 'Recent' ? sort_by[1] : sort_by[0]">
-                    {{ query.sort_by.name }}
-                </AppButton>
-                <AppButton icon="memory:search">Search</AppButton>
-            </div>
-        </div>
-    </form>
+    </div>
 </template>
 
 <script setup lang="ts">
 import AppButton from '@/components/form/AppButton.vue'
 import AppCheckbox from '@/components/form/AppCheckbox.vue'
 import AppInput from '@/components/form/AppInput.vue'
+import { ArtType } from '@/globalInterfaces'
 
 import { useArtStore } from '@/stores/artStore'
+import { Icon } from '@iconify/vue'
 import { storeToRefs } from 'pinia'
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const $artStore = useArtStore()
-const { search_filters, config } = storeToRefs($artStore)
-const { getArts, checkExploreArtsForRefresh, cancelAllRequests } = $artStore
+const { search_query, config, art_types } = storeToRefs($artStore)
+const { getArts, checkExploreArtsForRefresh, cancelAllRequests, mountables } = $artStore
 const $route = useRoute()
 
 interface SearchFilter {
@@ -139,37 +157,6 @@ const licenses = [
     },
     {
         name: 'CC-BY-SA 3.0',
-        checked: true
-    }
-]
-
-const assets_types = [
-    {
-        name: '2D Art',
-        checked: true
-    },
-    {
-        name: '3D Art',
-        checked: true
-    },
-    {
-        name: 'Concept Art',
-        checked: true
-    },
-    {
-        name: 'Texture',
-        checked: true
-    },
-    {
-        name: 'Music',
-        checked: true
-    },
-    {
-        name: 'Sound Effect',
-        checked: true
-    },
-    {
-        name: 'Document',
         checked: true
     }
 ]
@@ -235,7 +222,9 @@ async function search() {
 }
 
 onMounted(() => {
-    search_filters.value.search = $route.query.search as string
+    search_query.value.search = $route.query.search as string
+    search_query.value.selected_art_type.id = Number($route.query.field_art_type_tid as string)
     search()
+    mountables()
 })
 </script>

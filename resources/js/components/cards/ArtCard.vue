@@ -144,7 +144,7 @@
                             <Icon icon="memory:heart" class="size-3" />
                         </div>
                         <div v-if="art.files.length > 0" class="flex items-center gap-1">
-                            <p class="text-sm">{{ art.files.reduce((sum, item) => sum + item.download_count, 0) }}</p>
+                            <p class="text-sm">{{ formatNumber(art.files.reduce((sum, item) => sum + item.download_count, 0)) }}</p>
                             <Icon icon="memory:arrow-down-bold" class="size-3" />
                         </div>
                     </div>
@@ -319,7 +319,7 @@
                                     </div>
 
                                     <div v-if="art.files.length > 0" class="flex items-center gap-1">
-                                        <p class="text-sm">{{ art.files.reduce((sum, item) => sum + item.download_count, 0) }}</p>
+                                        <p class="text-sm">{{ formatNumber(art.files.reduce((sum, item) => sum + item.download_count, 0)) }}</p>
                                         <Icon icon="memory:arrow-down-bold" class="size-4" />
                                     </div>
                                 </div>
@@ -356,7 +356,7 @@ import BasicTransition from '../transitions/BasicTransition.vue'
 import DataTransition from '../transitions/DataTransition.vue'
 
 import { Art } from '@/globalInterfaces'
-import { clearDelays } from '@/utils/utils'
+import { clearDelays, formatNumber } from '@/utils/utils'
 import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
 const { art, idx } = defineProps<{

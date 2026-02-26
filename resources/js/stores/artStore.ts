@@ -1,12 +1,18 @@
-import { Art, StoreConfig, SearchFilters } from '@/globalInterfaces'
+import { Art, StoreConfig, SearchFilters, ArtType } from '@/globalInterfaces'
 import api from '@/utils/axios'
+import { useLocalStorage } from '@vueuse/core'
 import axios from 'axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const ttl = 24 // 24hrs
+const default_art_type = {
+    id: 0,
+    name: 'All',
+    icon: 'pixelarticons:checkbox-on-sharp'
+}
 
 export const useArtStore = defineStore('ArtStore', () => {
     const $router = useRouter()
@@ -14,8 +20,13 @@ export const useArtStore = defineStore('ArtStore', () => {
     const arts = ref<Art[]>([])
     const new_arts = ref<Art[]>([])
     const weekly_arts = ref<Art[]>([])
-    const search_filters = reactive<SearchFilters>({
-        search: ''
+    const art_types = useLocalStorage('art_types', [default_art_type])
+    const search_query = reactive<{
+        search: string
+        selected_art_type: ArtType
+    }>({
+        search: '',
+        selected_art_type: art_types.value[0]
     })
     const total_result = ref<number>(0)
 
@@ -96,14 +107,16 @@ export const useArtStore = defineStore('ArtStore', () => {
         }
     }
 
-    async function getArts() {
+    async function getArts(page = 1) {
         config.loading = true
         try {
-            $router.replace({ query: { search: search_filters.search } })
-            const { data } = await api.get(`/arts?search=${search_filters.search ?? ''}&page=1`)
+            $router.replace({ query: { search: search_query.search, field_art_type_tid: search_query.selected_art_type.id } })
+            const { data } = await api.get(`/arts`, { params: { search: search_query.search, page, field_art_type_tid: search_query.selected_art_type.id } })
             arts.value = []
             arts.value = data.data
+            console.log('getArts Data', data.data)
             total_result.value = data.total_result
+            art_types.value = [default_art_type, ...data.art_types]
             config.lazy_page = 1
         } catch (err) {
             console.log('erro on ArtStore/getArts()', err)
@@ -114,7 +127,7 @@ export const useArtStore = defineStore('ArtStore', () => {
     async function lazyGetArts() {
         config.lazy_loading = true
         try {
-            const { data } = await api.get(`/arts?search=${search_filters.search ?? ''}&page=${config.lazy_page}`)
+            const { data } = await api.get(`/arts?search=${search_query.search ?? ''}&page=${config.lazy_page}&lazy`)
 
             arts.value.push(...data.data)
         } catch (err) {
@@ -128,20 +141,31 @@ export const useArtStore = defineStore('ArtStore', () => {
         cancelSource.value = axios.CancelToken.source()
     }
 
+    function mountables() {
+        watch(
+            () => search_query.selected_art_type,
+            () => {
+                getArts(1)
+            }
+        )
+    }
+
     return {
         cancelSource,
         arts,
         new_arts,
         weekly_arts,
         config,
-        search_filters,
+        search_query,
         total_result,
+        art_types,
 
         checkWeeklyArtsForRefresh,
         checkNewArtsForRefresh,
         checkExploreArtsForRefresh,
         getArts,
         cancelAllRequests,
-        lazyGetArts
+        lazyGetArts,
+        mountables
     }
 })
