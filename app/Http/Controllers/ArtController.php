@@ -285,21 +285,21 @@ class ArtController extends Controller {
         }
 
 
-        dd($crawler->filter('.region-content')->html());
+        // dd($crawler->filter('.region-content')->html());
 
         $arts = $crawler->filter('.view-display-id-search_art_advanced .view-content .art-previews-inline')->each(function (Crawler $node) {
             $type = 'Art';
             $preview_type = 'image';
             $previews = '';
-            dd('before str_replace');
+            // dd('before str_replace');
             $id = str_replace('/content/', '', $node->filter('.view-mode-art_preview .field-name-title .field-items .field-item span a')->attr('href'));
 
             if (Art::where('id', $id)->exists()) {
-                dd('existing art');
+                // dd('existing art');
                 return Art::where('id', $id)->with(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user'])->first()->toArray();
             }
 
-            dd('new art ');
+            // dd('new art ');
 
             if ($node->filter('.view-mode-art_preview .field-name-field-art-preview .field-items .field-item a img')->count() > 0) {
                 $previews = $node->filter('.view-mode-art_preview .field-name-field-art-preview .field-items .field-item a img')->attr('src');
@@ -338,7 +338,7 @@ class ArtController extends Controller {
             ];
         });
 
-        dd('completed');
+        // dd('completed');
 
         return response()->json(['data' => $arts, 'total_result' => $total_result, 'art_types' => $art_types]);
 
