@@ -247,7 +247,7 @@ class ArtController extends Controller {
         $req->validate([
             'search' => 'nullable|string|min:3',
             'page' => 'nullable|numeric',
-            'field_art_type_tid' => ['required', 'numeric']
+            'field_art_type_tid' => ['required']
         ]);
 
         $art_types = ArtType::get();
