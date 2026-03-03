@@ -94,12 +94,11 @@
 import AppButton from '@/components/form/AppButton.vue'
 import AppCheckbox from '@/components/form/AppCheckbox.vue'
 import AppInput from '@/components/form/AppInput.vue'
-import { ArtType } from '@/globalInterfaces'
 
 import { useArtStore } from '@/stores/artStore'
 import { Icon } from '@iconify/vue'
 import { storeToRefs } from 'pinia'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
 const $artStore = useArtStore()
@@ -223,7 +222,7 @@ async function search() {
 
 onMounted(() => {
     search_query.value.search = $route.query.search as string
-    search_query.value.selected_art_type.id = Number($route.query.field_art_type_tid as string)
+    search_query.value.selected_art_type = art_types.value[0]
     search()
     mountables()
 })

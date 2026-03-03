@@ -127,7 +127,9 @@ export const useArtStore = defineStore('ArtStore', () => {
     async function lazyGetArts() {
         config.lazy_loading = true
         try {
-            const { data } = await api.get(`/arts?search=${search_query.search ?? ''}&page=${config.lazy_page}&lazy`)
+            const { data } = await api.get(`/arts`, {
+                params: { search: search_query.search, page: config.lazy_page, field_art_type_tid: search_query.selected_art_type.id, lazy: true }
+            })
 
             arts.value.push(...data.data)
         } catch (err) {
