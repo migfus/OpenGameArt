@@ -10,7 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 abstract class Controller {
 
-    public function authenticate(string $html, $token): Crawler {
+    public function authenticate(string $url, $token, $wait = false): Crawler {
         $cookies = UserSession::where('id', $token)->get();
 
         $cookieArray = [];
@@ -19,20 +19,22 @@ abstract class Controller {
             $cookieArray[$cookie->name] = $cookie->value;
         }
 
+
+        // Original Guzzle path
         $cookieJar = CookieJar::fromArray($cookieArray, 'opengameart.org');
 
         $client = new Client([
-            'cookies' => $cookieJar,
+            // 'cookies' => $cookieJar,
             'allow_redirects' => true,
             'headers' => ['User-Agent' => 'Mozilla/5.0'],
+            // 'debug' => true,
         ]);
 
-        $response = $client->get($html);
+        $response = $client->get($url);
         $html = (string) $response->getBody();
 
-        $crawler = new Crawler($html);
 
-        return $crawler;
+        return new Crawler($html);
     }
 
     public function scrapeUserAndStore(string $url_username, string $username, string | null $token): User {

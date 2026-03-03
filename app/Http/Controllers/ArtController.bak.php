@@ -272,6 +272,83 @@ class ArtController extends Controller {
 
         $url = "https://opengameart.org/art-search-advanced?" . http_build_query($params);
 
+        // SECTION: DEBUG AREA
+
+        $cookies = UserSession::where('id', '')->get();
+        $cookieArray = [];
+        foreach ($cookies as $cookie) {
+            $cookieArray[$cookie->name] = $cookie->value;
+        }
+
+        $cookieJar = CookieJar::fromArray($cookieArray, 'opengameart.org');
+
+        $client = new Client([
+            'cookies' => $cookieJar,
+            'allow_redirects' => true,
+            'headers' => ['User-Agent' => 'Mozilla/5.0'],
+        ]);
+
+        // Parse the URL to extract query params
+        $parsedUrl = parse_url($url);
+        parse_str($parsedUrl['query'] ?? '', $queryParams);
+
+        // First fetch the page to get the view-dom-id
+        $response = $client->get($url);
+        $html = (string) $response->getBody();
+        $crawler = new Crawler($html);
+
+        $viewDomId = null;
+        $viewNode = $crawler->filter('[class*="view-dom-id-"]');
+
+
+        if ($viewNode->count() > 0) {
+            $class = $viewNode->attr('class');
+            preg_match('/view-dom-id-([\w]+)/', $class, $matches);
+            $viewDomId = $matches[1] ?? null;
+        }
+
+        // If view-content is already present, return it directly
+        if ($crawler->filter('.view-display-id-search_art_advanced .view-content .art-previews-inline')->count() > 0) {
+            dd($crawler->filter('.view-display-id-search_art_advanced .view-content .art-previews-inline')->html());
+            return $crawler;
+        }
+
+
+        if ($viewDomId) {
+            $ajaxParams = array_merge($queryParams, [
+                'view_name'       => 'art',
+                'view_display_id' => 'search_art_advanced',
+                'view_dom_id'     => $viewDomId,
+            ]);
+
+            $ajaxResponse = $client->get('https://opengameart.org/views/ajax', [
+                'query'   => $ajaxParams,
+                'headers' => [
+                    'User-Agent'       => 'Mozilla/5.0',
+                    'X-Requested-With' => 'XMLHttpRequest',
+                    'Accept'           => 'application/json, text/javascript, */*',
+                    'Referer'          => $url,
+                ],
+            ]);
+
+            $ajaxData = json_decode((string) $ajaxResponse->getBody(), true);
+
+            // Drupal returns an array of commands — find the one with the HTML
+            foreach ($ajaxData as $command) {
+                if (isset($command['data']) && str_contains($command['data'], 'view-content')) {
+                    dd('found someting in weird command');
+                    return new Crawler($command['data']);
+                }
+            }
+        }
+
+        dd('nothing');
+
+
+
+
+        // !SECTION: DEBUG AREA
+
         $crawler = $this->authenticate($url, $req->bearerToken(), false);
 
         $this->scrapeArtTypeAndStore($crawler); // void
@@ -285,7 +362,7 @@ class ArtController extends Controller {
 
         // NOTE: Checks art if available
 
-        // dd($crawler->filter('')->html());
+        dd($crawler->filter('')->html());
 
         $arts = $crawler->filter('.view-display-id-search_art_advanced .view-content .art-previews-inline')->each(function (Crawler $node) {
 
@@ -354,5 +431,9 @@ class ArtController extends Controller {
     }
 
     private function scrapeArtTypeAndStore(Crawler $crawler) {
+    }
+
+    public function show() {
+        return response()->json();
     }
 }

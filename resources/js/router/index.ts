@@ -7,9 +7,14 @@ const routes = [
         component: () => import('@/pages/pages/home/(Index).vue')
     },
     {
-        path: '/explore',
+        path: '/explore', // change this to contents
         name: 'explore',
         component: () => import('@/pages/pages/explore/(Index).vue')
+    },
+    {
+        path: '/contents/:id',
+        name: 'Content',
+        component: () => import('@/pages/pages/contents/(Show).vue')
     },
     {
         path: '/personal-collections',

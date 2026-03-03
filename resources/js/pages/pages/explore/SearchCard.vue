@@ -5,7 +5,7 @@
                 <AppInput name="Search" v-model="search_query.search" :placeholder="query.selected_filter.placeholder" />
             </div>
 
-            <div class="flex gap-2 justify-between max-w-full w-md items-start">
+            <div class="flex flex-col sm:flex-row gap-2 justify-between max-w-full w-md items-center">
                 <div class="flex gap-2">
                     <AppButton
                         size="sm"
@@ -79,7 +79,9 @@
                 v-for="item in art_types"
                 @click="search_query.selected_art_type = item"
                 :class="[
-                    search_query.selected_art_type.name === item.name ? 'border-brand-800 bg-brand-950' : 'bg-dark-002 border-brand-950 hover:bg-brand-950',
+                    search_query.selected_art_type.id === item.id
+                        ? 'border-brand-800 bg-brand-950 font-semibold'
+                        : 'bg-dark-002 border-brand-950 hover:bg-brand-950',
                     'px-3 py-1 rounded-3xl text-sm transition-all cursor-pointer border flex gap-2 items-center '
                 ]"
             >
@@ -223,6 +225,7 @@ async function search() {
 onMounted(() => {
     search_query.value.search = $route.query.search as string
     search_query.value.selected_art_type = art_types.value[0]
+    search_query.value.selected_art_type.id = Number($route.query.field_art_type_tid ?? 0)
     search()
     mountables()
 })

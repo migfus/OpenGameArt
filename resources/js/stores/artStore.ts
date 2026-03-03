@@ -132,6 +132,8 @@ export const useArtStore = defineStore('ArtStore', () => {
             })
 
             arts.value.push(...data.data)
+
+            checkExploreArtsForRefresh()
         } catch (err) {
             console.log('erro on ArtStore/lazyGetArts()', err)
         }
