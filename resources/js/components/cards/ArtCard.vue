@@ -3,7 +3,8 @@
         <div :class="['w-full h-38 relative bg-cover rounded-2xl border-2 border-brand-950 flex flex-col justify-end z-10 bg-dark-001 cursor-default']">
             <!-- SECTION: MUSIC / SOUND VISUAL PREVIEW -->
             <div v-if="art.art_category.name == 'Music' || art.art_category.name == 'Sound Effect'" class="absolute h-full w-full">
-                <img :src="art.user?.image_url" class="w-full h-full object-cover rounded-2xl pixelated-img" />
+                <Icon v-if="!art.user?.image_url" icon="pixelarticons:annoyed" class="size-8" />
+                <img v-else :src="art.user?.image_url" class="w-full h-full object-cover rounded-2xl pixelated-img" />
             </div>
 
             <!-- SECTION: ARTS CONTENT -->
@@ -127,13 +128,15 @@
                 </div>
 
                 <a
-                    v-if="art.user"
-                    :href="`https://opengameart.org/users/${art.user.url_username}`"
+                    v-if="art.updated_at"
+                    :href="`https://opengameart.org/users/${art.user?.url_username}`"
                     class="p-2 flex gap-1 bg-linear-to-t from-dark-001 to-transparent rounded-b-xl justify-between h-12 items-end z-10 hover:from-dark-002 transition-all"
                 >
-                    <div class="flex gap-2 truncate">
-                        <img :src="art.user.image_url" class="size-5 rounded-full border border-brand-950" />
-                        <p class="text-sm font-semibold truncate text-brand-200/75 group-hover:text-brand-200 transition-all">
+                    <div class="flex gap-2 truncate items-center">
+                        <Icon v-if="!art.user" icon="pixelarticons:annoyed" class="size-4" />
+                        <img v-else :src="art.user.image_url" class="size-5 rounded-full border border-brand-950" />
+                        <p v-if="!art.user" class="text-sm font-semibold truncate text-brand-200/75 group-hover:text-brand-200 transition-all">Anonymous</p>
+                        <p v-else class="text-sm font-semibold truncate text-brand-200/75 group-hover:text-brand-200 transition-all">
                             {{ art.user?.username }}
                         </p>
                     </div>
@@ -178,7 +181,7 @@
             <!-- With Comments -->
             <div v-if="art.art_comments.length > 0" class="flex justify-between items-center gap-2 text-light-001/75">
                 <div class="flex gap-2 items-center text-sm truncate">
-                    <img :src="art.art_comments[art.art_comments.length - 1].user.image_url" class="rounded-full size-4" />
+                    <img :src="art.art_comments[art.art_comments.length - 1].user?.image_url ?? ''" class="rounded-full size-4" />
                     <div class="line-clamp-1 animate-maruyq" v-html="art.art_comments[art.art_comments.length - 1].content" />
                 </div>
 
@@ -192,20 +195,6 @@
             <div v-else class="flex justify-between items-center gap-2 text-light-001/25">
                 <div class="flex gap-1 items-center text-sm truncate">
                     <p class="truncate">No comments.</p>
-                </div>
-            </div>
-
-            <!-- Comment loading -->
-            <div v-if="!art.user" class="flex justify-between items-center gap-2 text-light-001/75 animate-pulse">
-                <div class="flex gap-1 items-center w-full">
-                    <div class="size-4 bg-brand-950 rounded-full"></div>
-                    <div class="truncate h-4 bg-brand-950 rounded-2xl w-full" />
-                </div>
-
-                <div class="flex gap-1 items-center text-sm">
-                    <div class="size-4 bg-brand-950 w-6 rounded-2xl"></div>
-
-                    <div class="size-4 bg-brand-950 rounded-full"></div>
                 </div>
             </div>
         </a>

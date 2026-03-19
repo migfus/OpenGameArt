@@ -9,7 +9,7 @@ return new class extends Migration {
         Schema::create('arts', function (Blueprint $table) {
             $table->string('id')->primary();
 
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('art_category_id')->constrained('art_categories')->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->string('title');

@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('art_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
 
             $table->string('art_id');
             $table->foreign('art_id')

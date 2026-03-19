@@ -17,6 +17,7 @@ const default_art_type = {
 export const useArtStore = defineStore('ArtStore', () => {
     const $router = useRouter()
     const cancelSource = ref(axios.CancelToken.source())
+    const refreshCancelSource = ref(axios.CancelToken.source())
     const arts = ref<Art[]>([])
     const new_arts = ref<Art[]>([])
     const weekly_arts = ref<Art[]>([])
@@ -29,6 +30,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         selected_art_type: art_types.value[0]
     })
     const total_result = ref<number>(0)
+    let exploreRefreshRunId = 0
 
     const config = reactive<StoreConfig>({
         loading: false,
@@ -36,7 +38,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         lazy_loading: false
     })
 
-    async function checkExploreArtsForRefresh() {
+    async function checkExploreArtsForRefresh(runId = exploreRefreshRunId) {
         // SECTION: EXPLORE
         const arts_that_needs_refresh = arts.value.filter((item: Art) => {
             console.log('name', item.title, 'updated_at', Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl)
@@ -44,7 +46,12 @@ export const useArtStore = defineStore('ArtStore', () => {
         })
 
         for (const item of arts_that_needs_refresh) {
+            if (runId !== exploreRefreshRunId) return
+
             const data = await refreshArt(item.id)
+
+            if (runId !== exploreRefreshRunId) return
+
             if (data) {
                 const index = arts.value.findIndex((art: Art) => art.id === data.id)
                 if (index !== -1) {
@@ -100,14 +107,23 @@ export const useArtStore = defineStore('ArtStore', () => {
 
     async function refreshArt(id: string): Promise<Art | undefined> {
         try {
-            const { data } = await api.put<Art>(`/arts/${id}`, { method: 'refresh' }, { cancelToken: cancelSource.value.token })
+            const { data } = await api.put<Art>(`/arts/${id}`, { method: 'refresh' }, { cancelToken: refreshCancelSource.value.token })
             return data
         } catch (err) {
+            if (axios.isCancel(err)) {
+                return
+            }
             console.log('error on ArtStore/refreshArt()')
         }
     }
 
     async function getArts(page = 1) {
+        if (page === 1) {
+            exploreRefreshRunId++
+            refreshCancelSource.value.cancel('Cancelled by getArts(1)')
+            refreshCancelSource.value = axios.CancelToken.source()
+        }
+
         config.loading = true
         try {
             $router.replace({ query: { search: search_query.search, field_art_type_tid: search_query.selected_art_type.id } })
@@ -118,6 +134,8 @@ export const useArtStore = defineStore('ArtStore', () => {
             total_result.value = data.total_result
             art_types.value = [default_art_type, ...data.art_types]
             config.lazy_page = 1
+
+            checkExploreArtsForRefresh(exploreRefreshRunId)
         } catch (err) {
             console.log('erro on ArtStore/getArts()', err)
         }
@@ -133,7 +151,7 @@ export const useArtStore = defineStore('ArtStore', () => {
 
             arts.value.push(...data.data)
 
-            checkExploreArtsForRefresh()
+            checkExploreArtsForRefresh(exploreRefreshRunId)
         } catch (err) {
             console.log('erro on ArtStore/lazyGetArts()', err)
         }

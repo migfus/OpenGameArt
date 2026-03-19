@@ -1,0 +1,8 @@
+Please look for the reference following.
+
+Laravel (PHP)
+https://herd.laravel.com/docs/llms.txt
+
+Vue (TypeScript)
+https://vuejs.org/llms-full.txt
+

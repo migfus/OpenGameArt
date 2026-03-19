@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col gap-4 px-6">
         <div class="flex justify-between gap-2">
-            <p v-if="total_result">{{ total_result > 0 ? `${total_result} Total Results` : `${total_result} Total Result` }}</p>
+            <p v-if="total_result">{{ total_result > 0 ? `${formatNumber(total_result)} Total Results` : `${total_result} Total Result` }}</p>
             <a
                 :href="`https://opengameart.org/art-search-advanced?keys=${search_query.search}&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&sort_by=score&sort_order=DESC&items_per_page=24&Collection=`"
                 >Go to OpenGameArt.org</a
@@ -35,6 +35,10 @@
                 @transitionend.once="clearDelays"
             />
         </div>
+
+        <div v-if="total_result <= 0" class="bg-dark-002 px-4 py-2 rounded-3xl text-center">
+            <p>No results found</p>
+        </div>
     </div>
 </template>
 
@@ -44,7 +48,8 @@ import ArtCardLoader from '@/components/cards/ArtCardLoader.vue'
 import DataTransition from '@/components/transitions/DataTransition.vue'
 
 import { useArtStore } from '@/stores/artStore'
-import { animation_delay, clearDelays } from '@/utils/utils'
+import { animation_delay, clearDelays, formatNumber } from '@/utils/utils'
+import { notify } from 'notiwind'
 import { storeToRefs } from 'pinia'
 
 const $artStore = useArtStore()
@@ -53,15 +58,35 @@ const { lazyGetArts } = $artStore
 
 import { onBeforeUnmount, onMounted } from 'vue'
 
+const SCROLL_COOLDOWN_MS = 500
+let nextLazyLoadAt = 0
+let nextEndNoticeAt = 0
+
 function handleScroll() {
     // calculate how far from bottom
     const scrollY = window.scrollY || window.pageYOffset
     const visibleHeight = window.innerHeight
     const pageHeight = document.documentElement.scrollHeight
+    const now = Date.now()
+
+    if (arts.value.length % 72 !== 0) {
+        config.value.lazy_loading = false
+        if (now >= nextEndNoticeAt) {
+            // notify({
+            //     group: 'success',
+            //     title: `You've reached the end of the results`,
+            //     content: 'No more arts to load'
+            // })
+            nextEndNoticeAt = now + SCROLL_COOLDOWN_MS
+        }
+        return
+    }
 
     if (scrollY + visibleHeight >= pageHeight - 10) {
-        // alert('bottom')
-        if (config.value.lazy_loading == false) {
+        if (now < nextLazyLoadAt) return
+
+        if (config.value.lazy_loading === false) {
+            nextLazyLoadAt = now + SCROLL_COOLDOWN_MS
             config.value.lazy_page++
             lazyGetArts()
         }

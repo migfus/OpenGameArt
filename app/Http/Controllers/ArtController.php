@@ -115,10 +115,16 @@ class ArtController extends Controller {
     }
     private function scrapeLatestCommentAndStore(Crawler $crawler, string $art_id, string | null $token): void {
         $comments = $crawler->filter('#comments .comment')->each(function (Crawler $node) {
+            $url_username = null;
+            $username = null;
+            if ($node->filter('.group-left span a')->count() > 0) {
+                $url_username = str_replace('/users/', '', $node->filter('.group-left span a')->attr('href'));
+                $username = $node->filter('.group-left span a')->text();
+            }
             return [
                 'content' => $node->filter('.group-right .field .field-items')->html(),
-                'url_username' => str_replace('/users/', '', $node->filter('.group-left span a')->attr('href')),
-                'username' => $node->filter('.group-left span a')->text(),
+                'url_username' => $url_username,
+                'username' => $username ?? 'Anonymous',
                 'created_at' => Carbon::createFromFormat('m/d/Y - H:i', $node->filter('.group-left .field-name-post-date .field-items .field-item')->text())->format('Y-m-d H:i:s'),
             ];
         });
@@ -126,12 +132,14 @@ class ArtController extends Controller {
 
         if ($comments) {
             $item = $comments[0];
-
             $user_id = null;
-            if (!User::where('url_username', $item['url_username'])->exists()) {
-                $user_id = $this->scrapeUserAndStore($item['url_username'], $item['username'], $token)->id;
-            } else {
-                $user_id = User::where('url_username', $item['url_username'])->first()->id;
+
+            if ($item['url_username']) {
+                if (!User::where('url_username', $item['url_username'])->exists()) {
+                    $user_id = $this->scrapeUserAndStore($item['url_username'], $item['username'], $token)->id;
+                } else {
+                    $user_id = User::where('url_username', $item['url_username'])->first()->id;
+                }
             }
 
             ArtComment::create([
@@ -218,9 +226,9 @@ class ArtController extends Controller {
     }
 
     // SECTION: ART'S AUTHOR
-    private function getAuthor(Crawler $crawler, string | null $token): int {
-        $url_username = '';
-        $username = '';
+    private function getAuthor(Crawler $crawler, string | null $token): int | null {
+        $url_username = null;
+        $username = null;
         // NOTE: If author
         if ($crawler->filter('div#block-system-main>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div>strong>a')->count() > 0) {
             $url_username = preg_replace(
@@ -231,16 +239,22 @@ class ArtController extends Controller {
             $username = $crawler->filter('div#block-system-main>div>div>div:nth-of-type(2)>div>div:nth-of-type(2)>div>strong>a')->text();
             // NOTE: if not author (art created by collection owner)
         } else {
-            $url_username = preg_replace('#^/users/#', '', $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->attr('href'));
-            $username = $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->text();
+            // FIXME: Author does have anonymous (no links)
+            // FIXME: Allow art without author (anonymous), make it null, if found null name as a "anonymous"
+            if ($crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->count() > 0) {
+                $url_username = preg_replace('#^/users/#', '', $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->attr('href'));
+                $username = $crawler->filterXPath("(//div[@class='field-item even'])[2]/span/a")->text();
+            }
         }
 
-
-        if (User::where('url_username', $url_username)->exists()) {
-            return User::where('url_username', $url_username)->first()->id;
-        } else {
-            return $this->scrapeUserAndStore($url_username, $username, $token)->id;
+        if ($url_username !== null || $username !== null) {
+            if (User::where('url_username', $url_username)->exists()) {
+                return User::where('url_username', $url_username)->first()->id;
+            } else {
+                return $this->scrapeUserAndStore($url_username, $username, $token)->id;
+            }
         }
+        return null;
     }
 
 
@@ -265,12 +279,27 @@ class ArtController extends Controller {
             'field_art_licenses_tid' => [2, 10310, 31772, 17981, 6, 5, 4, 17982, 3],
             'sort_by' => 'score',
             'sort_order' => 'DESC',
-            'items_per_page' => 24,
+            'items_per_page' => 72,
             'Collection' => '',
-            'page' => $req->page ?? 1,
         ];
 
-        $url = "https://opengameart.org/art-search-advanced?" . http_build_query($params);
+        if ($req->page > 1) {
+            $params['page'] = $req->page - 1; // page number is based on array
+        }
+
+        $query = http_build_query($params);
+        $query = preg_replace(
+            '/field_art_licenses_tid%5B\d+%5D=/',
+            'field_art_licenses_tid%5B%5D=',
+            $query
+        );
+        $query = preg_replace(
+            '/field_art_type_tid%5B\d+%5D=/',
+            'field_art_type_tid%5B%5D=',
+            $query
+        );
+
+        $url = "https://opengameart.org/art-search-advanced?" . $query;
 
         $crawler = $this->authenticate($url, $req->bearerToken(), false);
 
@@ -337,12 +366,13 @@ class ArtController extends Controller {
                 ],
                 'art_comments' => [],
                 'files' => [],
+
             ];
         });
 
         // dd('completed');
 
-        return response()->json(['data' => $arts, 'total_result' => $total_result, 'art_types' => $art_types]);
+        return response()->json(['data' => $arts, 'total_result' => $total_result, 'art_types' => $art_types, 'url' => $url]);
 
         // https://opengameart.org/art-search-advanced?keys=aaa&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&field_art_licenses_tid%5B%5D=2&field_art_licenses_tid%5B%5D=10310&field_art_licenses_tid%5B%5D=31772&field_art_licenses_tid%5B%5D=17981&field_art_licenses_tid%5B%5D=6&field_art_licenses_tid%5B%5D=5&field_art_licenses_tid%5B%5D=4&field_art_licenses_tid%5B%5D=17982&field_art_licenses_tid%5B%5D=3&sort_by=score&sort_order=DESC&items_per_page=48&Collection=
 

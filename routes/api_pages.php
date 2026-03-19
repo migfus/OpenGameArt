@@ -15,6 +15,7 @@ Route::group(['prefix' => '', 'as' => 'pages.'], function () {
     Route::resource('/', HomePageController::class)->only(['index']);
 
     Route::resource('/arts', ArtController::class)->only(['update', 'index', 'show']);
+    // Route::resource('/arts', ArtController::class)->only(['update', 'show']);
     Route::resource('/forums', ForumController::class)->only(['update']);
     Route::resource('/collections', CollectionController::class)->only(['update']);
     Route::resource('/affiliates', AffiliateController::class)->only(['update']);

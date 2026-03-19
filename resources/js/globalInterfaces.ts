@@ -45,7 +45,7 @@ export interface Art extends LaravelTimestamp {
     audio_ogg?: string
     audio_mp3?: string
 
-    user?: User
+    user?: User // null on anonymous
     art_category: ArtCategory // database & temporary [Art, Music]
     files: File[]
     art_comments: ArtComment[]
@@ -88,7 +88,7 @@ export interface ArtComment extends LaravelTimestamp {
     id: number
     content: string
 
-    user: User
+    user?: User // null on anonymous
     art: Art
 }
 
