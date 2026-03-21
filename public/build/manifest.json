@@ -1,6 +1,6 @@
 {
-  "_ArtCard-BFPop5zE.js": {
-    "file": "assets/ArtCard-BFPop5zE.js",
+  "_ArtCard-D0G8lw7C.js": {
+    "file": "assets/ArtCard-D0G8lw7C.js",
     "name": "ArtCard",
     "imports": [
       "__plugin-vue_export-helper-COfKKufu.js",
@@ -85,7 +85,7 @@
     "src": "public/images/building.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-M8nVgl-x.css",
+    "file": "assets/app-B1ru8gIh.css",
     "name": "app",
     "names": [
       "app.css"
@@ -94,7 +94,7 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-Do1l7niz.js",
+    "file": "assets/app-ywF37DoK.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -137,7 +137,7 @@
     ]
   },
   "resources/js/pages/arts/[id].vue": {
-    "file": "assets/_id_-Ch4hZZyK.js",
+    "file": "assets/_id_-C6P2k6-q.js",
     "name": "_id_",
     "src": "resources/js/pages/arts/[id].vue",
     "isDynamicEntry": true,
@@ -148,11 +148,11 @@
       "_DataTransition-Bbbs4Zjz.js",
       "_dist-6H8z7D1-.js",
       "_pinia-DTo8Elju.js",
-      "_ArtCard-BFPop5zE.js"
+      "_ArtCard-D0G8lw7C.js"
     ]
   },
   "resources/js/pages/arts/index.vue": {
-    "file": "assets/arts-DjFFETXe.js",
+    "file": "assets/arts-Fq-WRshM.js",
     "name": "arts",
     "src": "resources/js/pages/arts/index.vue",
     "isDynamicEntry": true,
@@ -162,7 +162,7 @@
       "resources/js/app.ts",
       "_DataTransition-Bbbs4Zjz.js",
       "_pinia-DTo8Elju.js",
-      "_ArtCard-BFPop5zE.js",
+      "_ArtCard-D0G8lw7C.js",
       "_ArtCardLoader-e51FuSxP.js"
     ]
   },
@@ -194,7 +194,7 @@
     ]
   },
   "resources/js/pages/faqs.vue": {
-    "file": "assets/faqs-yNTwZCDS.js",
+    "file": "assets/faqs-CDs4qJgR.js",
     "name": "faqs",
     "src": "resources/js/pages/faqs.vue",
     "isDynamicEntry": true,
@@ -210,7 +210,7 @@
     ]
   },
   "resources/js/pages/index.vue": {
-    "file": "assets/pages-DhwmUcXu.js",
+    "file": "assets/pages-Dv2ao6BF.js",
     "name": "pages",
     "src": "resources/js/pages/index.vue",
     "isDynamicEntry": true,
@@ -222,13 +222,13 @@
       "_dist-6H8z7D1-.js",
       "_pinia-DTo8Elju.js",
       "_index.esm-DuWyhbpA.js",
-      "_ArtCard-BFPop5zE.js",
+      "_ArtCard-D0G8lw7C.js",
       "_ArtCardLoader-e51FuSxP.js",
       "_NotifyBanner-BPcockO3.js"
     ]
   },
   "resources/js/pages/login.vue": {
-    "file": "assets/login-m7VLuyNO.js",
+    "file": "assets/login-CIWkoSS6.js",
     "name": "login",
     "src": "resources/js/pages/login.vue",
     "isDynamicEntry": true,

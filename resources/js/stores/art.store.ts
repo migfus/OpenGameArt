@@ -33,6 +33,8 @@ export const useArtStore = defineStore('ArtStore', () => {
     let exploreRefreshRunId = 0
     const search_url = ref('')
 
+    const show_data = ref<Art | null>(null)
+
     const config = reactive<StoreConfig>({
         loading: false,
         lazy_page: 1,
@@ -155,6 +157,17 @@ export const useArtStore = defineStore('ArtStore', () => {
         config.lazy_loading = false
     }
 
+    async function showAPI(id: string) {
+        config.loading = true
+        try {
+            const { data } = await api.get(`/arts/${id}`)
+            show_data.value = data
+        } catch (err) {
+            console.log('error on ArtStore/showAPI()', err)
+        }
+        config.loading = false
+    }
+
     function cancelAllRequests(msg = 'Requests Cancelled') {
         cancelSource.value.cancel(msg)
         cancelSource.value = axios.CancelToken.source()
@@ -180,6 +193,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         total_result,
         art_types,
         search_url,
+        show_data,
 
         checkWeeklyArtsForRefresh,
         checkNewArtsForRefresh,
@@ -187,6 +201,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         getArts,
         cancelAllRequests,
         lazyGetArts,
-        mountables
+        mountables,
+        showAPI
     }
 })

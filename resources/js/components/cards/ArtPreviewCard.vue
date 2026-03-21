@@ -1,6 +1,8 @@
 <template>
-    <div class="flex flex-col gap-2 rounded-3xl h-130 relative overflow-hidden justify-between group">
+    <div class="flex flex-col gap-2 rounded-3xl h-80 2xl:h-130 relative overflow-hidden justify-between group">
+        <div v-if="config.loading || !show_data" class="absolute inset-0 animate-pulse bg-dark-002" />
         <div
+            v-else
             class="absolute inset-0"
             :style="{
                 backgroundImage: `url('https://images.unsplash.com/photo-1772289239052-7bbbd9bda160?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8')`,
@@ -13,9 +15,13 @@
         <div class="absolute inset-0 bg-linear-to-b from-black/0 via-black/0 to-black/60" />
         <div class="absolute bottom-0 inset-x-0 bg-linear-to-t to-black/0 from-black/80" />
 
-        <div class="z-10 p-4">
-            <h1 class="text-3xl">Title Here supposed to be</h1>
-            <h2 class="text-2xl">FileName.mp3</h2>
+        <div v-if="config.loading || !show_data" class="z-10 p-4 flex flex-col gap-2">
+            <div class="h-8 bg-dark-002 animate-pulse w-1/2 rounded-3xl" />
+            <div class="h-6 bg-dark-002 animate-pulse w-42 rounded-3xl" />
+        </div>
+        <div v-else class="z-10 p-4">
+            <h1 class="text-3xl">{{ show_data?.title }}</h1>
+            <h2 class="text-2xl">{{ show_data?.files[0]?.name }}</h2>
         </div>
 
         <div class="z-10 p-4 flex justify-between gap-4">
@@ -40,7 +46,7 @@
 
                 <div class="flex items-center bg-dark-001/30 backdrop-blur-sm rounded-3xl">
                     <div class="flex gap-2 items-center cursor-pointer hover:bg-brand-950 rounded-3xl px-4 py-2 transition-all" @click="hearted = !hearted">
-                        <p class="text-md">32.4k</p>
+                        <p class="text-md">{{ show_data?.favorites_count }}</p>
                         <Icon v-if="hearted" icon="pixel:heart-solid" class="size-5 text-red-300" />
                         <Icon v-else icon="pixel:heart" class="size-5" />
                     </div>
@@ -48,7 +54,7 @@
                         class="flex gap-2 items-center cursor-pointer hover:bg-brand-950 rounded-3xl px-4 py-2 transition-all"
                         @click="downloaded = !downloaded"
                     >
-                        <p class="text-md">32.4k</p>
+                        <p class="text-md">{{ show_data?.files[0]?.download_count }}</p>
                         <Icon v-if="downloaded" icon="pixel:check-circle-solid" class="size-5 text-brand-400" />
                         <Icon v-else icon="pixel:download-solid" class="size-5" />
                     </div>
@@ -61,8 +67,13 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { useLocalStorage } from '@vueuse/core'
+import { useArtStore } from '@/stores/art.store'
+import { storeToRefs } from 'pinia'
+
+const $artStore = useArtStore()
 
 const hearted = useLocalStorage('hearted', false)
 const downloaded = useLocalStorage('downloaded', false)
 const played = useLocalStorage('played', false)
+const { config, show_data } = storeToRefs($artStore)
 </script>

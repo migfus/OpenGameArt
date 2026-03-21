@@ -48,7 +48,7 @@ const bottom_navigations = [
         href: '/forums'
     },
     {
-        display_name: 'Art Collections',
+        display_name: 'Collections',
         icon: 'pixelarticons:heart',
         href: '/collections'
     }

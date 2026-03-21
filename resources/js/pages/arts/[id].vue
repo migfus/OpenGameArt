@@ -4,8 +4,22 @@
             <ArtPreviewCard />
 
             <div class="flex flex-col max-w-full relative">
-                <div class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap" @scroll="updateFilesOverflow" ref="filesScroller">
-                    <FileCard v-for="item in files" :file="item" />
+                <div
+                    v-if="config.loading && !show_data"
+                    class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap"
+                    @scroll="updateFilesOverflow"
+                    ref="filesScroller"
+                >
+                    <div v-for="item in [1, 2, 3, 4]" class="bg-brand-950 h-24 w-24 animate-pulse rounded-3xl"></div>
+                </div>
+
+                <div
+                    v-else
+                    class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap"
+                    @scroll="updateFilesOverflow"
+                    ref="filesScroller"
+                >
+                    <FileCard v-for="item in show_data?.files" :file="item" />
                 </div>
 
                 <div
@@ -20,20 +34,39 @@
 
             <!-- USER INFO -->
             <div class="flex gap-2 items-center py-4 justify-between">
-                <div class="flex w-full max-w-54 gap-4 items-center shrink-0">
+                <div v-if="config.loading || !show_data" class="flex w-full max-w-54 gap-4 items-center shrink-0">
+                    <div class="rounded-full size-16 animate-pulse bg-brand-950" />
+
+                    <div class="flex flex-col gap-2">
+                        <div class="h-6 w-32 bg-brand-950 animate-pulse rounded-3xl"></div>
+
+                        <div class="h-4 w-24 bg-brand-950 animate-pulse rounded-3xl"></div>
+                    </div>
+                </div>
+
+                <div v-else class="flex w-full max-w-54 gap-4 items-center shrink-0">
                     <img
                         src="https://plus.unsplash.com/premium_photo-1773452093235-06429f4c844d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8"
                         class="rounded-full size-16"
                     />
 
                     <div class="flex flex-col gap-2">
-                        <p class="text-lg font-semibold">Username</p>
-                        <p>Joined 3 years ago</p>
+                        <p class="text-lg font-semibold">{{ show_data.user?.username }}</p>
+                        <p>{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
                     </div>
                 </div>
 
-                <div class="flex flex-1 min-w-0 flex-col items-end gap-2">
-                    <p class="">March 3 - 12:44</p>
+                <div v-if="config.loading || !show_data" class="flex flex-1 min-w-0 flex-col items-end gap-2">
+                    <div class="h-6 bg-brand-950 animate-pulse rounded-3xl w-32" />
+                    <div class="relative max-w-full">
+                        <div class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap">
+                            <p v-for="item in attributes" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm truncate shrink-0">{{ item }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="flex flex-1 min-w-0 flex-col items-end gap-2">
+                    <p class="">{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
                     <div class="relative max-w-full">
                         <div ref="attributesScroller" class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap" @scroll="updateAttributesOverflow">
                             <p v-for="item in attributes" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm truncate shrink-0">{{ item }}</p>
@@ -52,10 +85,19 @@
             </div>
 
             <!-- TAGS -->
-            <div class="flex flex-col w-full relative">
+            <div v-if="config.loading || !show_data" class="flex flex-col w-full relative">
+                <div class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap">
+                    <div
+                        v-for="item in [1, 2, 3, 4, 5, 6]"
+                        class="bg-brand-950 px-4 py-1 rounded-3xl text-sm flex items-center gap-1 shrink-0 w-32 h-6 animate-pulse"
+                    />
+                </div>
+            </div>
+
+            <div v-else class="flex flex-col w-full relative">
                 <div class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap" ref="tagsScroller" @scroll="updateTagsOverflow">
-                    <p v-for="item in tags" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm flex items-center gap-1 shrink-0">
-                        {{ item }}
+                    <p v-for="item in show_data.tags" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm flex items-center gap-1 shrink-0">
+                        {{ item.name }}
                     </p>
                 </div>
 
@@ -67,8 +109,10 @@
             </div>
 
             <!-- DESCRIPTION -->
-            <div class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl">
-                <div v-html="desc" :class="{ 'line-clamp-6': !read_more }"></div>
+            <div v-if="config.loading || !show_data" class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl h-32 animate-pulse" />
+
+            <div v-else class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl">
+                <div v-html="show_data.content" :class="[read_more ? '' : 'line-clamp-6', 'w-full']"></div>
 
                 <button class="cursor-pointer" @click="read_more = !read_more">{{ read_more ? 'Read Less' : 'Read More' }}</button>
             </div>
@@ -85,19 +129,34 @@
                     <AppButton icon="pixel:edit-solid" size="sm">Submit</AppButton>
                 </div>
 
-                <div class="w-full flex gap-2 justify-between">
-                    <p class="text-sm text-brand-400">12 Comments</p>
+                <div v-if="!show_data || config.loading" class="w-full flex gap-2 justify-between">
+                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
+                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
+                </div>
+                <div v-else class="w-full flex gap-2 justify-between">
+                    <p class="text-sm text-brand-400">
+                        {{ show_data?.comments_count > 1 ? `${show_data?.comments_count} Comments` : `${show_data?.comments_count} Comment` }}
+                    </p>
                     <p class="text-sm text-brand-400">Sort by Latest</p>
                 </div>
             </div>
 
-            <!-- COMMENT HERE -->
-            <div class="flex flex-col gap-4 items-center p-4">
-                <CommentSection v-for="item in comments" :key="item.username" :comment="item" />
+            <!-- COMMENTS -->
+            <div v-if="config.loading || !show_data" class="flex flex-col gap-4 p-4">
+                <div v-for="item in [1, 2, 3, 4]" class="flex items-center gap-2">
+                    <div class="size-10 bg-brand-950 rounded-full animate-pulse"></div>
+                    <div class="flex gap-2 flex-col">
+                        <div class="h-6 w-10 bg-brand-950 rounded-full animate-pulse"></div>
+                        <div class="h-10 w-32 bg-brand-950 rounded-full animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="flex flex-col gap-4 items-center">
+                <CommentSection v-for="item in show_data.art_comments" :key="item.id" :comment="item" />
             </div>
         </div>
 
-        <div class="w-full lg:w-64 lg:shrink-0 2xl:w-110 flex flex-col 2xl:grid grid-cols-2 gap-4">
+        <div class="w-full lg:w-64 lg:shrink-0 2xl:w-110 grid grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2 gap-4">
             <ArtCard v-for="(item, idx) in weekly_arts" :art="item" :idx="idx" />
         </div>
     </div>
@@ -108,15 +167,27 @@ import ArtCard from '@/components/cards/ArtCard.vue'
 import ArtPreviewCard from '@/components/cards/ArtPreviewCard.vue'
 import FileCard from '@/components/cards/FileCard.vue'
 import AppInput from '@/components/form/AppInput.vue'
-import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, reactive } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from 'vue'
 
 import CommentSection from '@/components/content/CommentSection.vue'
 import AppButton from '@/components/form/AppButton.vue'
 import { useArtStore } from '@/stores/art.store'
 import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
+import { messengerStyleTime } from '@/utils/utils'
 
 const $artStore = useArtStore()
-const { weekly_arts } = storeToRefs($artStore)
+const { weekly_arts, show_data, config } = storeToRefs($artStore)
+const { showAPI } = $artStore
+const $route = useRoute()
+
+const getArtIdFromRoute = () => {
+    const params = $route.params
+
+    if (!('id' in params)) return null
+
+    return Array.isArray(params.id) ? (params.id[0] ?? null) : params.id
+}
 
 const read_more = ref(false)
 const comment_here = ref('')
@@ -206,112 +277,17 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', handleResize)
 })
 
+watch(
+    () => $route.params,
+    () => {
+        const artId = getArtIdFromRoute()
+
+        if (artId) {
+            showAPI(artId)
+        }
+    },
+    { immediate: true }
+)
+
 const attributes = ['Music', 'CC-BY-SA 4.0', 'CC-BY-ND 4.0', 'CC-BY-NC 4.0', 'CC-BY-NC-SA 4.0', 'CC-BY-NC-ND 4.0']
-const tags = ['pixel art', 'top-down', 'isometric', 'side view', '3d', '2d']
-const desc = `This atmospheric background track is designed for high-stakes cyberpunk environments, deep-space exploration, or futuristic UI transitions. It blends shimmering digital textures with a driving, low-end pulse to create a sense of constant forward motion.
-
-Composition Details
-Tempo: 112 BPM
-
-Key: C Minor
-
-Duration: 03:45
-
-Mood: Atmospheric, Suspenseful, Technological
-
-Sonic Profile
-The track opens with a granulated synth pad that slowly evolves, mimicking the hum of a massive server room or the cabin pressure of a starship. A rhythmic arpeggio enters at 0:30, utilizing a clean, digital saw wave that cuts through the mix to provide a sense of urgency.
-
-The percussion is minimalist yet impactful, featuring:
-
-Processed Kick: A tight, sub-heavy thump tuned to the root note.
-
-Glitch Percussion: Randomly triggered foley sounds—reminiscent of hydraulic pistons and electrical arcs—to fill the stereo field.
-
-White Noise Swells: Used to bridge transitions between high-tension sequences and ambient lulls.
-
-Suggested Use Cases
-"Perfect for scenes involving terminal hacking, nocturnal city fly-overs, or the silent discovery of an ancient alien monolith."
-
-Gaming: Ideal for shop menus, inventory screens, or stealth-based levels.
-
-Content Creation: Background audio for tech reviews or cinematic adventure vlogs.
-
-Creative Coding: A non-distracting loop for long development sessions.`
-
-const comments = [
-    {
-        username: 'Hello',
-        avatar_url:
-            'https://images.unsplash.com/photo-1773853431084-eceaebe061c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8',
-        comment: 'Hello that wondershit',
-        created_at: 'March 3 - 12:44'
-    },
-    {
-        username: 'Hello',
-        avatar_url:
-            'https://images.unsplash.com/photo-1773853431084-eceaebe061c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8',
-        comment: 'Hello that wondershit',
-        created_at: 'March 3 - 12:44'
-    },
-    {
-        username: 'Hello',
-        avatar_url:
-            'https://images.unsplash.com/photo-1773853431084-eceaebe061c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8',
-        comment: 'Hello that wondershit',
-        created_at: 'March 3 - 12:44'
-    },
-    {
-        username: 'Hello',
-        avatar_url:
-            'https://images.unsplash.com/photo-1773853431084-eceaebe061c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8',
-        comment: 'Hello that wondershit',
-        created_at: 'March 3 - 12:44'
-    },
-    {
-        username: 'Hello',
-        avatar_url:
-            'https://images.unsplash.com/photo-1773853431084-eceaebe061c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8',
-        comment: 'Hello that wondershit',
-        created_at: 'March 3 - 12:44'
-    },
-    {
-        username: 'Hello',
-        avatar_url:
-            'https://images.unsplash.com/photo-1773853431084-eceaebe061c9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8',
-        comment: 'Hello that wondershit',
-        created_at: 'March 3 - 12:44'
-    }
-]
-
-const files = [
-    {
-        name: '1233.mp3',
-        url: '123123'
-    },
-    {
-        name: '1233.mp3',
-        url: '123123'
-    },
-    {
-        name: '1233.mp3',
-        url: '123123'
-    },
-    {
-        name: '1233.mp3',
-        url: '123123'
-    },
-    {
-        name: '1233.mp3',
-        url: '123123'
-    },
-    {
-        name: '1233.mp3',
-        url: '123123'
-    },
-    {
-        name: '1233.mp3',
-        url: '123123'
-    }
-]
 </script>

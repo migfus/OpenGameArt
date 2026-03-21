@@ -8,9 +8,9 @@
             </div>
 
             <!-- SECTION: ARTS CONTENT -->
-            <a
+            <RouterLink
                 v-else-if="art.art_previews.length > 0"
-                :href="`https://opengameart.org/content/${art.id}`"
+                :to="`/arts/${art.id}`"
                 class="bg-brand-950/50 h-38 w-full object-cover rounded-2xl flex absolute"
             >
                 <div class="absolute bottom-0">
@@ -67,7 +67,7 @@
                 <div v-else class="w-full h-full overflow-hidden rounded-2xl">
                     <img :src="art.art_previews[0].url" class="h-full w-full object-cover pixelated-img" />
                 </div>
-            </a>
+            </RouterLink>
 
             <!-- SECTION: OVERLAY -->
             <div class="flex flex-col h-full justify-between">
@@ -98,8 +98,8 @@
                             @mousedown.stop
                         />
 
-                        <a
-                            :href="`https://opengameart.org/content/${art.id}`"
+                        <RouterLink
+                            :to="`/arts/${art.id}`"
                             class="transition-all"
                             :style="{ animationDelay: `${200}ms`, transitionDelay: `${200}ms` }"
                             @animationend.once="clearDelays"
@@ -111,7 +111,7 @@
                                 @click.stop="forwardTime()"
                                 @mousedown.stop
                             />
-                        </a>
+                        </RouterLink>
                     </DataTransition>
 
                     <Icon
@@ -160,7 +160,7 @@
             </div>
         </div>
 
-        <a :href="`https://opengameart.org/content/${art.id}`" class="flex flex-col z-10 justify-between">
+        <RouterLink :to="`/arts/${art.id}`" class="flex flex-col z-10 justify-between">
             <div class="flex flex-col gap-1 grow h-18">
                 <!-- TITLE -->
                 <div class="flex justify-between gap-2">
@@ -194,7 +194,7 @@
                     <Icon icon="memory:comment-text" class="size-4" />
                 </div>
             </div>
-        </a>
+        </RouterLink>
 
         <div class="absolute h-full w-full rounded-2xl group-hover:bg-brand-950 transition-all group-hover:scale-[110%] z-0"></div>
 

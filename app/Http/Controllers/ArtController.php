@@ -392,4 +392,14 @@ class ArtController extends Controller {
 
     private function scrapeArtTypeAndStore(Crawler $crawler) {
     }
+
+    public function show(Request $req, string $id) {
+        $art = Art::where('id', $id)->with(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user', 'tags'])->first();
+
+        if ($art) {
+            return response()->json($art);
+        } else {
+            return response()->json(['message' => 'Art not found'], 404);
+        }
+    }
 }
