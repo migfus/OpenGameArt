@@ -258,9 +258,9 @@ const navigations = [
                 icon: 'pixelarticons:home'
             },
             {
-                name: 'explore',
+                name: 'arts',
                 display_name: 'Explore',
-                href: '/explore',
+                href: '/arts',
                 icon: 'pixelarticons:search'
             },
             {

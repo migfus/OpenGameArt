@@ -41,18 +41,39 @@ declare module 'vue-router/auto-routes' {
       { page: ParamValue<false> },
       | never
     >,
-    '/explore/': RouteRecordInfo<
-      '/explore/',
-      '/explore',
+    '/arts/': RouteRecordInfo<
+      '/arts/',
+      '/arts',
       Record<never, never>,
       Record<never, never>,
       | never
     >,
-    '/explore/[id]': RouteRecordInfo<
-      '/explore/[id]',
-      '/explore/:id',
+    '/arts/[id]': RouteRecordInfo<
+      '/arts/[id]',
+      '/arts/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | never
+    >,
+    '/collections': RouteRecordInfo<
+      '/collections',
+      '/collections',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/dashboard/': RouteRecordInfo<
+      '/dashboard/',
+      '/dashboard',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/dashboard/account-settings': RouteRecordInfo<
+      '/dashboard/account-settings',
+      '/dashboard/account-settings',
+      Record<never, never>,
+      Record<never, never>,
       | never
     >,
     '/faqs': RouteRecordInfo<
@@ -94,15 +115,33 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'resources/js/pages/explore/index.vue': {
+    'resources/js/pages/arts/index.vue': {
       routes:
-        | '/explore/'
+        | '/arts/'
       views:
         | never
     }
-    'resources/js/pages/explore/[id].vue': {
+    'resources/js/pages/arts/[id].vue': {
       routes:
-        | '/explore/[id]'
+        | '/arts/[id]'
+      views:
+        | never
+    }
+    'resources/js/pages/collections.vue': {
+      routes:
+        | '/collections'
+      views:
+        | never
+    }
+    'resources/js/pages/dashboard/index.vue': {
+      routes:
+        | '/dashboard/'
+      views:
+        | never
+    }
+    'resources/js/pages/dashboard/account-settings.vue': {
+      routes:
+        | '/dashboard/account-settings'
       views:
         | never
     }
