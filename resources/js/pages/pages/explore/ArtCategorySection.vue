@@ -1,14 +1,8 @@
 <template>
     <div class="flex flex-col gap-4 px-6">
-        <div class="flex justify-between gap-2">
-            <p v-if="total_result">{{ total_result > 0 ? `${formatNumber(total_result)} Total Results` : `${total_result} Total Result` }}</p>
-            <a
-                :href="`https://opengameart.org/art-search-advanced?keys=${search_query.search}&title=&field_art_tags_tid_op=or&field_art_tags_tid=&name=&field_art_type_tid%5B%5D=9&field_art_type_tid%5B%5D=10&field_art_type_tid%5B%5D=7273&field_art_type_tid%5B%5D=14&field_art_type_tid%5B%5D=12&field_art_type_tid%5B%5D=13&field_art_type_tid%5B%5D=11&sort_by=score&sort_order=DESC&items_per_page=24&Collection=`"
-                >Go to OpenGameArt.org</a
-            >
-        </div>
+        <TotalResultSection :search_url :total_result="total_result" :loading="config.loading" />
 
-        <DataTransition class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 line-clamp-2 overflow-visible pb-8">
+        <DataTransition class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 line-clamp-2 overflow-visible pb-8">
             <ArtCardLoader
                 v-if="config.loading"
                 v-for="item in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
@@ -46,6 +40,7 @@
 import ArtCard from '@/components/cards/ArtCard.vue'
 import ArtCardLoader from '@/components/cards/ArtCardLoader.vue'
 import DataTransition from '@/components/transitions/DataTransition.vue'
+import TotalResultSection from '@/components/content/TotalResultSection.vue'
 
 import { useArtStore } from '@/stores/artStore'
 import { animation_delay, clearDelays, formatNumber } from '@/utils/utils'
@@ -53,7 +48,7 @@ import { notify } from 'notiwind'
 import { storeToRefs } from 'pinia'
 
 const $artStore = useArtStore()
-const { total_result, search_query, config, arts } = storeToRefs($artStore)
+const { total_result, search_query, config, arts, search_url } = storeToRefs($artStore)
 const { lazyGetArts } = $artStore
 
 import { onBeforeUnmount, onMounted } from 'vue'
@@ -69,7 +64,7 @@ function handleScroll() {
     const pageHeight = document.documentElement.scrollHeight
     const now = Date.now()
 
-    if (arts.value.length % 72 !== 0) {
+    if (arts.value.length % 24 !== 0) {
         config.value.lazy_loading = false
         if (now >= nextEndNoticeAt) {
             // notify({

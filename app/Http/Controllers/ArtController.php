@@ -47,6 +47,7 @@ class ArtController extends Controller {
             'user_id' => $art['author_id'],
             'art_category_id' => $art['art_category']->id, // change art_category
             'favorites_count' => $art['favorites_count'],
+            'comments_count' => $art['comments_count'],
             'created_at' => $art['created_at'],
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
@@ -181,17 +182,23 @@ class ArtController extends Controller {
 
     // SECTION: TOTAL COMMENTS
     private function scrapeTotalComments(Crawler $crawler): int {
-        return 99;
-        // TODO: Please search for forum/art that had paginations in comment.
+        $total_comments = 0;
 
-        try {
-            $total_comments = (int) $crawler->filterXPath("//div[@id='block-system-main']/div[1]/div[1]/div[2]/div[7]/div[2]/div[2]")->text();
-            return $total_comments;
-        } catch (Exception $e) {
+        if ($crawler->filter('.pager-last')->count() > 0) {
+            $last_page_url = $crawler->filter('.pager-last a')->attr('href');
+            parse_str(parse_url($last_page_url, PHP_URL_QUERY), $query_params);
+            $last_page_number = isset($query_params['page']) ? (int) $query_params['page'] : 0;
+
+            $crawler = $this->authenticate("https://opengameart.org/" . $last_page_url, null);
+
+            $total_comments = ($last_page_number * 50) + (int) $crawler->filter('#comments .comment')->count();
+        }
+        // TODO: Check if there's a comments available, if there's comments, count the comments in the page, if not, return 0
+        else {
+            $total_comments = (int) $crawler->filter('#comments .comment')->count();
         }
 
-
-        return 0;
+        return (int) $total_comments;
     }
 
     // SECTION TAGS
@@ -279,7 +286,7 @@ class ArtController extends Controller {
             'field_art_licenses_tid' => [2, 10310, 31772, 17981, 6, 5, 4, 17982, 3],
             'sort_by' => 'score',
             'sort_order' => 'DESC',
-            'items_per_page' => 72,
+            'items_per_page' => 24,
             'Collection' => '',
         ];
 

@@ -31,6 +31,7 @@ export const useArtStore = defineStore('ArtStore', () => {
     })
     const total_result = ref<number>(0)
     let exploreRefreshRunId = 0
+    const search_url = ref('')
 
     const config = reactive<StoreConfig>({
         loading: false,
@@ -41,24 +42,20 @@ export const useArtStore = defineStore('ArtStore', () => {
     async function checkExploreArtsForRefresh(runId = exploreRefreshRunId) {
         // SECTION: EXPLORE
         const arts_that_needs_refresh = arts.value.filter((item: Art) => {
-            console.log('name', item.title, 'updated_at', Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl)
             return item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
         })
 
-        for (const item of arts_that_needs_refresh) {
-            if (runId !== exploreRefreshRunId) return
-
-            const data = await refreshArt(item.id)
-
-            if (runId !== exploreRefreshRunId) return
-
-            if (data) {
-                const index = arts.value.findIndex((art: Art) => art.id === data.id)
-                if (index !== -1) {
-                    arts.value[index] = data
+        await Promise.all(
+            arts_that_needs_refresh.map(async (item: Art) => {
+                const data = await refreshArt(item.id)
+                if (data) {
+                    const index = arts.value.findIndex((art: Art) => art.id === data.id)
+                    if (index !== -1) {
+                        arts.value[index] = data
+                    }
                 }
-            }
-        }
+            })
+        )
     }
 
     async function checkWeeklyArtsForRefresh() {
@@ -130,12 +127,12 @@ export const useArtStore = defineStore('ArtStore', () => {
             const { data } = await api.get(`/arts`, { params: { search: search_query.search, page, field_art_type_tid: search_query.selected_art_type.id } })
             arts.value = []
             arts.value = data.data
+            search_url.value = data.url
+
             console.log('getArts Data', data.data)
             total_result.value = data.total_result
             art_types.value = [default_art_type, ...data.art_types]
             config.lazy_page = 1
-
-            checkExploreArtsForRefresh(exploreRefreshRunId)
         } catch (err) {
             console.log('erro on ArtStore/getArts()', err)
         }
@@ -166,8 +163,9 @@ export const useArtStore = defineStore('ArtStore', () => {
     function mountables() {
         watch(
             () => search_query.selected_art_type,
-            () => {
-                getArts(1)
+            async () => {
+                await getArts(1)
+                checkExploreArtsForRefresh()
             }
         )
     }
@@ -181,6 +179,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         search_query,
         total_result,
         art_types,
+        search_url,
 
         checkWeeklyArtsForRefresh,
         checkNewArtsForRefresh,

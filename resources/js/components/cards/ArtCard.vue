@@ -135,8 +135,8 @@
                     <div class="flex gap-2 truncate items-center">
                         <Icon v-if="!art.user" icon="pixelarticons:annoyed" class="size-4" />
                         <img v-else :src="art.user.image_url" class="size-5 rounded-full border border-brand-950" />
-                        <p v-if="!art.user" class="text-sm font-semibold truncate text-brand-200/75 group-hover:text-brand-200 transition-all">Anonymous</p>
-                        <p v-else class="text-sm font-semibold truncate text-brand-200/75 group-hover:text-brand-200 transition-all">
+                        <p v-if="!art.user" class="text-sm font-semibold truncate text-brand-200 group-hover:text-brand-100 transition-all">Anonymous</p>
+                        <p v-else class="text-sm font-semibold truncate text-brand-200 group-hover:text-brand-100 transition-all">
                             {{ art.user?.username }}
                         </p>
                     </div>
@@ -161,19 +161,23 @@
         </div>
 
         <a :href="`https://opengameart.org/content/${art.id}`" class="flex flex-col z-10 justify-between">
-            <div class="flex flex-col gap-1 grow h-24">
+            <div class="flex flex-col gap-1 grow h-18">
                 <!-- TITLE -->
                 <div class="flex justify-between gap-2">
                     <p class="font-bold truncate">{{ art.title }}</p>
                 </div>
 
                 <!-- DESCRIPTION -->
-                <div v-if="art.content" class="line-clamp-3 text-brand-200/50 group-hover:text-brand-200/75 transition-all text-sm" v-html="art.content" />
+                <div v-if="art.content" class="line-clamp-2 text-brand-200/50 group-hover:text-brand-200/75 transition-all text-sm" v-html="art.content" />
 
                 <div v-else class="rounded-lg flex gap-1 flex-col mt-2">
                     <div class="h-4 rounded-lg w-ful bg-brand-950 animate-pulse group-hover:bg-dark-001 transition-all" />
                     <div class="h-4 rounded-lg w-full bg-brand-950 animate-pulse group-hover:bg-dark-001 transition-all" />
-                    <div class="h-4 rounded-lg w-full bg-brand-950 animate-pulse group-hover:bg-dark-001 transition-all" />
+                    <div class="flex justify-between gap-2 mb-4">
+                        <div class="h-4 w-5 rounded-lg bg-brand-950 animate-pulse group-hover:bg-dark-001 transition-all" />
+                        <div class="h-4 rounded-lg w-full bg-brand-950 animate-pulse group-hover:bg-dark-001 transition-all" />
+                        <div class="h-4 w-8 rounded-lg bg-brand-950 animate-pulse group-hover:bg-dark-001 transition-all" />
+                    </div>
                 </div>
             </div>
 
@@ -186,15 +190,8 @@
                 </div>
 
                 <div class="flex gap-1 items-center text-sm ml-2">
-                    <p>{{ art.art_comments.length }}</p>
+                    <p>{{ formatNumber(art.comments_count) }}</p>
                     <Icon icon="memory:comment-text" class="size-4" />
-                </div>
-            </div>
-
-            <!-- No Comments avail -->
-            <div v-else class="flex justify-between items-center gap-2 text-light-001/25">
-                <div class="flex gap-1 items-center text-sm truncate">
-                    <p class="truncate">No comments.</p>
                 </div>
             </div>
         </a>

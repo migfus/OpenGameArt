@@ -44,6 +44,7 @@ export interface Art extends LaravelTimestamp {
     art_previews: ArtPreview[]
     audio_ogg?: string
     audio_mp3?: string
+    comments_count: number
 
     user?: User // null on anonymous
     art_category: ArtCategory // database & temporary [Art, Music]

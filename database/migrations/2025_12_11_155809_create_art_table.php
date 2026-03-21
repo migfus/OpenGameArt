@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('title');
             $table->longText('content')->nullable();
             $table->unsignedInteger('favorites_count')->default(0);
+            $table->integer('comments_count')->default(0);
 
             $table->timestamps();
         });
