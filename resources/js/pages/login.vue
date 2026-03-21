@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import AppInput from '@/components/form/AppInput.vue'
 import AppButton from '@/components/form/AppButton.vue'
-import BackgroundLogin from './BackgroundLogin.vue'
+import BackgroundLogin from '@/components/others/BackgroundLogin.vue'
 
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth.store'

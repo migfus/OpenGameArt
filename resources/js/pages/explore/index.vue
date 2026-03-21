@@ -6,6 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import ArtCategorySection from './ArtCategorySection.vue'
-import SearchCard from './SearchCard.vue'
+import ArtCategorySection from '@/components/others/ArtCategorySectionExplore.vue'
+import SearchCard from '@/components/others/SearchCard.vue'
 </script>

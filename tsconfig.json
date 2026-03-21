@@ -1,4 +1,5 @@
 {
+    "include": ["./typed-router.d.ts", "resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts", "resources/js/**/*.vue"],
     "compilerOptions": {
         "target": "esnext",
         "module": "esnext",
@@ -7,11 +8,15 @@
         // "allowJs": true,
         // "noImplicitAny": false,
         "jsx": "preserve",
-        "moduleResolution": "node",
+        "moduleResolution": "Bundler",
         "types": ["vite/client"],
         "paths": {
             "@/*": ["./resources/js/*"]
         },
         "allowSyntheticDefaultImports": true
+    },
+
+    "vueCompilerOptions": {
+        "plugins": ["vue-router/volar/sfc-route-blocks", "vue-router/volar/sfc-typed-router"]
     }
 }

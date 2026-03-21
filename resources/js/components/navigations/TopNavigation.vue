@@ -27,7 +27,7 @@
 
             <ProfileDropdown v-if="$authStore.auth" />
 
-            <RouterLink v-else :to="{ name: 'login' }" class="relative cursor-pointer">
+            <RouterLink v-else to="/login" class="relative cursor-pointer">
                 <AppButton icon="memory:login">Sign Up</AppButton>
             </RouterLink>
         </div>

@@ -2,9 +2,9 @@
     <div :class="[showFooter ? 'translate-y-0' : 'translate-y-full', 'fixed bg-dark-001/75 backdrop-blur-lg bottom-0 w-full gap-2 transition-all z-20']">
         <RouterLink
             v-for="item in bottom_navigations"
-            :to="{ name: item.name }"
+            :to="item.href"
             :class="[
-                $route.name == item.name ? 'bg-brand-950/75 backdrop-blur-lg' : 'hover:bg-brand-950',
+                $route.path === item.href ? 'bg-brand-950/75 backdrop-blur-lg' : 'hover:bg-brand-950',
                 'flex flex-col items-center py-2 flex-1 transition-all'
             ]"
         >
@@ -34,27 +34,23 @@ const $route = useRoute()
 const bottom_navigations = [
     {
         display_name: 'Home',
-        name: 'home',
         icon: 'memory:home-thatched',
-        href: ''
+        href: '/'
     },
     {
-        name: 'explore',
         display_name: 'Explore',
         icon: 'memory:search',
-        href: ''
+        href: '/explore'
     },
     {
-        name: 'forums',
         display_name: 'Forums',
         icon: 'memory:chat',
-        href: ''
+        href: '/forums'
     },
     {
-        name: 'art_collections',
         display_name: 'Art Collections',
         icon: 'pixelarticons:heart',
-        href: ''
+        href: '/collections'
     }
 ]
 

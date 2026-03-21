@@ -31,7 +31,7 @@
                 </RouterLink>
                 <RouterLink
                     v-else
-                    :to="{ name: 'login' }"
+                    to="/login"
                     class="bg-brand-950/75 flex justify-center items-center rounded-xl border border-brand-900 backdrop-blur-lg size-10 fixed bottom-2 hover:bg-dark-001 transition-all"
                 >
                     <Icon icon="memory:login" class="size-6 text-brand-200" />
@@ -58,10 +58,10 @@
                         <p>{{ nav.name }}</p>
                         <RouterLink
                             v-for="item in nav.links"
-                            :to="{ name: item.name }"
+                            :to="item.href"
                             @click="$emit('close_sidebar')"
                             :class="[
-                                $route.name == item.name ? 'bg-brand-950' : '',
+                                $route.path === item.href ? 'bg-brand-950' : '',
                                 'flex items-center gap-2 font-semibold hover:bg-brand-950 p-2 px-4 rounded-xl transition-all'
                             ]"
                         >
@@ -171,7 +171,7 @@
             <BasicTransition>
                 <RouterLink
                     v-if="$authStore.token"
-                    :to="{ name: 'account-settings' }"
+                    to="/"
                     :class="[
                         on_mobile ? 'w-60' : 'w-56',
                         'bg-brand-950/75 flex justify-between px-4 items-center rounded-xl border border-brand-900 backdrop-blur-lg h-10 fixed bottom-2 text-brand-200 ml-2 hover:bg-dark-001'
@@ -252,7 +252,7 @@ const navigations = [
         name: 'Explore',
         links: [
             {
-                name: 'home',
+                name: '/',
                 display_name: 'Home',
                 href: '/',
                 icon: 'pixelarticons:home'
@@ -260,31 +260,31 @@ const navigations = [
             {
                 name: 'explore',
                 display_name: 'Explore',
-                href: '/',
+                href: '/explore',
                 icon: 'pixelarticons:search'
             },
             {
-                name: 'art_collections',
+                name: 'collections',
                 display_name: 'Art Collections',
-                href: '/',
+                href: '/collections',
                 icon: 'pixelarticons:heart'
             },
             {
                 name: 'forums',
                 display_name: 'Forums',
-                href: '/',
+                href: '/forums',
                 icon: 'pixelarticons:message-image'
             },
             {
                 name: 'faqs',
                 display_name: 'FAQs',
-                href: '/',
+                href: '/faqs',
                 icon: 'pixelarticons:info-box'
             },
             {
                 name: 'leaderboards',
                 display_name: 'Leaderboards',
-                href: '/',
+                href: '/leaderboards',
                 icon: 'pixelarticons:chart'
             }
         ]

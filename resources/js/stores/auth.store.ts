@@ -38,7 +38,7 @@ export const useAuthStore = defineStore('auth.store', () => {
                 auth.value = data.auth
                 token.value = data.token
 
-                router.push({ name: 'home' })
+                router.push({ path: '/' })
                 notify({
                     group: 'success',
                     title: auth.value.username,
@@ -62,7 +62,7 @@ export const useAuthStore = defineStore('auth.store', () => {
         if (data) {
             auth.value = null
             token.value = null
-            router.push({ name: 'login' })
+            router.push({ path: '/login' })
             notify({
                 group: 'success',
                 title: 'Log-out',

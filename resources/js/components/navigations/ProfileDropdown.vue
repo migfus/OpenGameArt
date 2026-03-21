@@ -64,11 +64,11 @@ const account_profile_menus = [
         href: { name: 'dashboard' },
         name: 'Dashboard',
         icon: 'pixelarticons:grid'
-    },
-    {
-        href: { name: 'account-settings' },
-        name: 'Account Settings',
-        icon: 'memory:dot-hexagon'
     }
+    // {
+    //     href: { name: 'account-settings' },
+    //     name: 'Account Settings',
+    //     icon: 'memory:dot-hexagon'
+    // }
 ]
 </script>

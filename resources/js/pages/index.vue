@@ -12,12 +12,12 @@
 
 <script setup lang="ts">
 import NotifyBanner from '@/components/header/NotifyBanner.vue'
-import ArtCategorySection from './ArtCategorySection.vue'
-import PostCategorySection from './PostCategorySection.vue'
+import ArtCategorySection from '@/components/others/ArtCategorySection.vue'
+import PostCategorySection from '@/components/others/PostCategorySection.vue'
 
 import { useArtStore } from '@/stores/art.store'
 import { storeToRefs } from 'pinia'
-import HeroCard from './HeroCard.vue'
+import HeroCard from '@/components/others/HeroCard.vue'
 import { useNavigationStore } from '@/stores/navigation.store'
 import { usePostStore } from '@/stores/post.store'
 
