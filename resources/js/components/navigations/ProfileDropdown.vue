@@ -55,7 +55,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Icon } from '@iconify/vue'
 
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/auth.store'
 
 const $authStore = useAuthStore()
 

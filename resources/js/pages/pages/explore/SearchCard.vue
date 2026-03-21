@@ -97,7 +97,7 @@ import AppButton from '@/components/form/AppButton.vue'
 import AppCheckbox from '@/components/form/AppCheckbox.vue'
 import AppInput from '@/components/form/AppInput.vue'
 
-import { useArtStore } from '@/stores/artStore'
+import { useArtStore } from '@/stores/art.store'
 import { Icon } from '@iconify/vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, reactive } from 'vue'

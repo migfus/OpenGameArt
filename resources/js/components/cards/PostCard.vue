@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { Post } from '@/globalInterfaces'
+import { Post } from '@/global.interfaces'
 import { getAnyPossibleImageFromHtml, removeImageInHTML, dateFormat } from '@/utils/utils'
 
 defineProps<{

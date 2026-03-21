@@ -88,7 +88,7 @@ import { nextTick, onMounted, onUnmounted, useTemplateRef } from 'vue'
 import FooterNavigation from './FooterNavigation.vue'
 import SideNavigationContent from './SideNavigationContent.vue'
 
-import { useNavigationStore } from '@/stores/navigationStore'
+import { useNavigationStore } from '@/stores/navigation.store'
 
 const $navigationStore = useNavigationStore()
 

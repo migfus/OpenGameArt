@@ -45,7 +45,7 @@ import AppButton from '@/components/form/AppButton.vue'
 import BackgroundLogin from './BackgroundLogin.vue'
 
 import { onMounted } from 'vue'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/auth.store'
 import { storeToRefs } from 'pinia'
 
 const $authStore = useAuthStore()

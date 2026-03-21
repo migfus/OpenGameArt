@@ -13,12 +13,12 @@ const routes = [
     },
     {
         path: '/contents/:id',
-        name: 'Content',
+        name: 'content',
         component: () => import('@/pages/pages/contents/(Show).vue')
     },
     {
-        path: '/personal-collections',
-        name: 'personal_collections',
+        path: '/art_collections',
+        name: 'art_collections',
         component: () => import('@/pages/pages/home/(Index).vue')
     },
     {

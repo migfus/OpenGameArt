@@ -20,7 +20,7 @@
                 icon="memory:border-bottom"
                 :class="[color == 'transparent' ? 'size-5' : iconOnly ? 'size-4' : 'size-4', 'retro-spinner', iconColor]"
             />
-            <Icon :icon v-else-if="icon" :class="[$props.size == 'sm' && 'h-[15px] w-[15px] mt-[1px]', '-ml-1 mr-2 h-5 w-5', iconColor]" aria-hidden="true" />
+            <Icon :icon v-else-if="icon" :class="[$props.size == 'sm' && 'h-3.75 w-3.75 mt-px', '-ml-1 mr-2 h-5 w-5', iconColor]" aria-hidden="true" />
             <slot></slot>
         </a>
         <!-- NOTE: LINK MODE -->

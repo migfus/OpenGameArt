@@ -1,7 +1,7 @@
 <template>
     <div>
         <NotifyBanner />
-        <CarouselCard />
+        <!-- <CarouselCard /> -->
 
         <div class="p-6 flex flex-col gap-4 lg:grid grid-cols-3">
             <div class="lg:order-last flex flex-col gap-4">
@@ -72,7 +72,6 @@
 
 <script setup lang="ts">
 import NotifyBanner from '@/components/header/NotifyBanner.vue'
-import CarouselCard from '../home/CarouselCard.vue'
 import AppButton from '@/components/form/AppButton.vue'
 import CollapseSection from '@/components/content/CollapseSection.vue'
 import BasicCard from '@/components/cards/BasicCard.vue'

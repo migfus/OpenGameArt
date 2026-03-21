@@ -1,4 +1,5 @@
 import { useStorage } from '@vueuse/core'
+import { notify } from 'notiwind'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -38,10 +39,21 @@ export const useSearchStore = defineStore('SearchStore', () => {
         }
     }
 
+    function removeFromHistory(created_at: string) {
+        search_history.value = search_history.value.filter((item) => item.created_at !== created_at)
+
+        notify({
+            group: 'success',
+            title: `Removed from history`,
+            content: 'The search term has been removed from your history'
+        })
+    }
+
     return {
         search_filters,
         search_history,
 
-        submit_search
+        submit_search,
+        removeFromHistory
     }
 })

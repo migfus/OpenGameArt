@@ -341,7 +341,7 @@ import { Icon } from '@iconify/vue'
 import BasicTransition from '../transitions/BasicTransition.vue'
 import DataTransition from '../transitions/DataTransition.vue'
 
-import { Art } from '@/globalInterfaces'
+import { Art } from '@/global.interfaces'
 import { clearDelays, formatNumber } from '@/utils/utils'
 import { computed, nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 

@@ -1,13 +1,13 @@
-import { Affiliate, Art, Collection, Forum, Post, StoreConfig } from '@/globalInterfaces'
+import { Affiliate, Art, Collection, Forum, Post, StoreConfig } from '@/global.interfaces'
 import api from '@/utils/axios'
 import { notify } from 'notiwind'
 import { defineStore, storeToRefs } from 'pinia'
 import { reactive, ref } from 'vue'
-import { useAffiliateStore } from './affiliateStore'
-import { useArtStore } from './artStore'
-import { useCollectionStore } from './collectionStore'
-import { useForumStore } from './forumStore'
-import { usePostStore } from './postStore'
+import { useAffiliateStore } from './affiliate.store'
+import { useArtStore } from './art.store'
+import { useCollectionStore } from './collection.store'
+import { useForumStore } from './forum.store'
+import { usePostStore } from './post.store'
 
 export const useNavigationStore = defineStore('navigationStore', () => {
     const $artStore = useArtStore()
@@ -40,7 +40,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     const config = reactive<StoreConfig>({
         loading: false,
         lazy_loading: false,
-        lazy_lock: false
+        lazy_page: 1
     })
 
     async function getData() {

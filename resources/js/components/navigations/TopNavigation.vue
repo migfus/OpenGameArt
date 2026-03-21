@@ -40,7 +40,7 @@ import { Icon } from '@iconify/vue'
 import AppButton from '../form/AppButton.vue'
 import SearchDropdown from './SearchDropdown.vue'
 
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/auth.store'
 
 const $top_navigation_hidden = defineModel<boolean>('top_navigation_hidden', { required: true })
 const $authStore = useAuthStore()

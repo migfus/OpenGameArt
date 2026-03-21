@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import PreviewCard from './PreviewCard.vue'
-import { useArtStore } from '@/stores/artStore'
+import { useArtStore } from '@/stores/art.store'
 import ArtCard from '@/components/cards/ArtCard.vue'
 import FIleCard from './FIleCard.vue'
 

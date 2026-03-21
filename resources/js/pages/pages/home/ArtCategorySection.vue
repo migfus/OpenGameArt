@@ -31,7 +31,7 @@ import ArtCard from '@/components/cards/ArtCard.vue'
 import ArtCardLoader from '@/components/cards/ArtCardLoader.vue'
 import DataTransition from '@/components/transitions/DataTransition.vue'
 
-import { Art } from '@/globalInterfaces'
+import { Art } from '@/global.interfaces'
 import { animation_delay, clearDelays } from '@/utils/utils'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed, reactive, ref } from 'vue'

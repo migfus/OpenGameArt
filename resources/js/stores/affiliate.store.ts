@@ -1,4 +1,4 @@
-import { Affiliate, StoreConfig } from '@/globalInterfaces'
+import { Affiliate, StoreConfig } from '@/global.interfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
@@ -10,7 +10,9 @@ export const useAffiliateStore = defineStore('AffiliateStore', () => {
     const affiliates = ref<Affiliate[]>([])
 
     const config = reactive<StoreConfig>({
-        loading: false
+        loading: false,
+        lazy_page: 0,
+        lazy_loading: false
     })
 
     async function checkAffiliatesForRefresh() {

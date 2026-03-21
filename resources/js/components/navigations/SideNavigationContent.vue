@@ -10,7 +10,7 @@
             ]"
         >
             <DataTransition class="flex flex-col gap-2">
-                <!-- <RouterLink v-for="item in $authStore.friends" to="/">
+                <!-- <RouterLink v-for="item in $auth.store.friends" to="/">
                 <img :src="item.image_url" class="size-10 rounded-full hover:ring-2 ring-brand-950 transition-all" />
             </RouterLink> -->
                 <RouterLink
@@ -192,14 +192,14 @@ import OtherLinksLoader from './OtherLinksLoader.vue'
 import BasicTransition from '../transitions/BasicTransition.vue'
 
 import { useRoute } from 'vue-router'
-import { useNavigationStore } from '@/stores/navigationStore'
+import { useNavigationStore } from '@/stores/navigation.store'
 import { clearDelays, messengerStyleTime } from '@/utils/utils'
 import { computed } from 'vue'
-import { useAuthStore } from '@/stores/authStore'
-import { useForumStore } from '@/stores/forumStore'
+import { useAuthStore } from '@/stores/auth.store'
+import { useForumStore } from '@/stores/forum.store'
 import { storeToRefs } from 'pinia'
-import { useCollectionStore } from '@/stores/collectionStore'
-import { useAffiliateStore } from '@/stores/affiliateStore'
+import { useCollectionStore } from '@/stores/collection.store'
+import { useAffiliateStore } from '@/stores/affiliate.store'
 
 defineProps<{
     on_mobile?: boolean
@@ -264,8 +264,8 @@ const navigations = [
                 icon: 'pixelarticons:search'
             },
             {
-                name: 'personal_collections',
-                display_name: 'Personal Collection',
+                name: 'art_collections',
+                display_name: 'Art Collections',
                 href: '/',
                 icon: 'pixelarticons:heart'
             },

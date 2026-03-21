@@ -27,13 +27,18 @@
                             <p class="truncate-start">{{ search_filters.search }}</p>
                         </RouterLink>
                     </MenuItem>
-                    <MenuItem v-for="item in [...search_history].reverse()" v-slot="{ active }">
+                    <MenuItem v-for="item in [...search_history].reverse()" v-slot="{ active }" :key="item.created_at">
                         <RouterLink
                             :to="`/explore?search=${item.content}`"
-                            :class="[active ? 'bg-brand-950 ' : '', ' text-brand-300 px-4 py-2 text-sm flex gap-2 items-center justify-between']"
+                            :class="[active ? 'bg-brand-950 ' : '', ' text-brand-300 px-4 py-2 text-sm flex gap-2 items-center justify-between group']"
                         >
                             <p class="truncate">{{ item.content }}</p>
-                            <p class="">{{ timeAgo(item.created_at) }}</p>
+                            <p class="group-hover:hidden transition-all">{{ timeAgo(item.created_at) }}</p>
+                            <Icon
+                                @click.prevent="$searchStore.removeFromHistory(item.created_at)"
+                                icon="pixelarticons:trash"
+                                class="group-hover:inline hidden transition-all hover:bg-dark-001"
+                            />
                         </RouterLink>
                     </MenuItem>
                 </div>
@@ -46,8 +51,9 @@
 import { Menu, MenuItem, MenuItems } from '@headlessui/vue'
 import AppButton from '../form/AppButton.vue'
 import AppInput from '../form/AppInput.vue'
+import { Icon } from '@iconify/vue'
 
-import { useSearchStore } from '@/stores/searchStore'
+import { useSearchStore } from '@/stores/search.store'
 import { timeAgo } from '@/utils/utils'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -56,7 +62,7 @@ import { useRoute } from 'vue-router'
 const $route = useRoute()
 const $searchStore = useSearchStore()
 const { search_history, search_filters } = storeToRefs($searchStore)
-const { submit_search } = $searchStore
+const { submit_search, removeFromHistory } = $searchStore
 
 const open_search_menu = ref<boolean>(false)
 </script>

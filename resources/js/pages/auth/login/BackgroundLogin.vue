@@ -25,7 +25,7 @@ import DataTransition from '@/components/transitions/DataTransition.vue'
 import AutenticationWarningModal from '@/components/modals/AutenticationWarningModal.vue'
 
 import { ref } from 'vue'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/auth.store'
 import { useStorage } from '@vueuse/core'
 
 const $authStore = useAuthStore()

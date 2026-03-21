@@ -11,7 +11,7 @@
             <div>
                 <div class="flex justify-between">
                     <h3 class="text-base font-semibold leading-7 text-light-001 truncate">
-                        <Icon v-if="icon" :icon="icon" class="text-sm text-light-001 h-4 w-4 inline mr-3 mb-[3px] align-middle" />
+                        <Icon v-if="icon" :icon="icon" class="text-sm text-light-001 h-4 w-4 inline mr-3 mb-0.75 align-middle" />
                         <img v-else-if="iconImg" :src="iconImg" class="inline mr-2 w-6 h-6 rounded shadow" />
                         <div v-else class="inline-block h-4 w-4 pt-0.5 text-light-001 mr-2" v-html="iconHtml"></div>
                         <span>{{ title }} </span>

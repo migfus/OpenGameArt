@@ -15,11 +15,11 @@ import NotifyBanner from '@/components/header/NotifyBanner.vue'
 import ArtCategorySection from './ArtCategorySection.vue'
 import PostCategorySection from './PostCategorySection.vue'
 
-import { useArtStore } from '@/stores/artStore'
+import { useArtStore } from '@/stores/art.store'
 import { storeToRefs } from 'pinia'
 import HeroCard from './HeroCard.vue'
-import { useNavigationStore } from '@/stores/navigationStore'
-import { usePostStore } from '@/stores/postStore'
+import { useNavigationStore } from '@/stores/navigation.store'
+import { usePostStore } from '@/stores/post.store'
 
 const $artStore = useArtStore()
 const $navigationStore = useNavigationStore()

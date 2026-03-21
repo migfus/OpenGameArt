@@ -51,8 +51,8 @@ const bottom_navigations = [
         href: ''
     },
     {
-        name: 'personal_collections',
-        display_name: 'Collections',
+        name: 'art_collections',
+        display_name: 'Art Collections',
         icon: 'pixelarticons:heart',
         href: ''
     }

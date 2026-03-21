@@ -1,4 +1,4 @@
-import { Collection, StoreConfig } from '@/globalInterfaces'
+import { Collection, StoreConfig } from '@/global.interfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
@@ -11,7 +11,9 @@ export const useCollectionStore = defineStore('CollectionStore', () => {
     const new_collections = ref<Collection[]>([])
 
     const config = reactive<StoreConfig>({
-        loading: false
+        loading: false,
+        lazy_page: 1,
+        lazy_loading: false
     })
 
     async function checkCollectionForRefresh() {

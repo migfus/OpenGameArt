@@ -1,4 +1,4 @@
-import { Post, StoreConfig } from '@/globalInterfaces'
+import { Post, StoreConfig } from '@/global.interfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
@@ -11,7 +11,9 @@ export const usePostStore = defineStore('PostStore', () => {
     const recent_posts = ref<Post[]>([])
 
     const config = reactive<StoreConfig>({
-        loading: false
+        loading: false,
+        lazy_loading: false,
+        lazy_page: 1
     })
 
     async function checkPostForRefresh() {

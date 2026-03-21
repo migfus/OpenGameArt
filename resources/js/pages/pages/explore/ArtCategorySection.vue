@@ -42,7 +42,7 @@ import ArtCardLoader from '@/components/cards/ArtCardLoader.vue'
 import DataTransition from '@/components/transitions/DataTransition.vue'
 import TotalResultSection from '@/components/content/TotalResultSection.vue'
 
-import { useArtStore } from '@/stores/artStore'
+import { useArtStore } from '@/stores/art.store'
 import { animation_delay, clearDelays, formatNumber } from '@/utils/utils'
 import { notify } from 'notiwind'
 import { storeToRefs } from 'pinia'

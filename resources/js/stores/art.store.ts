@@ -1,4 +1,4 @@
-import { Art, StoreConfig, SearchFilters, ArtType } from '@/globalInterfaces'
+import { Art, StoreConfig, SearchFilters, ArtType } from '@/global.interfaces'
 import api from '@/utils/axios'
 import { useLocalStorage } from '@vueuse/core'
 import axios from 'axios'

@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { useNavigationStore } from '@/stores/navigationStore'
+import { useNavigationStore } from '@/stores/navigation.store'
 import { storeToRefs } from 'pinia'
 import { Icon } from '@iconify/vue'
 

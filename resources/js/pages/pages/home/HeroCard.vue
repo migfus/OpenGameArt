@@ -66,8 +66,8 @@
 <script setup lang="ts">
 import AppButton from '@/components/form/AppButton.vue'
 import BasicTransition from '@/components/transitions/BasicTransition.vue'
-import { useNavigationStore } from '@/stores/navigationStore'
-import { usePostStore } from '@/stores/postStore'
+import { useNavigationStore } from '@/stores/navigation.store'
+import { usePostStore } from '@/stores/post.store'
 import { dateFormat, getAnyPossibleImageFromHtml, removeImageInHTML } from '@/utils/utils'
 import { storeToRefs } from 'pinia'
 

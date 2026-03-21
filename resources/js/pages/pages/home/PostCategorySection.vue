@@ -30,7 +30,7 @@
 import ArtCardLoader from '@/components/cards/ArtCardLoader.vue'
 import PostCard from '@/components/cards/PostCard.vue'
 
-import { Post } from '@/globalInterfaces'
+import { Post } from '@/global.interfaces'
 import { animation_delay, clearDelays } from '@/utils/utils'
 import { computed, reactive } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'

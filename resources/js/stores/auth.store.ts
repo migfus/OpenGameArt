@@ -1,4 +1,4 @@
-import { ArtPreview, Auth } from '@/globalInterfaces'
+import { ArtPreview, Auth } from '@/global.interfaces'
 import api from '@/utils/axios'
 import { localStorageSerializer } from '@/utils/utils'
 import { useLocalStorage } from '@vueuse/core'
@@ -8,7 +8,7 @@ import { reactive, ref } from 'vue'
 import router from '@/router'
 import { notify } from 'notiwind'
 
-export const useAuthStore = defineStore('AuthStore', () => {
+export const useAuthStore = defineStore('auth.store', () => {
     const art_previews = ref<ArtPreview[]>([])
     const auth = useLocalStorage<Auth>('auth', null, localStorageSerializer())
     const token = useLocalStorage<string>('token', '')

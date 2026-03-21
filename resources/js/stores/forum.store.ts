@@ -1,4 +1,4 @@
-import { Art, Forum, StoreConfig } from '@/globalInterfaces'
+import { Art, Forum, StoreConfig } from '@/global.interfaces'
 import api from '@/utils/axios'
 import moment from 'moment'
 import { defineStore } from 'pinia'
