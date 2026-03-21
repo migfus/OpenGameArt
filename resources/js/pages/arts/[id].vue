@@ -285,6 +285,8 @@ watch(
         if (artId) {
             showAPI(artId)
         }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     { immediate: true }
 )

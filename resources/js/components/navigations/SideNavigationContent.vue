@@ -265,7 +265,7 @@ const navigations = [
             },
             {
                 name: 'collections',
-                display_name: 'Art Collections',
+                display_name: 'Collections',
                 href: '/collections',
                 icon: 'pixelarticons:heart'
             },
