@@ -40,7 +40,7 @@ const bottom_navigations = [
     {
         display_name: 'Explore',
         icon: 'memory:search',
-        href: '/explore'
+        href: '/arts'
     },
     {
         display_name: 'Forums',

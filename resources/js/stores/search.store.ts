@@ -35,7 +35,7 @@ export const useSearchStore = defineStore('SearchStore', () => {
                     search_history.value.shift()
                 }
             }
-            $router.push({ path: '/explore', query: search_filters.value })
+            $router.push({ path: '/arts', query: search_filters.value })
         }
     }
 

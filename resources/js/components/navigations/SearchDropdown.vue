@@ -1,7 +1,7 @@
 <template>
     <Menu as="div" class="text-left flex items-center -mr-3 relative z-20">
-        <AppButton href="/explore" iconOnly icon="pixelarticons:search" class="sm:hidden" />
-        <form v-if="$route.path !== '/explore'" @submit.prevent="submit_search()" class="hidden sm:flex" ref="input_ref">
+        <AppButton href="/arts" iconOnly icon="pixelarticons:search" class="sm:hidden" />
+        <form v-if="$route.path !== '/arts'" @submit.prevent="submit_search()" class="hidden sm:flex" ref="input_ref">
             <AppInput name="Search" v-model="search_filters.search" noLabel placeholder="Search" @focus="(focus: boolean) => (open_search_menu = focus)" />
         </form>
 
@@ -21,7 +21,7 @@
                 <div class="py-2 first:rounded-t-3xl last:rounded-b-3xl">
                     <MenuItem v-if="search_filters.search" v-slot="{ active }">
                         <RouterLink
-                            :to="`/explore?search=${search_filters.search}`"
+                            :to="`/arts?search=${search_filters.search}`"
                             :class="[active ? 'bg-brand-950 ' : '', ' text-brand-300 px-4 py-2 text-sm flex gap-2 items-center ']"
                         >
                             <p class="truncate-start">{{ search_filters.search }}</p>
@@ -29,7 +29,7 @@
                     </MenuItem>
                     <MenuItem v-for="item in [...search_history].reverse()" v-slot="{ active }" :key="item.created_at">
                         <RouterLink
-                            :to="`/explore?search=${item.content}`"
+                            :to="`/arts?search=${item.content}`"
                             :class="[active ? 'bg-brand-950 ' : '', ' text-brand-300 px-4 py-2 text-sm flex gap-2 items-center justify-between group']"
                         >
                             <p class="truncate">{{ item.content }}</p>
