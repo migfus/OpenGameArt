@@ -1,5 +1,6 @@
 import { Post, StoreConfig } from '@/global.interfaces'
 import api from '@/utils/axios'
+import { useLocalStorage } from '@vueuse/core'
 import moment from 'moment'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
@@ -7,8 +8,8 @@ import { reactive, ref } from 'vue'
 const ttl = 24 // 24hrs
 
 export const usePostStore = defineStore('PostStore', () => {
-    const posts = ref<Post[]>([])
-    const recent_posts = ref<Post[]>([])
+    const posts = useLocalStorage<Post[]>('posts', [])
+    const recent_posts = useLocalStorage<Post[]>('recent_posts', [])
 
     const config = reactive<StoreConfig>({
         loading: false,

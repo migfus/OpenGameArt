@@ -2,6 +2,10 @@
     <div>Collections</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
 
-<style scoped></style>
+onMounted(() => {
+    document.title = 'Collections | OGA (Not Official)'
+})
+</script>

@@ -16,8 +16,8 @@
         <div class="absolute bottom-0 inset-x-0 bg-linear-to-t to-black/0 from-black/80" />
 
         <div v-if="config.loading || !show_data" class="z-10 p-4 flex flex-col gap-2">
-            <div class="h-8 bg-dark-002 animate-pulse w-1/2 rounded-3xl" />
-            <div class="h-6 bg-dark-002 animate-pulse w-42 rounded-3xl" />
+            <div class="h-8 bg-dark-001 animate-pulse w-1/2 rounded-3xl" />
+            <div class="h-6 bg-dark-001 animate-pulse w-42 rounded-3xl" />
         </div>
         <div v-else class="z-10 p-4">
             <h1 class="text-3xl">{{ show_data?.title }}</h1>
@@ -46,7 +46,7 @@
 
                 <div class="flex items-center bg-dark-001/30 backdrop-blur-sm rounded-3xl">
                     <div class="flex gap-2 items-center cursor-pointer hover:bg-brand-950 rounded-3xl px-4 py-2 transition-all" @click="hearted = !hearted">
-                        <p class="text-md">{{ show_data?.favorites_count }}</p>
+                        <p class="text-md">{{ formatNumber(show_data?.favorites_count ?? 0) }}</p>
                         <Icon v-if="hearted" icon="pixel:heart-solid" class="size-5 text-red-300" />
                         <Icon v-else icon="pixel:heart" class="size-5" />
                     </div>
@@ -54,7 +54,7 @@
                         class="flex gap-2 items-center cursor-pointer hover:bg-brand-950 rounded-3xl px-4 py-2 transition-all"
                         @click="downloaded = !downloaded"
                     >
-                        <p class="text-md">{{ show_data?.files[0]?.download_count }}</p>
+                        <p class="text-md">{{ formatNumber(show_data?.files[0]?.download_count ?? 0) }}</p>
                         <Icon v-if="downloaded" icon="pixel:check-circle-solid" class="size-5 text-brand-400" />
                         <Icon v-else icon="pixel:download-solid" class="size-5" />
                     </div>
@@ -66,6 +66,8 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+
+import { formatNumber } from '@/utils/utils'
 import { useLocalStorage } from '@vueuse/core'
 import { useArtStore } from '@/stores/art.store'
 import { storeToRefs } from 'pinia'

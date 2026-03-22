@@ -53,5 +53,7 @@ const { form, config, errors } = storeToRefs($authStore)
 
 onMounted(() => {
     $authStore.getArtPreviews()
+
+    window.scrollTo({ top: 0, behavior: 'smooth' })
 })
 </script>

@@ -3,23 +3,61 @@
         <div class="flex-1 min-w-0 basis-0 flex flex-col gap-4">
             <ArtPreviewCard />
 
-            <div class="flex flex-col max-w-full relative">
-                <div
-                    v-if="config.loading && !show_data"
-                    class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap"
-                    @scroll="updateFilesOverflow"
-                    ref="filesScroller"
-                >
-                    <div v-for="item in [1, 2, 3, 4]" class="bg-brand-950 h-24 w-24 animate-pulse rounded-3xl"></div>
+            <div v-if="config.loading || !show_data" class="flex flex-col max-w-full relative">
+                <div class="flex gap-2 items-start justify-between">
+                    <DataTransition class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap">
+                        <div v-for="item in [0, 1, 2, 3]" class="flex flex-col gap-2">
+                            <div class="size-32 rounded-3xl bg-brand-950 animate-pulse" />
+
+                            <div class="flex flex-col gap-1">
+                                <button class="bg-brand-950 h-5 w-full animate-pulse rounded-3xl" />
+
+                                <div class="flex justify-between gap-2">
+                                    <button class="bg-brand-950 h-4 w-16 animate-pulse rounded-3xl" />
+                                    <button class="bg-brand-950 h-4 w-16 animate-pulse rounded-3xl" />
+                                </div>
+                            </div>
+                        </div>
+                    </DataTransition>
+
+                    <button class="bg-brand-950 h-8 w-16 animate-pulse rounded-3xl" />
                 </div>
 
                 <div
-                    v-else
-                    class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap"
-                    @scroll="updateFilesOverflow"
-                    ref="filesScroller"
-                >
-                    <FileCard v-for="item in show_data?.files" :file="item" />
+                    v-if="files_options.shadow_left"
+                    class="pointer-events-none absolute left-0 top-0 h-full w-6 bg-linear-to-r from-dark-001 to-transparent"
+                />
+                <div
+                    v-if="files_options.shadow_right"
+                    class="pointer-events-none absolute right-0 top-0 h-full w-6 bg-linear-to-l from-dark-001 to-transparent"
+                />
+            </div>
+
+            <div v-else class="flex flex-col max-w-full relative">
+                <div class="flex gap-2 items-start justify-between">
+                    <DataTransition
+                        class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap"
+                        @scroll="updateFilesOverflow"
+                        ref="filesScroller"
+                    >
+                        <FileCard v-for="item in show_data?.files" :file="item" />
+                    </DataTransition>
+
+                    <div class="flex flex-col gap-2">
+                        <div>
+                            <a :href="`https://opengameart.org/content/${show_data?.id}`" class="bg-brand-950 px-3 py-1 rounded-3xl flex items-center gap-1">
+                                OpenGameArt.org
+                                <Icon icon="pixelarticons:arrow-right-box" />
+                            </a>
+                        </div>
+                        <AppButton
+                            class="bg-brand-950 px-3 py-1 rounded-3xl ml-auto"
+                            color="brand"
+                            :href="`/arts?field_art_type_tid=${show_data?.art_category.id}`"
+                        >
+                            {{ show_data?.art_category?.name }}
+                        </AppButton>
+                    </div>
                 </div>
 
                 <div
@@ -45,10 +83,7 @@
                 </div>
 
                 <div v-else class="flex w-full max-w-54 gap-4 items-center shrink-0">
-                    <img
-                        src="https://plus.unsplash.com/premium_photo-1773452093235-06429f4c844d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8"
-                        class="rounded-full size-16"
-                    />
+                    <img :src="show_data?.user?.image_url" class="rounded-full size-16" />
 
                     <div class="flex flex-col gap-2">
                         <p class="text-lg font-semibold">{{ show_data.user?.username }}</p>
@@ -118,7 +153,7 @@
             </div>
 
             <!-- COMMENT HERE -->
-            <div class="flex flex-col gap-4 items-center p-4 bg-brand-950 rounded-3xl">
+            <div v-if="auth" class="flex flex-col gap-4 items-center p-4 bg-brand-950 rounded-3xl">
                 <div class="w-full flex gap-4 items-start">
                     <img
                         src="https://plus.unsplash.com/premium_photo-1773452093235-06429f4c844d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8"
@@ -135,7 +170,33 @@
                 </div>
                 <div v-else class="w-full flex gap-2 justify-between">
                     <p class="text-sm text-brand-400">
-                        {{ show_data?.comments_count > 1 ? `${show_data?.comments_count} Comments` : `${show_data?.comments_count} Comment` }}
+                        {{
+                            show_data?.comments_count > 1
+                                ? `${show_data?.comments_count} Comments`
+                                : show_data?.comments_count > 0
+                                  ? `${show_data?.comments_count} Comment`
+                                  : 'No Comments'
+                        }}
+                    </p>
+                    <p class="text-sm text-brand-400">Sort by Latest</p>
+                </div>
+            </div>
+            <div v-else class="flex flex-col gap-4 items-center p-4 bg-brand-950 rounded-3xl">
+                <AppButton icon="pixelarticons:login" href="/login">Sign Up to Comment</AppButton>
+
+                <div v-if="!show_data || config.loading" class="w-full flex gap-2 justify-between">
+                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
+                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
+                </div>
+                <div v-else class="w-full flex gap-2 justify-between">
+                    <p class="text-sm text-brand-400">
+                        {{
+                            show_data?.comments_count > 1
+                                ? `${show_data?.comments_count} Comments`
+                                : show_data?.comments_count > 0
+                                  ? `${show_data?.comments_count} Comment`
+                                  : 'No Comments'
+                        }}
                     </p>
                     <p class="text-sm text-brand-400">Sort by Latest</p>
                 </div>
@@ -153,10 +214,12 @@
             </div>
             <div v-else class="flex flex-col gap-4 items-center">
                 <CommentSection v-for="item in show_data.art_comments" :key="item.id" :comment="item" />
+
+                <div v-if="show_data.art_comments.length <= 0" class="text-sm text-brand-400">Be the first to comment</div>
             </div>
         </div>
 
-        <div class="w-full lg:w-64 lg:shrink-0 2xl:w-110 grid grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2 gap-4">
+        <div class="w-full lg:w-46 lg:shrink-0 2xl:w-110 grid grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2 gap-4">
             <ArtCard v-for="(item, idx) in weekly_arts" :art="item" :idx="idx" />
         </div>
     </div>
@@ -168,17 +231,24 @@ import ArtPreviewCard from '@/components/cards/ArtPreviewCard.vue'
 import FileCard from '@/components/cards/FileCard.vue'
 import AppInput from '@/components/form/AppInput.vue'
 import { nextTick, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from 'vue'
-
+import DataTransition from '@/components/transitions/DataTransition.vue'
 import CommentSection from '@/components/content/CommentSection.vue'
 import AppButton from '@/components/form/AppButton.vue'
+import { Icon } from '@iconify/vue'
+
 import { useArtStore } from '@/stores/art.store'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { messengerStyleTime } from '@/utils/utils'
+import { useAuthStore } from '@/stores/auth.store'
 
 const $artStore = useArtStore()
 const { weekly_arts, show_data, config } = storeToRefs($artStore)
 const { showAPI } = $artStore
+
+const $authStore = useAuthStore()
+const { auth } = storeToRefs($authStore)
+
 const $route = useRoute()
 
 const getArtIdFromRoute = () => {
@@ -279,17 +349,19 @@ onBeforeUnmount(() => {
 
 watch(
     () => $route.params,
-    () => {
+    async () => {
         const artId = getArtIdFromRoute()
 
         if (artId) {
-            showAPI(artId)
-        }
+            window.scrollTo({ top: 0, behavior: 'smooth' })
 
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+            await showAPI(artId)
+
+            show_data.value && (document.title = `${show_data.value.title} | OGA (Not Official)`)
+        }
     },
     { immediate: true }
 )
 
-const attributes = ['Music', 'CC-BY-SA 4.0', 'CC-BY-ND 4.0', 'CC-BY-NC 4.0', 'CC-BY-NC-SA 4.0', 'CC-BY-NC-ND 4.0']
+const attributes = ['CC-BY-SA 4.0', 'CC-BY-ND 4.0', 'CC-BY-NC 4.0', 'CC-BY-NC-SA 4.0', 'CC-BY-NC-ND 4.0']
 </script>

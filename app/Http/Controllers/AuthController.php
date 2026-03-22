@@ -69,6 +69,8 @@ class AuthController extends Controller {
 
         $crawler = $this->authenticate('https://opengameart.org/', $data['token']);
 
+        // dd($)
+
         try {
             $user_id = str_replace('/users/', '', $crawler->filter("#block-oga-hello div a")->attr('href'));
         } catch (\InvalidArgumentException $err) {

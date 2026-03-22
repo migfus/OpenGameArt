@@ -174,8 +174,27 @@ class ArtController extends Controller {
     // SECTION: ART CATEGORY
     private function scrapeArtCategoryAndStore(Crawler $crawler): ArtCategory {
         $art_category_name = $crawler->filterXPath("//a[@property='rdfs:label skos:prefLabel']")->text();
+        $art_category_href = $crawler->filterXPath("//a[@property='rdfs:label skos:prefLabel']")->attr('href');
+
+        $art_category_id = null;
+        $query = parse_url($art_category_href, PHP_URL_QUERY);
+        if ($query) {
+            parse_str($query, $query_params);
+            $type_ids = $query_params['field_art_type_tid'] ?? null;
+
+            if (is_array($type_ids) && !empty($type_ids)) {
+                $art_category_id = (int) $type_ids[0];
+            } elseif (is_scalar($type_ids)) {
+                $art_category_id = (int) $type_ids;
+            }
+        }
+
+        if (!$art_category_id) {
+            $art_category_id = (int) preg_replace('/\D+/', '', $art_category_href);
+        }
 
         return ArtCategory::firstOrCreate([
+            'id' => $art_category_id,
             'name' => $art_category_name
         ]);
     }

@@ -30,7 +30,7 @@
             />
         </div>
 
-        <div v-if="total_result <= 0" class="bg-dark-002 px-4 py-2 rounded-3xl text-center">
+        <div v-if="total_result <= 0 && !config.loading" class="bg-dark-002 px-4 py-2 rounded-3xl text-center">
             <p>No results found</p>
         </div>
     </div>
@@ -39,12 +39,11 @@
 <script setup lang="ts">
 import ArtCard from '@/components/cards/ArtCard.vue'
 import ArtCardLoader from '@/components/cards/ArtCardLoader.vue'
-import DataTransition from '@/components/transitions/DataTransition.vue'
 import TotalResultSection from '@/components/content/TotalResultSection.vue'
+import DataTransition from '@/components/transitions/DataTransition.vue'
 
 import { useArtStore } from '@/stores/art.store'
-import { animation_delay, clearDelays, formatNumber } from '@/utils/utils'
-import { notify } from 'notiwind'
+import { animation_delay, clearDelays } from '@/utils/utils'
 import { storeToRefs } from 'pinia'
 
 const $artStore = useArtStore()

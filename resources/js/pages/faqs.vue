@@ -78,7 +78,7 @@ import BasicCard from '@/components/cards/BasicCard.vue'
 import AppInput from '@/components/form/AppInput.vue'
 import DataTransition from '@/components/transitions/DataTransition.vue'
 
-import { computed, reactive } from 'vue'
+import { computed, reactive, onMounted } from 'vue'
 
 const query = reactive({
     search: ''
@@ -842,4 +842,8 @@ const stripHtml = (html: string) => {
     div.innerHTML = html
     return div.textContent || div.innerText || ''
 }
+
+onMounted(() => {
+    document.title = 'FAQs | OGA (Not Official)'
+})
 </script>

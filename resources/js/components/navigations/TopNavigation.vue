@@ -23,9 +23,9 @@
             <AppButton size="sm" icon="memory:plus" class="lg:flex hidden">Submit Art</AppButton>
 
             <Icon icon="pixelarticons:volume-2" class="size-6 text-brand-200 transition-all rounded hover:bg-dark-001 cursor-pointer" />
-            <Icon icon="pixelarticons:notification" class="size-6 text-brand-200 transition-all rounded hover:bg-dark-001 cursor-pointer" />
+            <Icon v-if="auth" icon="pixelarticons:notification" class="size-6 text-brand-200 transition-all rounded hover:bg-dark-001 cursor-pointer" />
 
-            <ProfileDropdown v-if="$authStore.auth" />
+            <ProfileDropdown v-if="auth" />
 
             <RouterLink v-else to="/login" class="relative cursor-pointer">
                 <AppButton icon="memory:login">Sign Up</AppButton>
@@ -41,9 +41,11 @@ import AppButton from '../form/AppButton.vue'
 import SearchDropdown from './SearchDropdown.vue'
 
 import { useAuthStore } from '@/stores/auth.store'
+import { storeToRefs } from 'pinia'
 
 const $top_navigation_hidden = defineModel<boolean>('top_navigation_hidden', { required: true })
 const $authStore = useAuthStore()
+const { auth } = storeToRefs($authStore)
 
 const app_url = window.location.origin
 </script>

@@ -32,7 +32,7 @@
                 buttonColor,
                 textAlignment,
                 buttonSize,
-                'border border-brand-900 inline-flex rounded-2xl font-medium hover:shadow-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 transition-all cursor-pointer object-shadow'
+                'border border-brand-900 rounded-2xl font-medium hover:shadow-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 transition-all flex items-center gap-2 cursor-pointer object-shadow'
             ]"
             @click="clicked = true"
         >

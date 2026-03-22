@@ -105,3 +105,13 @@ export function formatNumber(num: number, decimals = 2): string {
 
     return num.toString()
 }
+
+export function formatToPreviewImage(url: string): string {
+    const cleanUrl = url.split('?')[0].split('#')[0]
+
+    if (cleanUrl.toLowerCase().endsWith('.blend')) {
+        return 'https://fileinfo.com/img/icons/files/256/blend-1243.png'
+    }
+
+    return ''
+}

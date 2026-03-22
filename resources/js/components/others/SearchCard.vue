@@ -16,7 +16,7 @@
                     >
                         Simple
                     </AppButton>
-                    <AppButton
+                    <!-- <AppButton
                         size="sm"
                         :color="filters.advance_filters ? 'brand' : undefined"
                         @click="filters.advance_filters = true"
@@ -24,12 +24,11 @@
                         icon="pixelarticons:text-search"
                     >
                         Advance
-                    </AppButton>
+                    </AppButton> -->
                 </div>
 
                 <div class="flex gap-2">
                     <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
-                    <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Reset</AppButton>
                 </div>
             </div>
 

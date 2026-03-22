@@ -18,9 +18,9 @@ export const useArtStore = defineStore('ArtStore', () => {
     const $router = useRouter()
     const cancelSource = ref(axios.CancelToken.source())
     const refreshCancelSource = ref(axios.CancelToken.source())
-    const arts = ref<Art[]>([])
-    const new_arts = ref<Art[]>([])
-    const weekly_arts = ref<Art[]>([])
+    const arts = useLocalStorage<Art[]>('arts', [])
+    const new_arts = useLocalStorage<Art[]>('new_arts', [])
+    const weekly_arts = useLocalStorage<Art[]>('weekly_arts', [])
     const art_types = useLocalStorage('art_types', [default_art_type])
     const search_query = reactive<{
         search: string
@@ -127,7 +127,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         try {
             $router.replace({ query: { search: search_query.search, field_art_type_tid: search_query.selected_art_type.id } })
             const { data } = await api.get(`/arts`, { params: { search: search_query.search, page, field_art_type_tid: search_query.selected_art_type.id } })
-            arts.value = []
+            // arts.value = []
             arts.value = data.data
             search_url.value = data.url
 
