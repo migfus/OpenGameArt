@@ -115,3 +115,15 @@ export function formatToPreviewImage(url: string): string {
 
     return ''
 }
+
+export function urlToFileExtension(url: string): string {
+    const cleanUrl = url.split('?')[0].split('#')[0]
+    const ext = cleanUrl.split('.').pop()?.toLowerCase() || ''
+    return ext
+}
+
+export function cleanQuery<T extends Record<string, any>>(query: T): Partial<T> {
+    return Object.fromEntries(
+        Object.entries(query).filter(([_, v]) => v !== undefined && v !== null && v !== '' && !(Array.isArray(v) && v.length === 0))
+    ) as Partial<T>
+}

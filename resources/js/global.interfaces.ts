@@ -51,6 +51,13 @@ export interface Art extends LaravelTimestamp {
     files: File[]
     art_comments: ArtComment[]
     tags: Tag[]
+    licenses: License[]
+}
+
+export interface License extends LaravelTimestamp {
+    id: number
+    name: string
+    url: string
 }
 
 export interface Collection extends LaravelTimestamp {

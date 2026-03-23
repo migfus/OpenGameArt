@@ -47,7 +47,8 @@ abstract class Controller {
             return User::firstOrCreate(['id' => $user_id], [
                 'url_username' => $url_username,
                 'username' => $username,
-                'image_url' => $image_url
+                'image_url' => $image_url,
+                // 'created_at' => // TODO: Search for date created on website
             ]);
         } catch (\Exception $e) {
 

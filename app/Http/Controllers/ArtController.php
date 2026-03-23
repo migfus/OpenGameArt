@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Art, ArtCategory, ArtPreview, ArtPreviewCategory, Tag, User, ArtComment, ArtType, Collection, File, UserSession};
+use App\Models\{Art, ArtCategory, ArtPreview, ArtPreviewCategory, Tag, User, ArtComment, ArtType, Collection, File, License, UserSession};
 
 use Carbon\Carbon;
 use Exception;
@@ -66,7 +66,14 @@ class ArtController extends Controller {
         $this->removeAllPreviousFiles($id);
         $this->scrapeAllFilesAndStore($crawler, $id);
 
-        return response()->json($art_db->load(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user', 'tags']));
+        return response()->json($art_db->load([
+            'user',
+            'art_category',
+            'art_previews.art_preview_category',
+            'files',
+            'tags',
+            'art_comments' => fn($query) => $query->with('user')->orderByDesc('created_at')
+        ]));
     }
 
     // SECTION: PREVIEWS
@@ -289,7 +296,8 @@ class ArtController extends Controller {
         $req->validate([
             'search' => 'nullable|string|min:3',
             'page' => 'nullable|numeric',
-            'field_art_type_tid' => ['required']
+            'field_art_type_tid' => ['required'],
+            'field_art_tags_tid' => ['nullable', 'string'],
         ]);
 
         $art_types = ArtType::get();
@@ -299,13 +307,13 @@ class ArtController extends Controller {
             'keys' => $req->search,
             'title' => '',
             'field_art_tags_tid_op' => 'or',
-            'field_art_tags_tid' => '',
+            'field_art_tags_tid' => $req->string('field_art_tags_tid', ''),
             'name' => '',
             'field_art_type_tid' => $req->integer('field_art_type_tid') === 0 ? $art_types_id : [$req->integer('field_art_type_tid')],
             'field_art_licenses_tid' => [2, 10310, 31772, 17981, 6, 5, 4, 17982, 3],
             'sort_by' => 'score',
             'sort_order' => 'DESC',
-            'items_per_page' => 24,
+            // 'items_per_page' => 24, // defaults to 24 based on the web
             'Collection' => '',
         ];
 
@@ -353,7 +361,13 @@ class ArtController extends Controller {
 
             if (Art::where('id', $id)->exists()) {
                 // dd('existing art');
-                return Art::where('id', $id)->with(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user'])->first()->toArray();
+                return Art::where('id', $id)->with([
+                    'user',
+                    'art_category',
+                    'art_previews.art_preview_category',
+                    'files',
+                    'art_comments' => fn($query) => $query->with('user')->orderByDesc('created_at')
+                ])->first()->toArray();
             }
 
             // dd('new art ');
@@ -413,12 +427,112 @@ class ArtController extends Controller {
     }
 
     public function show(Request $req, string $id) {
-        $art = Art::where('id', $id)->with(['user', 'art_category', 'art_previews.art_preview_category', 'files', 'art_comments.user', 'tags'])->first();
+        $crawler = $this->authenticate("https://opengameart.org/content/{$id}", $req->bearerToken());
 
-        if ($art) {
-            return response()->json($art);
-        } else {
-            return response()->json(['message' => 'Art not found'], 404);
-        }
+        // SECTION: TAGS
+        $tag_ids = $this->scrapeAllTagsAndStore($crawler, $id);
+
+        // SECTION: ART
+        $art = [
+            'favorites_count' => $this->scrapeTotalFavorites($crawler),
+            'title' => $crawler->filterXPath("//div[@property='dc:title']//h2[1]")->text(),
+            'content' => $crawler->filterXPath("//div[@class='group-right right-column']/div[2]")->html(),
+            'created_at' => Carbon::createFromFormat('l, F j, Y - H:i', $crawler->filterXPath("(//div[@class='field-item even'])[3]")->text())->format('Y-m-d H:i:s'),
+        ];
+
+
+        // SECTION: ART CATEGORY
+        $art['art_category'] = $this->scrapeArtCategoryAndStore($crawler);
+
+        // SECTION: COMMENTS COUNT
+        // $art['comments_count'] = $this->scrapeTotalComments($crawler);
+
+        // SECTION: AUTHOR (OUTSIDE FROM ART URL)
+        $art['author_id'] = $this->getAuthor($crawler, $req->bearerToken());
+
+        $art_db = Art::updateOrCreate([
+            'id' => $id
+        ], [
+            'title' => $art['title'],
+            'content' => $art['content'],
+            'user_id' => $art['author_id'],
+            'art_category_id' => $art['art_category']->id, // change art_category
+            'favorites_count' => $art['favorites_count'],
+            // 'comments_count' => $art['comments_count'],
+            'created_at' => $art['created_at'],
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
+        $art_db->tags()->sync($tag_ids);
+
+        // SECTION: PREVIEWS
+        $this->removeAllPreviousPreviews($id);
+        $this->scrapeAllPreviewsAndStore($crawler, $art['art_category'], $id);
+
+        // SECTION: LICENSES
+        $licenses = $this->scrapeLicensesAndStore($crawler);
+        $art_db->licenses()->sync(collect($licenses)->pluck('id')->toArray());
+
+        // SECTION: ALL COMMENTS
+        $this->removeAllComments($id);
+        $this->scrapeAllCommentsAndStore($crawler, $id, $req->bearerToken());
+
+        // SECTION: FILES
+        $this->removeAllPreviousFiles($id);
+        $this->scrapeAllFilesAndStore($crawler, $id);
+
+        return response()->json($art_db->load([
+            'user',
+            'art_category',
+            'art_previews.art_preview_category',
+            'files',
+            'tags' => fn($q) => $q->orderBy('name'),
+            'art_comments' => fn($q) => $q->with('user')->orderByDesc('created_at'),
+            'licenses' => fn($q) => $q->orderBy('name'),
+        ]));
+    }
+
+    // SECTION: ALL COMMENTS
+    private function removeAllComments(string $art_id): void {
+        ArtComment::where('art_id', $art_id)->delete();
+    }
+    private function scrapeAllCommentsAndStore(Crawler $crawler, string $art_id, string | null $token): void {
+        $crawler->filter('#comments .comment')->each(function (Crawler $node) use ($art_id, $token) {
+            $user = [
+                'url_username' => null,
+                'username' => null,
+                'user_id' => null
+            ];
+
+            if ($node->filter('.group-left span a')->count() > 0) {
+                $user['url_username'] = str_replace('/users/', '', $node->filter('.group-left span a')->attr('href'));
+                $user['username'] = $node->filter('.group-left span a')->text();
+            }
+
+            if ($user['url_username']) {
+                if (!User::where('url_username', $user['url_username'])->exists()) {
+                    $user['user_id'] = $this->scrapeUserAndStore($user['url_username'], $user['username'], $token)->id;
+                } else {
+                    $user['user_id'] = User::where('url_username', $user['url_username'])->first()->id;
+                }
+            }
+
+            ArtComment::create([
+                'content' => $node->filter('.group-right .field .field-items')->html(),
+                'art_id' => $art_id,
+                'user_id' => $user['user_id'],
+                'created_at' => Carbon::createFromFormat('m/d/Y - H:i', $node->filter('.group-left .field-name-post-date .field-items .field-item')->text())->format('Y-m-d H:i:s'),
+            ]);
+        });
+    }
+
+    private function scrapeLicensesAndStore(Crawler $crawler) {
+        $licenses = $crawler->filter('.field-name-field-art-licenses .field-items .field-item a')->each(function (Crawler $node) {
+            return License::firstOrCreate([
+                'name' => $node->text(),
+                'url' => $node->attr('href')
+            ]);
+        });
+
+        return $licenses;
     }
 }

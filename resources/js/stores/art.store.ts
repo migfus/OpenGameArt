@@ -1,5 +1,6 @@
 import { Art, StoreConfig, SearchFilters, ArtType } from '@/global.interfaces'
 import api from '@/utils/axios'
+import { cleanQuery } from '@/utils/utils'
 import { useLocalStorage } from '@vueuse/core'
 import axios from 'axios'
 import moment from 'moment'
@@ -25,12 +26,13 @@ export const useArtStore = defineStore('ArtStore', () => {
     const search_query = reactive<{
         search: string
         selected_art_type: ArtType
+        field_art_tags_tid: string
     }>({
         search: '',
-        selected_art_type: art_types.value[0]
+        selected_art_type: art_types.value[0],
+        field_art_tags_tid: ''
     })
     const total_result = ref<number>(0)
-    let exploreRefreshRunId = 0
     const search_url = ref('')
 
     const show_data = ref<Art | null>(null)
@@ -41,7 +43,7 @@ export const useArtStore = defineStore('ArtStore', () => {
         lazy_loading: false
     })
 
-    async function checkExploreArtsForRefresh(runId = exploreRefreshRunId) {
+    async function checkExploreArtsForRefresh() {
         // SECTION: EXPLORE
         const arts_that_needs_refresh = arts.value.filter((item: Art) => {
             return item.updated_at == undefined ? true : Math.abs(moment(item.updated_at).diff(moment(), 'hours', true)) >= ttl ? true : false
@@ -118,15 +120,27 @@ export const useArtStore = defineStore('ArtStore', () => {
 
     async function getArts(page = 1) {
         if (page === 1) {
-            exploreRefreshRunId++
             refreshCancelSource.value.cancel('Cancelled by getArts(1)')
             refreshCancelSource.value = axios.CancelToken.source()
         }
 
         config.loading = true
         try {
-            $router.replace({ query: { search: search_query.search, field_art_type_tid: search_query.selected_art_type.id } })
-            const { data } = await api.get(`/arts`, { params: { search: search_query.search, page, field_art_type_tid: search_query.selected_art_type.id } })
+            $router.replace({
+                query: cleanQuery({
+                    search: search_query.search,
+                    field_art_type_tid: search_query.selected_art_type?.id,
+                    field_art_tags_tid: search_query.field_art_tags_tid
+                })
+            })
+            const { data } = await api.get(`/arts`, {
+                params: {
+                    search: search_query.search,
+                    field_art_type_tid: search_query.selected_art_type?.id,
+                    field_art_tags_tid: search_query.field_art_tags_tid,
+                    page
+                }
+            })
             // arts.value = []
             arts.value = data.data
             search_url.value = data.url
@@ -145,12 +159,18 @@ export const useArtStore = defineStore('ArtStore', () => {
         config.lazy_loading = true
         try {
             const { data } = await api.get(`/arts`, {
-                params: { search: search_query.search, page: config.lazy_page, field_art_type_tid: search_query.selected_art_type.id, lazy: true }
+                params: {
+                    search: search_query.search,
+                    page: config.lazy_page,
+                    field_art_type_tid: search_query.selected_art_type.id,
+                    field_art_tags_tid: search_query.field_art_tags_tid,
+                    lazy: true
+                }
             })
 
             arts.value.push(...data.data)
 
-            checkExploreArtsForRefresh(exploreRefreshRunId)
+            checkExploreArtsForRefresh()
         } catch (err) {
             console.log('erro on ArtStore/lazyGetArts()', err)
         }
@@ -176,6 +196,13 @@ export const useArtStore = defineStore('ArtStore', () => {
     function mountables() {
         watch(
             () => search_query.selected_art_type,
+            async () => {
+                await getArts(1)
+                checkExploreArtsForRefresh()
+            }
+        )
+        watch(
+            () => search_query.field_art_tags_tid,
             async () => {
                 await getArts(1)
                 checkExploreArtsForRefresh()

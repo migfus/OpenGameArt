@@ -222,9 +222,17 @@ async function search() {
 }
 
 onMounted(() => {
-    search_query.value.search = $route.query.search as string
-    search_query.value.selected_art_type = art_types.value[0]
-    search_query.value.selected_art_type.id = Number($route.query.field_art_type_tid ?? 0)
+    if ($route.query.search) {
+        search_query.value.search = $route.query.search as string
+    }
+    if ($route.query.field_art_type_tid) {
+        search_query.value.selected_art_type = art_types.value[0]
+        search_query.value.selected_art_type.id = Number($route.query.field_art_type_tid ?? 0)
+    }
+    if ($route.query.field_art_tags_tid) {
+        search_query.value.field_art_tags_tid = $route.query.field_art_tags_tid as string
+    }
+
     search()
     mountables()
 })

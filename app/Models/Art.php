@@ -50,4 +50,8 @@ class Art extends Model {
     public function art_comments(): HasMany {
         return $this->hasMany(ArtComment::class);
     }
+
+    public function licenses(): BelongsToMany {
+        return $this->belongsToMany(License::class);
+    }
 }

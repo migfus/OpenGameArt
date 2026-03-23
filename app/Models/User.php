@@ -22,7 +22,8 @@ class User extends Authenticatable {
         'id',
         'username',
         'image_url',
-        'url_username'
+        'url_username',
+        'created_at'
     ];
 
     /**

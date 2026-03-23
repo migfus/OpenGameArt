@@ -73,7 +73,7 @@
             <!-- USER INFO -->
             <div class="flex gap-2 items-center py-4 justify-between">
                 <div v-if="config.loading || !show_data" class="flex w-full max-w-54 gap-4 items-center shrink-0">
-                    <div class="rounded-full size-16 animate-pulse bg-brand-950" />
+                    <div class="rounded-full size-12 animate-pulse bg-brand-950" />
 
                     <div class="flex flex-col gap-2">
                         <div class="h-6 w-32 bg-brand-950 animate-pulse rounded-3xl"></div>
@@ -83,11 +83,11 @@
                 </div>
 
                 <div v-else class="flex w-full max-w-54 gap-4 items-center shrink-0">
-                    <img :src="show_data?.user?.image_url" class="rounded-full size-16" />
+                    <img :src="show_data?.user?.image_url" class="rounded-full size-12 bg-brand-950" />
 
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-col gap-0">
                         <p class="text-lg font-semibold">{{ show_data.user?.username }}</p>
-                        <p>{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
+                        <p class="text-sm text-brand-300">{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
                     </div>
                 </div>
 
@@ -95,16 +95,23 @@
                     <div class="h-6 bg-brand-950 animate-pulse rounded-3xl w-32" />
                     <div class="relative max-w-full">
                         <div class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap">
-                            <p v-for="item in attributes" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm truncate shrink-0">{{ item }}</p>
+                            <div v-for="item in [0, 1, 2]" class="bg-brand-950 h-5 animate-pulse w-32 rounded-3xl text-sm truncate shrink-0" />
                         </div>
                     </div>
                 </div>
 
                 <div v-else class="flex flex-1 min-w-0 flex-col items-end gap-2">
-                    <p class="">{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
+                    <p class="text-sm text-brand-300">{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
                     <div class="relative max-w-full">
                         <div ref="attributesScroller" class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap" @scroll="updateAttributesOverflow">
-                            <p v-for="item in attributes" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm truncate shrink-0">{{ item }}</p>
+                            <a
+                                v-for="item in show_data.licenses"
+                                :key="item.id"
+                                :href="item.url"
+                                class="bg-brand-950 px-4 py-1 rounded-3xl text-sm truncate shrink-0"
+                            >
+                                {{ item.name }}
+                            </a>
                         </div>
 
                         <div
@@ -131,9 +138,14 @@
 
             <div v-else class="flex flex-col w-full relative">
                 <div class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap" ref="tagsScroller" @scroll="updateTagsOverflow">
-                    <p v-for="item in show_data.tags" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm flex items-center gap-1 shrink-0">
+                    <RouterLink
+                        v-for="item in show_data.tags"
+                        :key="item.id"
+                        :to="`/arts?field_art_tags_tid=${encodeURIComponent(item.name)}`"
+                        class="bg-brand-950 px-4 py-1 rounded-3xl text-sm flex items-center gap-1 shrink-0"
+                    >
                         {{ item.name }}
-                    </p>
+                    </RouterLink>
                 </div>
 
                 <div v-if="tags_options.shadow_left" class="pointer-events-none absolute left-0 top-0 h-full w-6 bg-linear-to-r from-dark-001 to-transparent" />
@@ -212,7 +224,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="flex flex-col gap-4 items-center">
+            <div v-else class="flex flex-col gap-4 items-center mb-4">
                 <CommentSection v-for="item in show_data.art_comments" :key="item.id" :comment="item" />
 
                 <div v-if="show_data.art_comments.length <= 0" class="text-sm text-brand-400">Be the first to comment</div>
