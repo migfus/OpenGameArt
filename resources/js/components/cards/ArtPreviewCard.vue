@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-2 rounded-3xl h-80 2xl:h-130 relative overflow-hidden justify-between group">
+    <div class="flex flex-col gap-2 sm:rounded-3xl h-80 2xl:h-130 relative overflow-hidden justify-between group">
         <div v-if="config.loading || !show_data" class="absolute inset-0 animate-pulse bg-dark-002" />
         <div
             v-else
@@ -12,20 +12,21 @@
             }"
         />
 
-        <div class="absolute inset-0 bg-linear-to-b from-black/0 via-black/0 to-black/60" />
-        <div class="absolute bottom-0 inset-x-0 bg-linear-to-t to-black/0 from-black/80" />
+        <div class="absolute opacity-0 w-full h-full group-hover:opacity-100 transition-all">
+            <div class="absolute left-0 bg-linear-to-l from-black/0 via-black/0 to-black/60 w-32 h-full flex items-center cursor-pointer">
+                <Icon icon="pixelarticons:arrow-left" class="size-5 text-brand-100 mx-4" />
+            </div>
+            <div class="absolute right-0 bg-linear-to-r from-black/0 via-black/0 to-black/60 w-32 h-full flex items-center justify-end cursor-pointer">
+                <Icon icon="pixelarticons:arrow-right" class="size-5 text-brand-100 mx-4" />
+            </div>
+        </div>
 
-        <div v-if="config.loading || !show_data" class="z-10 p-4 flex flex-col gap-2">
-            <div class="h-8 bg-dark-001 animate-pulse w-1/2 rounded-3xl" />
-            <div class="h-6 bg-dark-001 animate-pulse w-42 rounded-3xl" />
-        </div>
-        <div v-else class="z-10 p-4">
-            <h1 class="text-3xl">{{ show_data?.title }}</h1>
-            <h2 class="text-2xl">{{ show_data?.files[0]?.name }}</h2>
-        </div>
+        <!-- <div class="absolute left-0 bottom-0 inset-x-0 bg-linear-to-l to-black/0 from-black/80">
+            <div />
+        </div> -->
 
         <div class="z-10 p-4 flex justify-between gap-4">
-            <div class="flex gap-2 flex-1">
+            <!-- <div class="flex gap-2 flex-1">
                 <div class="flex items-center cursor-pointer bg-dark-001/30 hover:bg-brand-950 rounded-3xl px-4 py-2 transition-all" @click="played = !played">
                     <Icon v-if="played" icon="pixelarticons:pause" class="size-5" />
                     <Icon v-else icon="pixelarticons:play" class="size-5" />
@@ -38,8 +39,8 @@
                         class="block w-full py-2 bg-white border border-brand-950 rounded-md focus:border-blue-500 accent-brand-400"
                     />
                 </div>
-            </div>
-            <div class="flex gap-2">
+            </div> -->
+            <!-- <div class="flex gap-2">
                 <div class="flex items-center px-4">
                     <div>4:32</div>
                 </div>
@@ -59,7 +60,7 @@
                         <Icon v-else icon="pixel:download-solid" class="size-5" />
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

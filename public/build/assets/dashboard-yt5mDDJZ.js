@@ -1,1 +1,0 @@
-import{O as e,d as t}from"./runtime-core.esm-bundler-CUAP-gSy.js";import{t as n}from"./_plugin-vue_export-helper-DAAOZMkq.js";var r={};function i(n,r){return e(),t(`div`,null,`Dashboard`)}var a=n(r,[[`render`,i]]);export{a as default};

@@ -3,86 +3,86 @@
     "file": "assets/ArtCard-DNZ6ccCU.css",
     "src": "_ArtCard-DNZ6ccCU.css"
   },
-  "_ArtCard-c1i0ftR4.js": {
-    "file": "assets/ArtCard-c1i0ftR4.js",
+  "_ArtCard-o20jtpEh.js": {
+    "file": "assets/ArtCard-o20jtpEh.js",
     "name": "ArtCard",
     "imports": [
-      "_vue-router-BEm-Dp5E.js",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_vue-router-L8GDK1ob.js",
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ],
     "css": [
       "assets/ArtCard-DNZ6ccCU.css"
     ]
   },
-  "_ArtCardLoader-DYHKw3YJ.js": {
-    "file": "assets/ArtCardLoader-DYHKw3YJ.js",
+  "_ArtCardLoader-BMj1Yt-p.js": {
+    "file": "assets/ArtCardLoader-BMj1Yt-p.js",
     "name": "ArtCardLoader",
     "imports": [
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
-  "_DataTransition-BGmgKSx3.js": {
-    "file": "assets/DataTransition-BGmgKSx3.js",
+  "_DataTransition-CcwOmWog.js": {
+    "file": "assets/DataTransition-CcwOmWog.js",
     "name": "DataTransition",
     "imports": [
       "__plugin-vue_export-helper-DAAOZMkq.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
-  "_NotifyBanner-CtpEYL4m.js": {
-    "file": "assets/NotifyBanner-CtpEYL4m.js",
+  "_NotifyBanner-CIFroU8b.js": {
+    "file": "assets/NotifyBanner-CIFroU8b.js",
     "name": "NotifyBanner",
     "imports": [
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js",
-      "_dist-Cnn4mmvL.js"
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js",
+      "_dist-DXuhosYs.js"
     ]
   },
   "__plugin-vue_export-helper-DAAOZMkq.js": {
     "file": "assets/_plugin-vue_export-helper-DAAOZMkq.js",
     "name": "_plugin-vue_export-helper"
   },
-  "_dist-Cnn4mmvL.js": {
-    "file": "assets/dist-Cnn4mmvL.js",
+  "_dist-DXuhosYs.js": {
+    "file": "assets/dist-DXuhosYs.js",
     "name": "dist",
     "imports": [
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
-  "_index.esm-EFR75Zta.js": {
-    "file": "assets/index.esm-EFR75Zta.js",
+  "_index.esm-48LtYxGb.js": {
+    "file": "assets/index.esm-48LtYxGb.js",
     "name": "index.esm",
     "imports": [
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
-  "_keyboard-BkVS9TWa.js": {
-    "file": "assets/keyboard-BkVS9TWa.js",
+  "_keyboard-C6Q2LVZk.js": {
+    "file": "assets/keyboard-C6Q2LVZk.js",
     "name": "keyboard",
     "imports": [
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
-  "_pinia-BPuvrzur.js": {
-    "file": "assets/pinia-BPuvrzur.js",
+  "_pinia-BhhdnEIx.js": {
+    "file": "assets/pinia-BhhdnEIx.js",
     "name": "pinia",
     "imports": [
-      "_vue-router-BEm-Dp5E.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_vue-router-L8GDK1ob.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
-  "_runtime-core.esm-bundler-CUAP-gSy.js": {
-    "file": "assets/runtime-core.esm-bundler-CUAP-gSy.js",
+  "_runtime-core.esm-bundler-CCcfCGFe.js": {
+    "file": "assets/runtime-core.esm-bundler-CCcfCGFe.js",
     "name": "runtime-core.esm-bundler"
   },
-  "_vue-router-BEm-Dp5E.js": {
-    "file": "assets/vue-router-BEm-Dp5E.js",
+  "_vue-router-L8GDK1ob.js": {
+    "file": "assets/vue-router-L8GDK1ob.js",
     "name": "vue-router",
     "imports": [
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
   "public/images/building.png": {
@@ -90,7 +90,7 @@
     "src": "public/images/building.png"
   },
   "resources/css/app.css": {
-    "file": "assets/app-C8m8ubzQ.css",
+    "file": "assets/app-BgTCmhqP.css",
     "name": "app",
     "names": [
       "app.css"
@@ -99,18 +99,18 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-BuTPv34t.js",
+    "file": "assets/app-CThgB9_W.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
     "imports": [
-      "_vue-router-BEm-Dp5E.js",
-      "_keyboard-BkVS9TWa.js",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js",
-      "_dist-Cnn4mmvL.js",
-      "_pinia-BPuvrzur.js",
-      "_index.esm-EFR75Zta.js"
+      "_vue-router-L8GDK1ob.js",
+      "_keyboard-C6Q2LVZk.js",
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js",
+      "_dist-DXuhosYs.js",
+      "_pinia-BhhdnEIx.js",
+      "_index.esm-48LtYxGb.js"
     ],
     "dynamicImports": [
       "resources/js/pages/index.vue",
@@ -125,14 +125,15 @@
     ]
   },
   "resources/js/pages/[...page].vue": {
-    "file": "assets/_...page_-DMxiCzgm.js",
+    "file": "assets/_...page_-CZ-EDnxQ.js",
     "name": "_...page_",
     "src": "resources/js/pages/[...page].vue",
     "isDynamicEntry": true,
     "imports": [
-      "_vue-router-BEm-Dp5E.js",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_vue-router-L8GDK1ob.js",
+      "resources/js/app.ts",
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ],
     "css": [
       "assets/_..-Os0L-3Kw.css"
@@ -142,110 +143,110 @@
     ]
   },
   "resources/js/pages/arts/[id].vue": {
-    "file": "assets/_id_-C1-CtOk3.js",
+    "file": "assets/_id_-BRbxv47x.js",
     "name": "_id_",
     "src": "resources/js/pages/arts/[id].vue",
     "isDynamicEntry": true,
     "imports": [
-      "_vue-router-BEm-Dp5E.js",
+      "_vue-router-L8GDK1ob.js",
       "resources/js/app.ts",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js",
-      "_dist-Cnn4mmvL.js",
-      "_pinia-BPuvrzur.js",
-      "_ArtCard-c1i0ftR4.js"
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js",
+      "_dist-DXuhosYs.js",
+      "_pinia-BhhdnEIx.js",
+      "_ArtCard-o20jtpEh.js"
     ]
   },
   "resources/js/pages/arts/index.vue": {
-    "file": "assets/arts-04MX2d4g.js",
+    "file": "assets/arts-Calrq-H4.js",
     "name": "arts",
     "src": "resources/js/pages/arts/index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_vue-router-BEm-Dp5E.js",
+      "_vue-router-L8GDK1ob.js",
       "resources/js/app.ts",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js",
-      "_pinia-BPuvrzur.js",
-      "_ArtCard-c1i0ftR4.js",
-      "_ArtCardLoader-DYHKw3YJ.js"
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js",
+      "_pinia-BhhdnEIx.js",
+      "_ArtCard-o20jtpEh.js",
+      "_ArtCardLoader-BMj1Yt-p.js"
     ]
   },
   "resources/js/pages/collections.vue": {
-    "file": "assets/collections-DSvBqNZu.js",
+    "file": "assets/collections-ByzQhy-V.js",
     "name": "collections",
     "src": "resources/js/pages/collections.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
   "resources/js/pages/dashboard/account-settings.vue": {
-    "file": "assets/account-settings-LSs2prun.js",
+    "file": "assets/account-settings-g5noSZOM.js",
     "name": "account-settings",
     "src": "resources/js/pages/dashboard/account-settings.vue",
     "isDynamicEntry": true,
     "imports": [
       "__plugin-vue_export-helper-DAAOZMkq.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
   "resources/js/pages/dashboard/index.vue": {
-    "file": "assets/dashboard-yt5mDDJZ.js",
+    "file": "assets/dashboard-BUmo5dy1.js",
     "name": "dashboard",
     "src": "resources/js/pages/dashboard/index.vue",
     "isDynamicEntry": true,
     "imports": [
       "__plugin-vue_export-helper-DAAOZMkq.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js"
+      "_runtime-core.esm-bundler-CCcfCGFe.js"
     ]
   },
   "resources/js/pages/faqs.vue": {
-    "file": "assets/faqs-BU4wkVVY.js",
+    "file": "assets/faqs-DEhX18SQ.js",
     "name": "faqs",
     "src": "resources/js/pages/faqs.vue",
     "isDynamicEntry": true,
     "imports": [
       "__plugin-vue_export-helper-DAAOZMkq.js",
       "resources/js/app.ts",
-      "_keyboard-BkVS9TWa.js",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js",
-      "_NotifyBanner-CtpEYL4m.js"
+      "_keyboard-C6Q2LVZk.js",
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js",
+      "_NotifyBanner-CIFroU8b.js"
     ],
     "css": [
       "assets/faqs-CUPopZYo.css"
     ]
   },
   "resources/js/pages/index.vue": {
-    "file": "assets/pages-DASZNqMB.js",
+    "file": "assets/pages-4nwDEXsW.js",
     "name": "pages",
     "src": "resources/js/pages/index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_vue-router-BEm-Dp5E.js",
+      "_vue-router-L8GDK1ob.js",
       "resources/js/app.ts",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js",
-      "_dist-Cnn4mmvL.js",
-      "_pinia-BPuvrzur.js",
-      "_ArtCard-c1i0ftR4.js",
-      "_ArtCardLoader-DYHKw3YJ.js",
-      "_NotifyBanner-CtpEYL4m.js"
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js",
+      "_dist-DXuhosYs.js",
+      "_pinia-BhhdnEIx.js",
+      "_ArtCard-o20jtpEh.js",
+      "_ArtCardLoader-BMj1Yt-p.js",
+      "_NotifyBanner-CIFroU8b.js"
     ]
   },
   "resources/js/pages/login.vue": {
-    "file": "assets/login-BRXc3mFg.js",
+    "file": "assets/login-Cxfj3-cA.js",
     "name": "login",
     "src": "resources/js/pages/login.vue",
     "isDynamicEntry": true,
     "imports": [
       "__plugin-vue_export-helper-DAAOZMkq.js",
       "resources/js/app.ts",
-      "_DataTransition-BGmgKSx3.js",
-      "_runtime-core.esm-bundler-CUAP-gSy.js",
-      "_dist-Cnn4mmvL.js",
-      "_pinia-BPuvrzur.js"
+      "_DataTransition-CcwOmWog.js",
+      "_runtime-core.esm-bundler-CCcfCGFe.js",
+      "_dist-DXuhosYs.js",
+      "_pinia-BhhdnEIx.js"
     ],
     "css": [
       "assets/login-qPZgOfmv.css"

@@ -1,39 +1,37 @@
 <template>
-    <div class="flex flex-col gap-4 lg:flex-row p-4">
+    <div class="flex flex-col gap-4 lg:flex-row sm:p-4 py-4">
         <div class="flex-1 min-w-0 basis-0 flex flex-col gap-4">
+            <!-- SECTION: TITLE -->
+            <div class="px-4 sm:px-0">
+                <h1 v-if="config.loading || !show_data" class="text-2xl font-semibold bg-brand-950 h-8 w-48 rounded-3xl animate-pulse" />
+                <h1 v-else class="text-xl">{{ show_data.title }}</h1>
+            </div>
+
+            <!-- SECTION: ART PREVIEW -->
             <ArtPreviewCard />
 
+            <!-- SECTION: PREVIEW SELECTION -->
             <div v-if="config.loading || !show_data" class="flex flex-col max-w-full relative">
                 <div class="flex gap-2 items-start justify-between">
                     <DataTransition class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap">
                         <div v-for="item in [0, 1, 2, 3]" class="flex flex-col gap-2">
-                            <div class="size-32 rounded-3xl bg-brand-950 animate-pulse" />
+                            <div class="size-32 rounded-xl bg-brand-950 animate-pulse" />
 
                             <div class="flex flex-col gap-1">
-                                <button class="bg-brand-950 h-5 w-full animate-pulse rounded-3xl" />
+                                <button class="bg-brand-950 h-5 w-full animate-pulse rounded-xl" />
 
                                 <div class="flex justify-between gap-2">
-                                    <button class="bg-brand-950 h-4 w-16 animate-pulse rounded-3xl" />
-                                    <button class="bg-brand-950 h-4 w-16 animate-pulse rounded-3xl" />
+                                    <button class="bg-brand-950 h-4 w-16 animate-pulse rounded-xl" />
+                                    <button class="bg-brand-950 h-4 w-16 animate-pulse rounded-xl" />
                                 </div>
                             </div>
                         </div>
                     </DataTransition>
 
-                    <button class="bg-brand-950 h-8 w-16 animate-pulse rounded-3xl" />
+                    <button class="bg-brand-950 h-8 w-16 animate-pulse rounded-xl" />
                 </div>
-
-                <div
-                    v-if="files_options.shadow_left"
-                    class="pointer-events-none absolute left-0 top-0 h-full w-6 bg-linear-to-r from-dark-001 to-transparent"
-                />
-                <div
-                    v-if="files_options.shadow_right"
-                    class="pointer-events-none absolute right-0 top-0 h-full w-6 bg-linear-to-l from-dark-001 to-transparent"
-                />
             </div>
-
-            <div v-else class="flex flex-col max-w-full relative">
+            <div v-else class="flex flex-col max-w-full relative px-4 sm:px-0">
                 <div class="flex gap-2 items-start justify-between">
                     <DataTransition
                         class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap"
@@ -42,22 +40,6 @@
                     >
                         <FileCard v-for="item in show_data?.files" :file="item" />
                     </DataTransition>
-
-                    <div class="flex flex-col gap-2">
-                        <div>
-                            <a :href="`https://opengameart.org/content/${show_data?.id}`" class="bg-brand-950 px-3 py-1 rounded-3xl flex items-center gap-1">
-                                OpenGameArt.org
-                                <Icon icon="pixelarticons:arrow-right-box" />
-                            </a>
-                        </div>
-                        <AppButton
-                            class="bg-brand-950 px-3 py-1 rounded-3xl ml-auto"
-                            color="brand"
-                            :href="`/arts?field_art_type_tid=${show_data?.art_category.id}`"
-                        >
-                            {{ show_data?.art_category?.name }}
-                        </AppButton>
-                    </div>
                 </div>
 
                 <div
@@ -70,8 +52,8 @@
                 />
             </div>
 
-            <!-- USER INFO -->
-            <div class="flex gap-2 items-center py-4 justify-between">
+            <!-- SECTION: USER INFO -->
+            <div class="flex gap-2 items-center py-4 justify-between px-4 sm:px-0">
                 <div v-if="config.loading || !show_data" class="flex w-full max-w-54 gap-4 items-center shrink-0">
                     <div class="rounded-full size-12 animate-pulse bg-brand-950" />
 
@@ -126,7 +108,19 @@
                 </div>
             </div>
 
-            <!-- TAGS -->
+            <!-- SECTION: ART Functions -->
+
+            <!-- SECTION: ATTRIBUTES -->
+
+            <!-- DESCRIPTION -->
+            <div v-if="config.loading || !show_data" class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl h-32 animate-pulse" />
+            <div v-else class="flex flex-col gap-2 items-center p-4 bg-brand-950 sm:rounded-3xl">
+                <div v-html="show_data.content" :class="[read_more ? '' : 'line-clamp-6', 'w-full']"></div>
+
+                <button class="cursor-pointer" @click="read_more = !read_more">{{ read_more ? 'Read Less' : 'Read More' }}</button>
+            </div>
+
+            <!-- SECTION: TAGS -->
             <div v-if="config.loading || !show_data" class="flex flex-col w-full relative">
                 <div class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap">
                     <div
@@ -135,7 +129,6 @@
                     />
                 </div>
             </div>
-
             <div v-else class="flex flex-col w-full relative">
                 <div class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap" ref="tagsScroller" @scroll="updateTagsOverflow">
                     <RouterLink
@@ -155,66 +148,10 @@
                 />
             </div>
 
-            <!-- DESCRIPTION -->
-            <div v-if="config.loading || !show_data" class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl h-32 animate-pulse" />
+            <!-- SECTION: FILES TO DOWNLOAD -->
 
-            <div v-else class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl">
-                <div v-html="show_data.content" :class="[read_more ? '' : 'line-clamp-6', 'w-full']"></div>
-
-                <button class="cursor-pointer" @click="read_more = !read_more">{{ read_more ? 'Read Less' : 'Read More' }}</button>
-            </div>
-
-            <!-- COMMENT HERE -->
-            <div v-if="auth" class="flex flex-col gap-4 items-center p-4 bg-brand-950 rounded-3xl">
-                <div class="w-full flex gap-4 items-start">
-                    <img
-                        src="https://plus.unsplash.com/premium_photo-1773452093235-06429f4c844d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8"
-                        class="rounded-full size-8"
-                    />
-
-                    <AppInput name="Comment" v-model="comment_here" noLabel placeholder="Comment Here" class="flex-1" />
-                    <AppButton icon="pixel:edit-solid" size="sm">Submit</AppButton>
-                </div>
-
-                <div v-if="!show_data || config.loading" class="w-full flex gap-2 justify-between">
-                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
-                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
-                </div>
-                <div v-else class="w-full flex gap-2 justify-between">
-                    <p class="text-sm text-brand-400">
-                        {{
-                            show_data?.comments_count > 1
-                                ? `${show_data?.comments_count} Comments`
-                                : show_data?.comments_count > 0
-                                  ? `${show_data?.comments_count} Comment`
-                                  : 'No Comments'
-                        }}
-                    </p>
-                    <p class="text-sm text-brand-400">Sort by Latest</p>
-                </div>
-            </div>
-            <div v-else class="flex flex-col gap-4 items-center p-4 bg-brand-950 rounded-3xl">
-                <AppButton icon="pixelarticons:login" href="/login">Sign Up to Comment</AppButton>
-
-                <div v-if="!show_data || config.loading" class="w-full flex gap-2 justify-between">
-                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
-                    <div class="text-sm bg-dark-001 h-6 w-32 rounded-3xl" />
-                </div>
-                <div v-else class="w-full flex gap-2 justify-between">
-                    <p class="text-sm text-brand-400">
-                        {{
-                            show_data?.comments_count > 1
-                                ? `${show_data?.comments_count} Comments`
-                                : show_data?.comments_count > 0
-                                  ? `${show_data?.comments_count} Comment`
-                                  : 'No Comments'
-                        }}
-                    </p>
-                    <p class="text-sm text-brand-400">Sort by Latest</p>
-                </div>
-            </div>
-
-            <!-- COMMENTS -->
+            <!-- SECTION: COMMENTS -->
+            <!-- TODO: Combine the 'comment here' and 'comment section' -->
             <div v-if="config.loading || !show_data" class="flex flex-col gap-4 p-4">
                 <div v-for="item in [1, 2, 3, 4]" class="flex items-center gap-2">
                     <div class="size-10 bg-brand-950 rounded-full animate-pulse"></div>
@@ -224,14 +161,14 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="flex flex-col gap-4 items-center mb-4">
+            <div v-else class="flex flex-col gap-4 items-center mb-4 px-4 sm:px-0">
                 <CommentSection v-for="item in show_data.art_comments" :key="item.id" :comment="item" />
 
                 <div v-if="show_data.art_comments.length <= 0" class="text-sm text-brand-400">Be the first to comment</div>
             </div>
         </div>
 
-        <div class="w-full lg:w-46 lg:shrink-0 2xl:w-110 grid grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2 gap-4">
+        <div class="w-full lg:w-46 lg:shrink-0 2xl:w-110 grid grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2 gap-4 px-4 sm:px-0">
             <ArtCard v-for="(item, idx) in weekly_arts" :art="item" :idx="idx" />
         </div>
     </div>
