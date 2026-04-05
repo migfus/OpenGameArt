@@ -106,14 +106,16 @@ export function formatNumber(num: number, decimals = 2): string {
     return num.toString()
 }
 
-export function formatToPreviewImage(url: string): string {
+export function formatToPreviewImage(url: string): string | null {
     const cleanUrl = url.split('?')[0].split('#')[0]
 
     if (cleanUrl.toLowerCase().endsWith('.blend')) {
         return 'https://fileinfo.com/img/icons/files/256/blend-1243.png'
+    } else if (cleanUrl.toLowerCase().endsWith('.zip')) {
+        return 'https://fileinfo.com/img/icons/files/256/zip-1243.png'
     }
 
-    return ''
+    return null
 }
 
 export function urlToFileExtension(url: string): string {

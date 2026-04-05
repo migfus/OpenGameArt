@@ -47,6 +47,30 @@
 
     /* bg-white for white */
     --color-light-001: #fff;
+
+    --color-affair-50: #fbf7fc;
+    --color-affair-100: #f6eff8;
+    --color-affair-200: #ecdef0;
+    --color-affair-300: #dec4e3;
+    --color-affair-400: #cba0d2;
+    --color-affair-500: #b27abb;
+    --color-affair-600: #965b9e;
+    --color-affair-700: #7f4b85;
+    --color-affair-800: #673d6b;
+    --color-affair-900: #573659;
+    --color-affair-950: #351b37;
+
+    --color-limed-spruce-50: #f3f8f8;
+    --color-limed-spruce-100: #e1ebec;
+    --color-limed-spruce-200: #c7d8da;
+    --color-limed-spruce-300: #9fbcc1;
+    --color-limed-spruce-400: #71989f;
+    --color-limed-spruce-500: #567c84;
+    --color-limed-spruce-600: #4a6870;
+    --color-limed-spruce-700: #3f555c;
+    --color-limed-spruce-800: #3a4a50;
+    --color-limed-spruce-900: #344045;
+    --color-limed-spruce-950: #1f292d;
 }
 
 :root {

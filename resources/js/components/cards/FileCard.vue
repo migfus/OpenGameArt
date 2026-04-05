@@ -1,27 +1,44 @@
 <template>
-    <div :class="['flex flex-col gap-1 group relative isolate cursor-pointer w-18']">
-        <div v-if="formatToPreviewImage(file.file_url)" class="p-4 bg-brand-950 rounded-xl flex items-center justify-center border-3 border-brand-900">
-            <img :src="formatToPreviewImage(file.file_url)" alt="Preview" class="w-full h-full object-cover rounded-xl" />
+    <a
+        :href="file.file_url"
+        target="_blank"
+        class="flex items-center justify-between gap-2 bg-brand-950 hover:bg-brand-900 text-affair-50 px-4 py-2 rounded-3xl cursor-pointer w-full min-w-0"
+    >
+        <div class="flex gap-2 items-center grow min-w-0">
+            <img
+                v-if="urlToFileExtension(file.file_url) == 'jpg' || urlToFileExtension(file.file_url) == 'jpeg' || urlToFileExtension(file.file_url) == 'png'"
+                :src="file.file_url"
+                alt="File Icon"
+                class="size-4 object-cover rounded shrink-0"
+            />
+            <Icon v-else-if="urlToFileExtension(file.file_url) === 'zip'" icon="tabler:zip" />
+
+            <p class="truncate min-w-0">
+                {{ file.name }}
+            </p>
         </div>
-        <div v-else-if="played" class="p-4 bg-dark-002 rounded-3xl flex items-center justify-center ring-3 ring-brand-900" @click="played = !played">
-            <Icon icon="pixelarticons:pause" class="size-10 group-hover:scale-120 transition-all" />
+
+        <div class="flex gap-2 shrink-0">
+            <div class="bg-dark-001 text-sm px-2 py-1 rounded-3xl flex items-center gap-1 shrink-0 whitespace-nowrap">
+                <!-- FIXME: Not a backend data -->
+                {{ formatNumber(3222) }} kb
+                <Icon icon="pixelarticons:download-sharp" />
+            </div>
+            <div class="bg-dark-001 text-sm px-2 py-1 rounded-3xl flex items-center gap-1 shrink-0 whitespace-nowrap">
+                {{ formatNumber(file.download_count) }}
+                <Icon icon="pixelarticons:download-sharp" />
+            </div>
         </div>
-        <div v-else class="p-4 bg-brand-950 rounded-xl flex items-center justify-center aspect-square" @click="played = !played">
-            <Icon icon="pixelarticons:play" class="size-10 group-hover:scale-120 transition-all" />
-        </div>
-    </div>
+    </a>
 </template>
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 
-import { formatNumber, formatToPreviewImage, urlToFileExtension } from '@/utils/utils'
-import { ref } from 'vue'
 import { File } from '@/global.interfaces'
+import { formatNumber, urlToFileExtension } from '@/utils/utils'
 
 defineProps<{
     file: File
 }>()
-
-const played = ref(false)
 </script>

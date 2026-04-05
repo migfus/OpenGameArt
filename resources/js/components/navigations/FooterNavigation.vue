@@ -1,12 +1,14 @@
 <template>
-    <div :class="[showFooter ? 'translate-y-0' : 'translate-y-full', 'fixed bg-dark-001/75 backdrop-blur-lg bottom-0 w-full gap-2 transition-all z-20']">
+    <div
+        :class="[
+            show_mobile_navigation_footer ? 'translate-y-0' : 'translate-y-full',
+            'fixed bg-brand-950 bottom-0 w-full gap-2 transition-all z-20 shadow-2xl'
+        ]"
+    >
         <RouterLink
             v-for="item in bottom_navigations"
             :to="item.href"
-            :class="[
-                $route.path === item.href ? 'bg-brand-950/75 backdrop-blur-lg' : 'hover:bg-brand-950',
-                'flex flex-col items-center py-2 flex-1 transition-all'
-            ]"
+            :class="[$route.path === item.href ? 'bg-brand-900' : 'hover:bg-brand-900', 'flex flex-col items-center py-2 flex-1 transition-all']"
         >
             <Icon :icon="item.icon" class="size-6" />
             <p class="text-sm">{{ item.display_name }}</p>
@@ -14,7 +16,7 @@
 
         <div
             @click="$sidebar_open_model = true"
-            :class="[$sidebar_open_model ? 'bg-brand-950' : 'hover:bg-brand-950', 'flex flex-col items-center py-2 flex-1 cursor-pointer transition-all']"
+            :class="[$sidebar_open_model ? 'bg-brand-950' : 'hover:bg-brand-900', 'flex flex-col items-center py-2 flex-1 cursor-pointer transition-all']"
         >
             <Icon icon="memory:format-align-justify" class="size-6" />
             <p class="text-sm">More</p>
@@ -27,9 +29,13 @@ import { Icon } from '@iconify/vue'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
+import { useNavigationStore } from '@/stores/navigation.store'
+import { storeToRefs } from 'pinia'
 
 const $sidebar_open_model = defineModel<boolean>()
 const $route = useRoute()
+const $navigationStore = useNavigationStore()
+const { show_mobile_navigation_footer } = storeToRefs($navigationStore)
 
 const bottom_navigations = [
     {
@@ -54,7 +60,6 @@ const bottom_navigations = [
     }
 ]
 
-const showFooter = ref(true)
 let lastScroll = 0
 
 const handleScroll = () => {
@@ -62,10 +67,10 @@ const handleScroll = () => {
 
     if (current > lastScroll) {
         // scrolling down → hide
-        showFooter.value = false
+        show_mobile_navigation_footer.value = false
     } else {
         // scrolling up → show
-        showFooter.value = true
+        show_mobile_navigation_footer.value = true
     }
 
     lastScroll = current

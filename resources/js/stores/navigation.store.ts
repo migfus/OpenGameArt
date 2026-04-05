@@ -10,6 +10,8 @@ import { useForumStore } from './forum.store'
 import { usePostStore } from './post.store'
 
 export const useNavigationStore = defineStore('navigationStore', () => {
+    const show_mobile_navigation_footer = ref(true)
+
     const $artStore = useArtStore()
     const { new_arts, weekly_arts } = storeToRefs($artStore)
     const { checkWeeklyArtsForRefresh, checkNewArtsForRefresh } = $artStore
@@ -88,6 +90,7 @@ export const useNavigationStore = defineStore('navigationStore', () => {
     }
 
     return {
+        show_mobile_navigation_footer,
         navigation_data,
 
         config,

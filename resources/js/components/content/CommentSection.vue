@@ -4,17 +4,17 @@
             <a
                 :href="`https://opengameart.org/user/${comment.user?.id}/comments`"
                 target="_blank"
-                class="size-8 rounded-full shrink-0 hover:bg-brand-950 transition-colors"
+                class="size-6 rounded-full shrink-0 hover:bg-brand-950 transition-colors"
             >
                 <img :src="comment.user?.image_url" class="w-full h-full object-cover" />
             </a>
 
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-0">
                 <div class="text-md flex gap-2 items-center">
                     <a
                         :href="`https://opengameart.org/user/${comment.user?.id}/comments`"
                         target="_blank"
-                        class="font-semibold hover:bg-brand-950 transition-colors rounded-3xl px-2 py-1 -ml-2 -mt-1"
+                        class="font-semibold hover:bg-brand-950 transition-colors rounded-3xl px-2 -ml-2"
                     >
                         {{ comment.user?.username }}
                     </a>

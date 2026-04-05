@@ -1,6 +1,10 @@
 <template>
     <div class="flex flex-col gap-4 lg:flex-row sm:p-4 py-4">
         <div class="flex-1 min-w-0 basis-0 flex flex-col gap-4">
+            <!-- <div>
+                <p>Debug</p>
+                <p>Selected Preview ID: {{ art_config.selected_preview }}</p>
+            </div> -->
             <!-- SECTION: TITLE -->
             <div class="px-4 sm:px-0">
                 <h1 v-if="config.loading || !show_data" class="text-2xl font-semibold bg-brand-950 h-8 w-48 rounded-3xl animate-pulse" />
@@ -8,7 +12,7 @@
             </div>
 
             <!-- SECTION: ART PREVIEW -->
-            <ArtPreviewCard />
+            <MainArtPreviewCard v-model="art_config.selected_preview" :art_previews="show_data?.art_previews ?? []" :author="show_data?.user" />
 
             <!-- SECTION: PREVIEW SELECTION -->
             <div v-if="config.loading || !show_data" class="flex flex-col max-w-full relative">
@@ -38,7 +42,7 @@
                         @scroll="updateFilesOverflow"
                         ref="filesScroller"
                     >
-                        <FileCard v-for="item in show_data?.files" :file="item" />
+                        <PreviewCard v-for="item in show_data?.art_previews" :art_preview="item" v-model="art_config.selected_preview" />
                     </DataTransition>
                 </div>
 
@@ -53,7 +57,8 @@
             </div>
 
             <!-- SECTION: USER INFO -->
-            <div class="flex gap-2 items-center py-4 justify-between px-4 sm:px-0">
+            <div class="flex gap-2 items-center justify-between px-4 sm:px-0">
+                <!-- USER -->
                 <div v-if="config.loading || !show_data" class="flex w-full max-w-54 gap-4 items-center shrink-0">
                     <div class="rounded-full size-12 animate-pulse bg-brand-950" />
 
@@ -69,10 +74,12 @@
 
                     <div class="flex flex-col gap-0">
                         <p class="text-lg font-semibold">{{ show_data.user?.username }}</p>
+                        <!-- FIXME: Fix backend scrape for user creation date -->
                         <p class="text-sm text-brand-300">{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
                     </div>
                 </div>
 
+                <!-- DATE -->
                 <div v-if="config.loading || !show_data" class="flex flex-1 min-w-0 flex-col items-end gap-2">
                     <div class="h-6 bg-brand-950 animate-pulse rounded-3xl w-32" />
                     <div class="relative max-w-full">
@@ -85,32 +92,78 @@
                 <div v-else class="flex flex-1 min-w-0 flex-col items-end gap-2">
                     <p class="text-sm text-brand-300">{{ messengerStyleTime(show_data.user?.created_at ?? '') }}</p>
                     <div class="relative max-w-full">
-                        <div ref="attributesScroller" class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap" @scroll="updateAttributesOverflow">
-                            <a
-                                v-for="item in show_data.licenses"
-                                :key="item.id"
-                                :href="item.url"
-                                class="bg-brand-950 px-4 py-1 rounded-3xl text-sm truncate shrink-0"
-                            >
-                                {{ item.name }}
-                            </a>
-                        </div>
-
-                        <div
-                            v-if="attributes_options.shadow_left"
-                            class="pointer-events-none absolute left-0 top-0 h-full w-6 bg-linear-to-r from-dark-001 to-transparent"
-                        />
-                        <div
-                            v-if="attributes_options.shadow_right"
-                            class="pointer-events-none absolute right-0 top-0 h-full w-6 bg-linear-to-l from-dark-001 to-transparent"
-                        />
+                        <RouterLink to="/" class="bg-brand-950 px-2 py-1 rounded-xl text-sm">
+                            {{ show_data.art_category.name }}
+                        </RouterLink>
                     </div>
                 </div>
             </div>
 
             <!-- SECTION: ART Functions -->
+            <div v-if="show_data" class="flex gap-2 justify-between xl:justify-start px-4 sm:px-0">
+                <!-- LEFT -->
+                <div class="flex items-center bg-brand-950 rounded-2xl">
+                    <button
+                        :class="[
+                            'flex items-center gap-2 px-4 py-2 rounded-3xl cursor-pointer',
+                            art_config.friend
+                                ? 'bg-limed-spruce-700 hover:bg-limed-spruce-600 text-limed-spruce-50'
+                                : 'bg-brand-950 hover:bg-brand-900 text-affair-50'
+                        ]"
+                        @click="art_config.friend = !art_config.friend"
+                    >
+                        <Icon :icon="art_config.friend ? 'pixel:check-circle-solid' : 'pixel:plus-solid'" class="size-3" />
+                        <p v-if="art_config.friend" class="truncate">Friends</p>
+                        <p v-else class="truncate">Add Friend</p>
+                    </button>
+                    <a
+                        :href="`https://opengameart.org/user/${show_data?.user?.id}/contact`"
+                        target="_blank"
+                        class="flex items-center gap-2 bg-brand-950 hover:bg-brand-900 text-affair-50 px-4 py-2 rounded-3xl cursor-pointer"
+                    >
+                        <Icon icon="pixelarticons:send" class="size-3" />
+
+                        <p class="inline min-[484px]:hidden">Msg</p>
+                        <p class="hidden min-[484px]:inline">Message</p>
+                    </a>
+                </div>
+                <!-- RIGHT -->
+                <div class="flex items-center bg-brand-950 rounded-2xl">
+                    <button
+                        :class="[
+                            'flex items-center gap-2 px-4 py-2 rounded-3xl cursor-pointer',
+                            art_config.hearted ? 'bg-affair-700 hover:bg-affair-600 text-affair-50' : 'bg-brand-950 hover:bg-brand-900 text-affair-50'
+                        ]"
+                        @click="art_config.hearted = !art_config.hearted"
+                    >
+                        <Icon :icon="art_config.hearted ? 'iconamoon:heart-fill' : 'pixelarticons:heart'" class="size-3" />
+                        {{ formatNumber(art_config.hearted ? show_data.favorites_count + 1 : show_data.favorites_count) }}
+                    </button>
+                    <button class="flex items-center gap-2 bg-brand-950 hover:bg-brand-900 text-affair-50 px-4 py-2 rounded-3xl cursor-pointer">
+                        <Icon icon="pixelarticons:flag" class="size-3" />
+                        <p class="hidden min-[484px]:inline">Report</p>
+                    </button>
+                </div>
+            </div>
 
             <!-- SECTION: ATTRIBUTES -->
+            <div v-if="show_data" class="flex gap-2 justify-end px-4 sm:px-0 relative">
+                <!-- UNTESTED: Make the scroll functional -->
+                <!-- UNTESTED: Overflow of contents -->
+                <div ref="attributesScroller" class="flex gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap" @scroll="updateAttributesOverflow">
+                    <a v-for="item in show_data.licenses" :key="item.id" :href="item.url" class="bg-brand-950 px-4 py-1 rounded-3xl text-sm truncate shrink-0">
+                        {{ item.name }}
+                    </a>
+                </div>
+                <div
+                    v-if="attributes_options.shadow_left"
+                    class="pointer-events-none absolute left-0 top-0 h-full w-6 bg-linear-to-r from-dark-001 to-transparent"
+                />
+                <div
+                    v-if="attributes_options.shadow_right"
+                    class="pointer-events-none absolute right-0 top-0 h-full w-6 bg-linear-to-l from-dark-001 to-transparent"
+                />
+            </div>
 
             <!-- DESCRIPTION -->
             <div v-if="config.loading || !show_data" class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl h-32 animate-pulse" />
@@ -129,7 +182,7 @@
                     />
                 </div>
             </div>
-            <div v-else class="flex flex-col w-full relative">
+            <div v-else class="flex flex-col w-full relative px-4 sm:px-0">
                 <div class="flex gap-2 overflow-x-auto overflow-y-hidden scrollbar-hide whitespace-nowrap" ref="tagsScroller" @scroll="updateTagsOverflow">
                     <RouterLink
                         v-for="item in show_data.tags"
@@ -150,21 +203,56 @@
 
             <!-- SECTION: FILES TO DOWNLOAD -->
 
-            <!-- SECTION: COMMENTS -->
-            <!-- TODO: Combine the 'comment here' and 'comment section' -->
-            <div v-if="config.loading || !show_data" class="flex flex-col gap-4 p-4">
-                <div v-for="item in [1, 2, 3, 4]" class="flex items-center gap-2">
-                    <div class="size-10 bg-brand-950 rounded-full animate-pulse"></div>
-                    <div class="flex gap-2 flex-col">
-                        <div class="h-6 w-10 bg-brand-950 rounded-full animate-pulse"></div>
-                        <div class="h-10 w-32 bg-brand-950 rounded-full animate-pulse"></div>
-                    </div>
-                </div>
+            <div v-if="show_data" class="flex flex-col xl:grid grid-cols-2 gap-2 px-4 sm:px-0">
+                <FileCard v-for="file in show_data.files" :key="file.id" :file class="w-full" />
+                <FileCard v-for="file in show_data.files" :key="file.id" :file class="w-full" />
+                <FileCard v-for="file in show_data.files" :key="file.id" :file class="w-full" />
+                <FileCard v-for="file in show_data.files" :key="file.id" :file class="w-full" />
             </div>
-            <div v-else class="flex flex-col gap-4 items-center mb-4 px-4 sm:px-0">
-                <CommentSection v-for="item in show_data.art_comments" :key="item.id" :comment="item" />
 
-                <div v-if="show_data.art_comments.length <= 0" class="text-sm text-brand-400">Be the first to comment</div>
+            <!-- SECTION: COMMENTS -->
+            <div v-if="show_data" class="px-4 sm:px-0">
+                <CommentsModal v-model:comment_content="comment_content">
+                    <template #comments>
+                        <div>
+                            <AppInput></AppInput>
+                        </div>
+
+                        <CommentSection v-if="show_data.art_comments.length > 0" v-for="item in show_data.art_comments" :key="item.id" :comment="item" />
+
+                        <div v-else>
+                            <p class="text-sm text-brand-400">No comments yet. Be the first to comment!</p>
+                        </div>
+                    </template>
+
+                    <template #comment_preview>
+                        <div v-if="show_data.art_comments.length > 0" class="flex gap-2 items-start">
+                            <img :src="show_data.art_comments[0].user?.image_url" class="size-6 rounded-full bg-dark-001" />
+
+                            <div class="flex flex-col gap-0">
+                                <div class="text-md flex gap-2 items-center">
+                                    <div class="font-semibold hover:bg-brand-950 transition-colors rounded-3xl px-2 -ml-2">
+                                        {{ show_data.art_comments[0].user?.username }}
+                                    </div>
+
+                                    <p class="text-sm text-brand-400">- {{ messengerStyleTime(show_data.art_comments[0].created_at) }}</p>
+                                </div>
+                                <div v-html="show_data.art_comments[0].content" class="line-clamp-1" />
+
+                                <div class="flex items-center gap-1">
+                                    <Icon icon="pixelarticons:chevron-down-2" class="size-4 shrink-0" />
+                                    <p class="text-sm text-brand-400">
+                                        {{ show_data.art_comments.length - 1 }} More comment{{ show_data.art_comments.length - 1 > 1 ? 's' : '' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-else>
+                            <p class="text-sm text-brand-400">No comments yet. Be the first to comment!</p>
+                        </div>
+                    </template>
+                </CommentsModal>
             </div>
         </div>
 
@@ -176,20 +264,21 @@
 
 <script setup lang="ts">
 import ArtCard from '@/components/cards/ArtCard.vue'
-import ArtPreviewCard from '@/components/cards/ArtPreviewCard.vue'
-import FileCard from '@/components/cards/FileCard.vue'
-import AppInput from '@/components/form/AppInput.vue'
-import { nextTick, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from 'vue'
-import DataTransition from '@/components/transitions/DataTransition.vue'
+import MainArtPreviewCard from '@/components/cards/MainArtPreviewCard.vue'
+import PreviewCard from '@/components/cards/PreviewCard.vue'
 import CommentSection from '@/components/content/CommentSection.vue'
-import AppButton from '@/components/form/AppButton.vue'
+import DataTransition from '@/components/transitions/DataTransition.vue'
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from 'vue'
 import { Icon } from '@iconify/vue'
+import FileCard from '@/components/cards/FileCard.vue'
+import CommentsModal from '@/components/modals/CommentsModal.vue'
 
 import { useArtStore } from '@/stores/art.store'
+import { useAuthStore } from '@/stores/auth.store'
+import { formatNumber, messengerStyleTime } from '@/utils/utils'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
-import { messengerStyleTime } from '@/utils/utils'
-import { useAuthStore } from '@/stores/auth.store'
+import { ArtPreview } from '@/global.interfaces'
 
 const $artStore = useArtStore()
 const { weekly_arts, show_data, config } = storeToRefs($artStore)
@@ -200,6 +289,8 @@ const { auth } = storeToRefs($authStore)
 
 const $route = useRoute()
 
+const comment_content = ref('')
+
 const getArtIdFromRoute = () => {
     const params = $route.params
 
@@ -207,6 +298,16 @@ const getArtIdFromRoute = () => {
 
     return Array.isArray(params.id) ? (params.id[0] ?? null) : params.id
 }
+
+const art_config = reactive<{
+    selected_preview: ArtPreview | null
+    friend: boolean
+    hearted: boolean
+}>({
+    selected_preview: null,
+    friend: true,
+    hearted: true
+})
 
 const read_more = ref(false)
 const comment_here = ref('')
@@ -307,10 +408,9 @@ watch(
             await showAPI(artId)
 
             show_data.value && (document.title = `${show_data.value.title} | OGA (Not Official)`)
+            art_config.selected_preview = show_data.value?.art_previews[0] ?? null // Init selected art preview
         }
     },
     { immediate: true }
 )
-
-const attributes = ['CC-BY-SA 4.0', 'CC-BY-ND 4.0', 'CC-BY-NC 4.0', 'CC-BY-NC-SA 4.0', 'CC-BY-NC-ND 4.0']
 </script>
