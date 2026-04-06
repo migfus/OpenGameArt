@@ -2,7 +2,7 @@
     <div v-if="closed_banner == 0" class="relative isolate flex items-center gap-x-6 overflow-hidden px-6 py-2.5 sm:px-3.5 sm:before:flex-1 text-brand-200">
         <div class="absolute left-[max(-7rem,calc(50%-52rem))] top-1/2 -z-10 -translate-y-1/2 transform-gpu blur-2xl" aria-hidden="true">
             <div
-                class="aspect-577/310 w-144.25 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30"
+                class="aspect-577/310 w-144.25 bg-linear-to-tr from-red-500 to-yellow-500 opacity-30"
                 style="
                     clip-path: polygon(
                         74.8% 41.9%,
@@ -27,7 +27,7 @@
         </div>
         <div class="absolute left-[max(45rem,calc(50%+8rem))] top-1/2 -z-10 -translate-y-1/2 transform-gpu blur-2xl" aria-hidden="true">
             <div
-                class="aspect-577/310 w-144.25 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30"
+                class="aspect-577/310 w-144.25 bg-linear-to-tr from-red-500 to-yellow-500 opacity-30"
                 style="
                     clip-path: polygon(
                         74.8% 41.9%,
@@ -51,11 +51,11 @@
             />
         </div>
         <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <p class="text-sm leading-6 text-brand-200">
-                <strong class="font-semibold">THIS IS NOT OFFICIAL OpenGameArt</strong>
-                <svg viewBox="0 0 2 2" class="mx-2 inline h-0.5 w-0.5 fill-current" aria-hidden="true"><circle cx="1" cy="1" r="1" /></svg>Just a bored web
-                developer
-            </p>
+            <div class="text-md leading-6 text-brand-200 flex flex-col lg:flex-row gap-2">
+                <strong class="font-semibold">This UI is optimized for mobile devices.</strong>
+
+                <p>For the faster development, some features may be limited on desktop.</p>
+            </div>
         </div>
         <div class="flex flex-1 justify-end">
             <button type="button" class="-m-3 p-3 focus-visible:-outline-offset-4">
@@ -71,5 +71,5 @@ import { Icon } from '@iconify/vue'
 
 import { useLocalStorage } from '@vueuse/core'
 
-const closed_banner = useLocalStorage('closed_banner', 0)
+const closed_banner = useLocalStorage('closed_banner_', 0)
 </script>

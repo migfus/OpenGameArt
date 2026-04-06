@@ -44,6 +44,11 @@ const bottom_navigations = [
         href: '/'
     },
     {
+        display_name: 'Collections',
+        icon: 'pixelarticons:heart',
+        href: '/collections'
+    },
+    {
         display_name: 'Explore',
         icon: 'memory:search',
         href: '/arts'
@@ -52,11 +57,6 @@ const bottom_navigations = [
         display_name: 'Forums',
         icon: 'memory:chat',
         href: '/forums'
-    },
-    {
-        display_name: 'Collections',
-        icon: 'pixelarticons:heart',
-        href: '/collections'
     }
 ]
 

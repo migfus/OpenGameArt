@@ -52,7 +52,7 @@
                             leave-to="opacity-0 translate-y-6"
                         >
                             <DialogPanel
-                                class="relative transform overflow-y-auto bg-dark-001 text-brand-100 px-4 pb-4 pt-5 text-left shadow-xl transition-all w-full max-h-[95%] flex flex-col gap-4 mb-10"
+                                class="rounded-t-3xl relative transform bg-brand-950 text-brand-100 px-4 pb-4 pt-5 text-left shadow-xl transition-all w-full flex flex-col gap-4 mb-10"
                                 :style="panelStyle"
                             >
                                 <!-- NOTE: Draggable bar -->
@@ -63,10 +63,10 @@
                                     @touchend="onSwipeEnd"
                                     @touchcancel="onSwipeCancel"
                                 >
-                                    <div class="border-4 border-t border-brand-900 w-32 rounded-full"></div>
+                                    <div class="border-4 border-t border-dark-001 w-32 rounded-full"></div>
                                 </div>
 
-                                <div class="-mt-4 flex flex-col gap-4">
+                                <div class="-mt-4 flex flex-col gap-4 max-h-[50%] overflow-y-auto">
                                     <slot name="comments"></slot>
                                 </div>
 

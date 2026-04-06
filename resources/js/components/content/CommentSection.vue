@@ -6,7 +6,7 @@
                 target="_blank"
                 class="size-6 rounded-full shrink-0 hover:bg-brand-950 transition-colors"
             >
-                <img :src="comment.user?.image_url" class="w-full h-full object-cover" />
+                <img :src="comment.user?.image_url" class="w-full h-full object-cover bg-dark-001 rounded-full" />
             </a>
 
             <div class="flex flex-col gap-0">

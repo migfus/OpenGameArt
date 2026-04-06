@@ -1,5 +1,7 @@
 <template>
     <div class="bg-dark-001 flex flex-col text-brand-200">
+        <NotifyBanner />
+
         <NotiWind />
 
         <TopBanner v-model="top_navigation_hidden" />
@@ -18,6 +20,7 @@ import WarningModal from './components/modals/WarningModal.vue'
 import SideNavigation from './components/navigations/SideNavigation.vue'
 import TopNavigation from './components/navigations/TopNavigation.vue'
 import NotiWind from './components/notifications/NotiWind.vue'
+import NotifyBanner from '@/components/header/NotifyBanner.vue'
 
 import { ref } from 'vue'
 

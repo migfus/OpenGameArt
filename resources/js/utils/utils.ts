@@ -124,6 +124,17 @@ export function urlToFileExtension(url: string): string {
     return ext
 }
 
+export function filePreviewType(url: string): 'image' | 'audio' | 'other' {
+    const ext = urlToFileExtension(url)
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext)) {
+        return 'image'
+    } else if (['mp3', 'ogg', 'wav', 'flac'].includes(ext)) {
+        return 'audio'
+    } else {
+        return 'other'
+    }
+}
+
 export function cleanQuery<T extends Record<string, any>>(query: T): Partial<T> {
     return Object.fromEntries(
         Object.entries(query).filter(([_, v]) => v !== undefined && v !== null && v !== '' && !(Array.isArray(v) && v.length === 0))

@@ -43,6 +43,9 @@ export const useArtStore = defineStore('ArtStore', () => {
         lazy_loading: false
     })
 
+    const audio_volume = useLocalStorage<number>('audio_volume', 0.5)
+    const audio_playing = ref(true)
+
     async function checkExploreArtsForRefresh() {
         // SECTION: EXPLORE
         const arts_that_needs_refresh = arts.value.filter((item: Art) => {
@@ -221,6 +224,9 @@ export const useArtStore = defineStore('ArtStore', () => {
         art_types,
         search_url,
         show_data,
+
+        audio_volume,
+        audio_playing,
 
         checkWeeklyArtsForRefresh,
         checkNewArtsForRefresh,

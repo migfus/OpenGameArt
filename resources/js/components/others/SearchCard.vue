@@ -1,21 +1,16 @@
 <template>
     <div>
-        <form @submit.prevent="search()" class="bg-brand-950 border border-brand-900 m-6 p-6 rounded-2xl flex flex-col items-center gap-2">
+        <form
+            @submit.prevent="search()"
+            class="bg-brand-950 border-y sm:border border-brand-900 my-4 sm:mx-4 p-6 sm:rounded-3xl flex flex-col items-center gap-2"
+        >
             <div class="max-w-full w-md relative">
                 <AppInput name="Search" v-model="search_query.search" :placeholder="query.selected_filter.placeholder" />
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2 justify-between max-w-full w-md items-center">
                 <div class="flex gap-2">
-                    <AppButton
-                        size="sm"
-                        :color="filters.advance_filters ? undefined : 'brand'"
-                        @click="filters.advance_filters = false"
-                        type="button"
-                        icon="pixelarticons:search"
-                    >
-                        Simple
-                    </AppButton>
+                    <AppButton size="sm" @click="filters.advance_filters = false" type="button" icon="pixelarticons:search"> Simple </AppButton>
                     <!-- <AppButton
                         size="sm"
                         :color="filters.advance_filters ? 'brand' : undefined"
@@ -27,7 +22,7 @@
                     </AppButton> -->
                 </div>
 
-                <div class="flex gap-2">
+                <div class="flex flex-col gap-2 w-full">
                     <AppButton icon="pixelarticons:search" :loading="config.loading" color="brand">Search</AppButton>
                 </div>
             </div>
@@ -69,6 +64,8 @@
                         {{ query.sort_by.name }}
                     </AppButton>
                     <AppButton icon="memory:search">Search</AppButton>
+
+                    searchg
                 </div>
             </div>
         </form>

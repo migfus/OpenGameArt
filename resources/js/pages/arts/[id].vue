@@ -3,7 +3,7 @@
         <div class="flex-1 min-w-0 basis-0 flex flex-col gap-4">
             <!-- <div>
                 <p>Debug</p>
-                <p>Selected Preview ID: {{ art_config.selected_preview }}</p>
+                <p>Volume: {{ audio_volume }}</p>
             </div> -->
             <!-- SECTION: TITLE -->
             <div class="px-4 sm:px-0">
@@ -70,7 +70,7 @@
                 </div>
 
                 <div v-else class="flex w-full max-w-54 gap-4 items-center shrink-0">
-                    <img :src="show_data?.user?.image_url" class="rounded-full size-12 bg-brand-950" />
+                    <img :src="show_data?.user?.image_url" class="rounded-full size-12 bg-brand-950 object-cover" />
 
                     <div class="flex flex-col gap-0">
                         <p class="text-lg font-semibold">{{ show_data.user?.username }}</p>
@@ -102,7 +102,7 @@
             <!-- SECTION: ART Functions -->
             <div v-if="show_data" class="flex gap-2 justify-between xl:justify-start px-4 sm:px-0">
                 <!-- LEFT -->
-                <div class="flex items-center bg-brand-950 rounded-2xl">
+                <div class="flex items-center bg-brand-950 rounded-3xl">
                     <button
                         :class="[
                             'flex items-center gap-2 px-4 py-2 rounded-3xl cursor-pointer',
@@ -128,7 +128,7 @@
                     </a>
                 </div>
                 <!-- RIGHT -->
-                <div class="flex items-center bg-brand-950 rounded-2xl">
+                <div class="flex items-center bg-brand-950 rounded-3xl">
                     <button
                         :class="[
                             'flex items-center gap-2 px-4 py-2 rounded-3xl cursor-pointer',
@@ -168,9 +168,9 @@
             <!-- DESCRIPTION -->
             <div v-if="config.loading || !show_data" class="flex flex-col gap-2 items-center p-4 bg-brand-950 rounded-3xl h-32 animate-pulse" />
             <div v-else class="flex flex-col gap-2 items-center p-4 bg-brand-950 sm:rounded-3xl">
-                <div v-html="show_data.content" :class="[read_more ? '' : 'line-clamp-6', 'w-full']"></div>
+                <div v-html="show_data.content" ref="contentRef" :class="[read_more ? '' : 'line-clamp-6', 'w-full']"></div>
 
-                <button class="cursor-pointer" @click="read_more = !read_more">{{ read_more ? 'Read Less' : 'Read More' }}</button>
+                <button v-if="should_show_read_more" class="cursor-pointer" @click="read_more = !read_more">{{ read_more ? 'Read Less' : 'Read More' }}</button>
             </div>
 
             <!-- SECTION: TAGS -->
@@ -214,10 +214,6 @@
             <div v-if="show_data" class="px-4 sm:px-0">
                 <CommentsModal v-model:comment_content="comment_content">
                     <template #comments>
-                        <div>
-                            <AppInput></AppInput>
-                        </div>
-
                         <CommentSection v-if="show_data.art_comments.length > 0" v-for="item in show_data.art_comments" :key="item.id" :comment="item" />
 
                         <div v-else>
@@ -268,7 +264,7 @@ import MainArtPreviewCard from '@/components/cards/MainArtPreviewCard.vue'
 import PreviewCard from '@/components/cards/PreviewCard.vue'
 import CommentSection from '@/components/content/CommentSection.vue'
 import DataTransition from '@/components/transitions/DataTransition.vue'
-import { nextTick, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, reactive, ref, useTemplateRef, watch, computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import FileCard from '@/components/cards/FileCard.vue'
 import CommentsModal from '@/components/modals/CommentsModal.vue'
@@ -281,7 +277,7 @@ import { useRoute } from 'vue-router'
 import { ArtPreview } from '@/global.interfaces'
 
 const $artStore = useArtStore()
-const { weekly_arts, show_data, config } = storeToRefs($artStore)
+const { weekly_arts, show_data, config, audio_volume } = storeToRefs($artStore)
 const { showAPI } = $artStore
 
 const $authStore = useAuthStore()
@@ -310,6 +306,14 @@ const art_config = reactive<{
 })
 
 const read_more = ref(false)
+const contentRef = ref<HTMLDivElement | null>(null)
+const should_show_read_more = computed(() => {
+    if (!contentRef.value) return false
+    if (read_more.value) return true
+
+    const element = contentRef.value
+    return element.scrollHeight > element.clientHeight + 5
+})
 const comment_here = ref('')
 
 const attributes_scroller = useTemplateRef<HTMLElement | null>('attributesScroller')
@@ -409,6 +413,10 @@ watch(
 
             show_data.value && (document.title = `${show_data.value.title} | OGA (Not Official)`)
             art_config.selected_preview = show_data.value?.art_previews[0] ?? null // Init selected art preview
+
+            read_more.value = false
+
+            await nextTick()
         }
     },
     { immediate: true }

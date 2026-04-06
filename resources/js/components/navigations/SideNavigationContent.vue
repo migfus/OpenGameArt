@@ -258,17 +258,18 @@ const navigations = [
                 icon: 'pixelarticons:home'
             },
             {
-                name: 'arts',
-                display_name: 'Explore',
-                href: '/arts',
-                icon: 'pixelarticons:search'
-            },
-            {
                 name: 'collections',
                 display_name: 'Collections',
                 href: '/collections',
                 icon: 'pixelarticons:heart'
             },
+            {
+                name: 'arts',
+                display_name: 'Explore',
+                href: '/arts',
+                icon: 'pixelarticons:search'
+            },
+
             {
                 name: 'forums',
                 display_name: 'Forums',
