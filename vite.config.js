@@ -16,5 +16,20 @@ export default defineConfig({
         }),
         tailwindcss(),
         vue()
-    ]
+    ],
+
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+
+        // 🔥 THIS FIXES YOUR ERROR
+        cors: {
+            origin: '*' // or 'http://192.168.8.42:8000'
+        },
+
+        hmr: {
+            host: '192.168.8.42',
+            protocol: 'ws'
+        }
+    }
 })

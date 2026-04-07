@@ -9,6 +9,7 @@ const ttl = 24 // 24hrs
 export const useCollectionStore = defineStore('CollectionStore', () => {
     const collections = ref<Collection[]>([])
     const new_collections = ref<Collection[]>([])
+    const index_data = ref<Collection[]>()
 
     const config = reactive<StoreConfig>({
         loading: false,
@@ -59,11 +60,22 @@ export const useCollectionStore = defineStore('CollectionStore', () => {
         }
     }
 
+    async function indexAPI() {
+        try {
+            const { data } = await api.get<Collection[]>('/collections')
+            index_data.value = data
+        } catch (err) {
+            console.log('error on CollectionStore/index()')
+        }
+    }
+
     return {
         collections,
         new_collections,
         config,
+        index_data,
 
-        checkCollectionForRefresh
+        checkCollectionForRefresh,
+        indexAPI
     }
 })

@@ -6,8 +6,19 @@ use App\Models\{Collection, User};
 
 use Carbon\Carbon;
 use Illuminate\Http\{JsonResponse, Request};
+use Symfony\Component\DomCrawler\Crawler;
 
 class CollectionController extends Controller {
+    private function parseCreatedAt(string $rawDate): string {
+        $dateText = trim((string) preg_replace('/\s+/', ' ', html_entity_decode($rawDate)));
+
+        try {
+            return Carbon::createFromFormat('l, F j, Y - H:i', $dateText)->format('Y-m-d H:i:s');
+        } catch (\Throwable) {
+            return Carbon::parse($dateText)->format('Y-m-d H:i:s');
+        }
+    }
+
     public function update(Request $req, string $id): JsonResponse {
         $crawler = $this->authenticate("https://opengameart.org/content/{$id}", $req->bearerToken());
 
@@ -33,5 +44,29 @@ class CollectionController extends Controller {
         ], $forum);
 
         return response()->json($recent_collection->load('user'));
+    }
+
+    public function index(Request $req): JsonResponse {
+        $crawler = $this->authenticate("https://opengameart.org/collections", $req->bearerToken(), false);
+
+        $collections = [];
+
+        if ($crawler->filter('tbody tr')->count() > 0) {
+            $crawler->filter('tbody tr')->each(function (Crawler $crawler) use (&$collections) {
+                $collections[] = [
+                    'title' => $crawler->filter('.views-field-title')->text(),
+                    'id' => $crawler->filter('.views-field-title a')->attr('href'), //
+                    'user' => ['username' => $crawler->filter('.views-field-name a')->text()],
+                    'favorites_count' => $crawler->filter('.views-field-count')->text(),
+                    'art_collected' => $crawler->filter('.views-field-field-collected-art')->text(),
+                    'created_at' => $this->parseCreatedAt(
+                        $crawler->filter('.views-field-changed')->text()
+                    ),
+                ];
+            });
+        }
+
+
+        return response()->json($collections);
     }
 }

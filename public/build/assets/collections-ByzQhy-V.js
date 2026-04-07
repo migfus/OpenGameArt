@@ -1,1 +1,0 @@
-import{O as e,T as t,d as n,g as r}from"./runtime-core.esm-bundler-CCcfCGFe.js";var i=r({__name:`collections`,setup(r){return t(()=>{document.title=`Collections | OGA (Not Official)`}),(t,r)=>(e(),n(`div`,null,`Collections`))}});export{i as default};

@@ -64,6 +64,8 @@ export interface Collection extends LaravelTimestamp {
     id: string
     title: string
     string: string
+    favorites_count: number
+    art_collected: number
 
     user?: User
     arts?: Art[]
