@@ -39,7 +39,7 @@ class AffiliateController extends Controller {
         return [];
     }
 
-    private function scrapesAllPossibleIcon($crawler): string | null {
+    private function scrapesAllPossibleIcon(Crawler $crawler): string | null {
         $selectors = [
             'link[rel="icon"]',
             'link[rel="shortcut icon"]',

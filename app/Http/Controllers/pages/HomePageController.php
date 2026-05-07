@@ -46,7 +46,7 @@ class HomePageController extends Controller {
         // }
     }
 
-    private function getRecentCollection($crawler): array {
+    private function getRecentCollection(Crawler $crawler): array {
         return Cache::remember('get_recent_collections', $this->cache_duration, function () use ($crawler) {
             return $crawler->filter('.view-art-collections .view-content .item-list ul li .views-field-title a')
                 ->each(function (Crawler $node) {
@@ -72,7 +72,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getRecentForums($crawler): array {
+    private function getRecentForums(Crawler $crawler): array {
         return Cache::remember('get_recent_forums', $this->cache_duration, function () use ($crawler) {
 
 
@@ -96,7 +96,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getAffiliates($crawler): array {
+    private function getAffiliates(Crawler $crawler): array {
         return Cache::remember('get_affiliates', $this->cache_duration, function () use ($crawler) {
             return $crawler->filter('.view-links .view-content .item-list ul li')
                 ->each(function (Crawler $node) {
@@ -115,7 +115,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getPosts($crawler): array {
+    private function getPosts(Crawler $crawler): array {
         return Cache::remember('get_posts', $this->cache_duration, function () use ($crawler) {
             return $crawler->filter('.view-blog .view-content .views-row')->each(function (Crawler $node) {
                 $titleNode = $node->filter('.field-name-title h2 a');
@@ -138,7 +138,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getWeeklyArts($crawler): array {
+    private function getWeeklyArts(Crawler $crawler): array {
         return Cache::remember('get_weekly_arts', $this->cache_duration, function () use ($crawler) {
             return $crawler->filter('#block-views-art-block-9 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
                 $titleNode = $node->filter('.field-name-title a');
@@ -166,7 +166,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getNewArts($crawler): array {
+    private function getNewArts(Crawler $crawler): array {
         return Cache::remember('get_new_arts', $this->cache_duration, function () use ($crawler) {
             return $crawler->filter('#block-views-art-block-6 .content .view-art .view-content .views-row')->each(function (Crawler $node) {
                 $titleNode = $node->filter('.field-name-title a');
@@ -213,7 +213,7 @@ class HomePageController extends Controller {
         });
     }
 
-    private function getArtsFromDatabaseIfExists(string $id, string $title, $previews, string $type, string $preview_type): array {
+    private function getArtsFromDatabaseIfExists(string $id, string $title, array $previews, string $type, string $preview_type): array {
         $id = urldecode($id);
         // Checks if existed
         // If existed, just return the old data (complete than scraped)
@@ -261,6 +261,7 @@ class HomePageController extends Controller {
                 'cookies' => $cookieJar,
                 'allow_redirects' => true,
                 'headers' => ['User-Agent' => 'Mozilla/5.0'],
+                'verify' => false,
             ]);
 
             $response = $client->get('https://www.patreon.com/opengameart');

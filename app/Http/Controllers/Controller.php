@@ -10,7 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 abstract class Controller {
 
-    public function authenticate(string $url, $token, $wait = false): Crawler {
+    public function authenticate(string $url, string | null $token, $wait = false): Crawler {
         $cookies = UserSession::where('id', $token)->get();
 
         $cookieArray = [];
@@ -28,6 +28,7 @@ abstract class Controller {
             'allow_redirects' => true,
             'headers' => ['User-Agent' => 'Mozilla/5.0'],
             // 'debug' => true,
+            'verify' =>  false
         ]);
 
         $response = $client->get($url);

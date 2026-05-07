@@ -9,6 +9,42 @@ use Illuminate\Database\Eloquent\Relations\{
     HasMany
 };
 
+/**
+ * @property string $id
+ * @property int|null $user_id
+ * @property int $art_category_id
+ * @property string $title
+ * @property string|null $content
+ * @property int $favorites_count
+ * @property int $comments_count
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ArtCategory $art_category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ArtComment> $art_comments
+ * @property-read int|null $art_comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ArtPreview> $art_previews
+ * @property-read int|null $art_previews_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\File> $files
+ * @property-read int|null $files_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\License> $licenses
+ * @property-read int|null $licenses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags
+ * @property-read int|null $tags_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereArtCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereCommentsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereFavoritesCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Art whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Art extends Model {
     protected $primaryKey = 'id';
     public $incrementing = false;

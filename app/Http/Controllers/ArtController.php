@@ -19,7 +19,7 @@ class ArtController extends Controller {
         $crawler = $this->authenticate("https://opengameart.org/content/{$id}", $req->bearerToken());
 
         // SECTION: TAGS
-        $tag_ids = $this->scrapeAllTagsAndStore($crawler, $id);
+        $tag_ids = $this->scrapeAllTagsAndStore($crawler);
 
         // SECTION: ART
         $art = [
@@ -215,7 +215,7 @@ class ArtController extends Controller {
             parse_str(parse_url($last_page_url, PHP_URL_QUERY), $query_params);
             $last_page_number = isset($query_params['page']) ? (int) $query_params['page'] : 0;
 
-            $crawler = $this->authenticate("https://opengameart.org/" . $last_page_url, null);
+            $crawler = $this->authenticate("https://opengameart.org/" . $last_page_url, false);
 
             $total_comments = ($last_page_number * 50) + (int) $crawler->filter('#comments .comment')->count();
         }
@@ -430,7 +430,7 @@ class ArtController extends Controller {
         $crawler = $this->authenticate("https://opengameart.org/content/{$id}", $req->bearerToken());
 
         // SECTION: TAGS
-        $tag_ids = $this->scrapeAllTagsAndStore($crawler, $id);
+        $tag_ids = $this->scrapeAllTagsAndStore($crawler);
 
         // SECTION: ART
         $art = [

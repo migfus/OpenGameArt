@@ -33,8 +33,6 @@ const $collectionStore = useCollectionStore()
 const { index_data } = storeToRefs($collectionStore)
 const { indexAPI } = $collectionStore
 
-const collections = ref(Array.from({ length: 100 }, (_, i) => i))
-
 const view_type = useLocalStorage('collections_view_type', 'Summary')
 
 const filters = ['Title', 'Contributor', 'Favorites', 'Contents', 'Date']

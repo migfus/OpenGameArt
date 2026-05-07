@@ -28,6 +28,7 @@ class AuthController extends Controller {
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0',
             ],
+            'verify' => false,
         ]);
 
         $response = $client->get('https://opengameart.org');

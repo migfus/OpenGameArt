@@ -18,18 +18,18 @@ export default defineConfig({
         vue()
     ],
 
-    server: {
-        host: '0.0.0.0',
-        port: 5173,
+    // server: {
+    //     host: '0.0.0.0',
+    //     port: 5173,
 
-        // 🔥 THIS FIXES YOUR ERROR
-        cors: {
-            origin: '*' // or 'http://192.168.8.42:8000'
-        },
+    //     // 🔥 THIS FIXES YOUR ERROR
+    //     cors: {
+    //         origin: '*' // or 'http://192.168.8.42:8000'
+    //     },
 
-        hmr: {
-            host: '192.168.8.42',
-            protocol: 'ws'
-        }
-    }
+    //     hmr: {
+    //         host: '192.168.8.42',
+    //         protocol: 'ws'
+    //     }
+    // }
 })
